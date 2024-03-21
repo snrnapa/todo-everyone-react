@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
     extend: {},
+    fontFamily: {
+      zenKurenaido: ['Zen Kurenaido', 'sans-serif'],
+    },
   },
   plugins: [],
 };
