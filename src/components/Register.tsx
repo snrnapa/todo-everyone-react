@@ -1,19 +1,20 @@
 import { Button, TextField } from '@mui/material';
-import React, { useState } from 'react';
-
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../libs/firebase';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
 
 const Register = () => {
-  const [email, setEmail] = useState('');
-  const [passWord, setPassWord] = useState('');
-  const [retypePassWord, setRetypePassWord] = useState('');
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<RegisterInputs>();
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-
-    if (passWord != retypePassWord) {
+  // submitが押下されたタイミングで行う動作
+  const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
+    if (data.password != data.retypePassword) {
       alert('入力したパスワードが異なります。再度確認して再入力してください。');
       return;
     }
@@ -25,8 +26,8 @@ const Register = () => {
       // メール認証により、firebase authenticationに登録するとともに、その情報をuserCredential変数に保持
       userCredential = await createUserWithEmailAndPassword(
         auth,
-        email,
-        passWord,
+        data.email,
+        data.password,
       );
     } catch (error) {
       alert('正しく情報を入力してください');
@@ -54,29 +55,57 @@ const Register = () => {
     );
     window.location.reload();
   };
+
   return (
     <div className="p-3 space-y-5">
       <p className="text-3xl zenKurenaido">初期登録</p>
       <div>
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col space-y-5"
+        >
           <TextField
+            type="text"
+            {...register('email', { required: 'メールアドレスは必須です' })}
             id="filled-basic"
             label="メールアドレス"
             variant="filled"
-            onChange={(e) => setEmail(e.target.value)}
           />
+          {errors.email?.message && (
+            <p className="text-red-800">{errors.email?.message}</p>
+          )}
           <TextField
+            type="password"
+            {...register('password', {
+              required: 'パスワードは必須です',
+              minLength: {
+                value: 4,
+                message: '４文字以上必要です。',
+              },
+            })}
             id="filled-basic"
             label="パスワード"
             variant="filled"
-            onChange={(e) => setPassWord(e.target.value)}
           />
+          {errors.password?.message && (
+            <p className="text-red-800">{errors.password?.message}</p>
+          )}
           <TextField
+            type="password"
+            {...register('retypePassword', {
+              required: '確認のためパスワードを再入力してください',
+              minLength: {
+                value: 4,
+                message: '４文字以上必要です。',
+              },
+            })}
             id="filled-basic"
             label="パスワードの再入力"
             variant="filled"
-            onChange={(e) => setRetypePassWord(e.target.value)}
           />
+          {errors.retypePassword?.message && (
+            <p className="text-red-800">{errors.retypePassword?.message}</p>
+          )}
           <Button type="submit" variant="contained" disableElevation>
             登録
           </Button>
