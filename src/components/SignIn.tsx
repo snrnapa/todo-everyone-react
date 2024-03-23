@@ -3,6 +3,13 @@ import { Button, TextField } from '@mui/material';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../libs/firebase';
 
+// Login画面で使用するinputの型を宣言
+type LoginInputs = {
+  email: string;
+  password: string;
+  submit: any;
+};
+
 const SignIn = () => {
   // React-form-hookの初期化
   const {

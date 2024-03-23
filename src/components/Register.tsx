@@ -4,6 +4,14 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../libs/firebase';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
 
+// Register（初期登録）画面で使用するinputの型を宣言
+type RegisterInputs = {
+  email: string;
+  password: string;
+  retypePassword: string;
+  submit: any;
+};
+
 const Register = () => {
   const {
     register,
@@ -40,7 +48,7 @@ const Register = () => {
     const currentTimestamp = Timestamp.now();
 
     try {
-      const docRef = await addDoc(collection(db, 'user'), {
+      await addDoc(collection(db, 'user'), {
         user_id: uid,
         user_name: 'ゆーざー',
         updated_at: currentTimestamp,
