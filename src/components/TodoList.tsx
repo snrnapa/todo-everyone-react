@@ -11,7 +11,11 @@ type Todo = {
   updated_at: string;
 };
 
-const TodoList = () => {
+type ComponentsProps = {
+  user_id: string;
+};
+
+const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   useEffect(() => {
     const todosInfo = collection(db, 'todo');
@@ -42,19 +46,21 @@ const TodoList = () => {
         <p className="text-xl text-center">あなたのTodo</p>
 
         {todos.length > 0 ? (
-          todos.map((todo) => (
-            <Card className="flex flex-col justify-center p-3 m-2 shadow-2xl space-y-3">
-              <p className="">{todo.context}</p>
-              <div className="flex justify-start space-x-3">
-                <IconButton onClick={() => copyTodo(todo)}>
-                  <ContentCopyIcon fontSize="small" />
-                </IconButton>
-                <IconButton onClick={() => deleteTodo(todo)}>
-                  <DeleteForeverIcon fontSize="small" />
-                </IconButton>
-              </div>
-            </Card>
-          ))
+          todos
+            .filter((todo) => todo.user_id === user_id)
+            .map((todo) => (
+              <Card className="flex flex-col justify-center p-3 m-2 shadow-2xl space-y-3">
+                <p className="">{todo.context}</p>
+                <div className="flex justify-start space-x-3">
+                  <IconButton onClick={() => copyTodo(todo)}>
+                    <ContentCopyIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton onClick={() => deleteTodo(todo)}>
+                    <DeleteForeverIcon fontSize="small" />
+                  </IconButton>
+                </div>
+              </Card>
+            ))
         ) : (
           <div>
             <p>todoがありません</p>
@@ -64,19 +70,21 @@ const TodoList = () => {
       <div className="bg-green-50 border border-black rounded-xl w-5/12 shadow-2xl">
         <p className="text-xl text-center ">みんなのTodo</p>
         {todos.length > 0 ? (
-          todos.map((todo) => (
-            <Card className="flex flex-col justify-center p-3 m-2 shadow-2xl space-y-3">
-              <p className="">{todo.context}</p>
-              <div className="flex justify-start space-x-3">
-                <IconButton onClick={() => copyTodo(todo)}>
-                  <ContentCopyIcon fontSize="small" />
-                </IconButton>
-                <IconButton onClick={() => deleteTodo(todo)}>
-                  <DeleteForeverIcon fontSize="small" />
-                </IconButton>
-              </div>
-            </Card>
-          ))
+          todos
+            .filter((todo) => todo.user_id !== user_id)
+            .map((todo) => (
+              <Card className="flex flex-col justify-center p-3 m-2 shadow-2xl space-y-3">
+                <p className="">{todo.context}</p>
+                <div className="flex justify-start space-x-3">
+                  <IconButton onClick={() => copyTodo(todo)}>
+                    <ContentCopyIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton onClick={() => deleteTodo(todo)}>
+                    <DeleteForeverIcon fontSize="small" />
+                  </IconButton>
+                </div>
+              </Card>
+            ))
         ) : (
           <div>
             <p>todoがありません</p>

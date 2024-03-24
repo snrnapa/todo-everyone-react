@@ -92,7 +92,7 @@ const Todo = () => {
         )}
       </div>
 
-      <TodoList />
+      <TodoList user_id={currentUser?.uid || ''} />
     </>
   );
 };
