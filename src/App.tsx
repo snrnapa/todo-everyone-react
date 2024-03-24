@@ -9,7 +9,7 @@ import SignIn from './components/SignIn';
 import Register from './components/Register';
 import { Timestamp, collection, getDocs } from 'firebase/firestore';
 import Home from './components/Home';
-import Post from './components/Post';
+import Todo from './components/Todo';
 import useCurrentUser from './components/hooks/UseCurrentUser';
 
 type DispUser = {
@@ -75,9 +75,7 @@ function App() {
                 </div>
               </div>
             </Card>
-            <Post />
-
-            <Home />
+            <Todo />
           </div>
         ) : (
           <div>
