@@ -1,5 +1,5 @@
 import './App.css';
-import { Button, Card, Divider } from '@mui/material';
+import { Button, Card, Divider, IconButton } from '@mui/material';
 
 import { useEffect, useState } from 'react';
 import Header from './components/Header';
@@ -8,38 +8,43 @@ import { auth, db } from './libs/firebase';
 import SignIn from './components/SignIn';
 import Register from './components/Register';
 import { Timestamp, collection, getDocs } from 'firebase/firestore';
+import Home from './components/Home';
+import Post from './components/Post';
+import useCurrentUser from './components/hooks/UseCurrentUser';
 
+type DispUser = {
+  user_id: string;
+  user_name: string;
+  updated_at: string;
+};
 function App() {
-  type DispUser = {
-    user_id: string;
-    user_name: string;
-    updated_at: string;
-  };
+  // カスタムhooksのuseCurrentUserを使用して、現在のログインユーザーの情報を取得（authenticationより）
+  const currentUser = useCurrentUser();
+  const [dispUser, setDispUser] = useState<DispUser | null>(null);
 
   const [registerFlg, setRegisterFlg] = useState(false);
-  const [dispUser, setDispUser] = useState<DispUser>();
   const dispRegister = () => {
     setRegisterFlg(!registerFlg);
   };
 
   useEffect(() => {
-    onAuthStateChanged(auth, (authUser) => {
-      if (authUser) {
-        const userInfo = collection(db, 'user');
-        getDocs(userInfo).then((snapShot) => {
-          const userData = snapShot.docs.map((doc) => ({ ...doc.data() }))[0];
-          const dispUserData: DispUser = {
-            user_id: userData.user_id,
-            user_name: userData.user_name,
-            updated_at: convertTimestampToString(userData.updated_at),
-          };
-          setDispUser(dispUserData);
-        });
-      } else {
-        console.log('現在はログインしていません');
-      }
-    });
-  }, []);
+    // currentUserが取得できているか確認
+    if (currentUser) {
+      // currentUserから必要なユーザーデータを取得して、dispUserにセット
+
+      const userInfo = collection(db, 'user');
+      getDocs(userInfo).then((snapShot) => {
+        const info = snapShot.docs.map((doc) => ({ ...doc.data() }));
+        console.log(info);
+        const dispUserData: DispUser = {
+          user_id: info[0].user_id,
+          user_name: info[0].user_name,
+          updated_at: convertTimestampToString(info[0].updated_at),
+        };
+        setDispUser(dispUserData);
+      });
+    }
+  }, [currentUser]); // currentUserが変更されたときに再実行
 
   // firebaseのタイムスタンプを文字列の日付に変換する関数
   const convertTimestampToString = (timestamp: Timestamp): string => {
@@ -54,12 +59,17 @@ function App() {
 
       <div className="flex flex-col p-2">
         {dispUser != null ? (
-          <Card className="p-3">
-            <p>下記のユーザーでログインしています</p>
-            <p>{dispUser.user_id}</p>
-            <p>{dispUser.user_name}</p>
-            <p>{dispUser.updated_at}</p>
-          </Card>
+          <div>
+            <Card className="p-3">
+              <p>下記のユーザーでログインしています</p>
+              <p>{dispUser.user_id}</p>
+              <p>{dispUser.user_name}</p>
+              <p>{dispUser.updated_at}</p>
+            </Card>
+            <Post />
+
+            <Home />
+          </div>
         ) : (
           <div>
             <SignIn />
