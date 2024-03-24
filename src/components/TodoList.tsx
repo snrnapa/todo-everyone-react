@@ -15,7 +15,6 @@ const TodoList = () => {
     const todosInfo = collection(db, 'todo');
     getDocs(todosInfo).then((snapShot) => {
       const info = snapShot.docs.map((doc) => ({ ...doc.data() }));
-      console.log(info);
       setTodos(info);
     });
   }, []);

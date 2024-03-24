@@ -11,6 +11,7 @@ import { Timestamp, collection, getDocs } from 'firebase/firestore';
 import Home from './components/Home';
 import Todo from './components/Todo';
 import useCurrentUser from './components/hooks/UseCurrentUser';
+import { convertTimestampToString } from './model/Utils';
 
 type DispUser = {
   user_id: string;
@@ -45,12 +46,6 @@ function App() {
       });
     }
   }, [currentUser]); // currentUserが変更されたときに再実行
-
-  // firebaseのタイムスタンプを文字列の日付に変換する関数
-  const convertTimestampToString = (timestamp: Timestamp): string => {
-    const date = new Date(timestamp.seconds * 1000); // タイムスタンプをミリ秒に変換してDateオブジェクトに渡す
-    return date.toLocaleString(); // ローカルの日付文字列に変換して返す
-  };
 
   return (
     <div className="bg-gray-200">
