@@ -1,14 +1,12 @@
 import './App.css';
-import { Button, Card, Divider, IconButton } from '@mui/material';
+import { Button, Card, Divider } from '@mui/material';
 
 import { useEffect, useState } from 'react';
 import Header from './components/Header';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from './libs/firebase';
+import { db } from './libs/firebase';
 import SignIn from './components/SignIn';
 import Register from './components/Register';
-import { Timestamp, collection, getDocs } from 'firebase/firestore';
-import Home from './components/Home';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import Todo from './components/Todo';
 import useCurrentUser from './components/hooks/UseCurrentUser';
 import { convertTimestampToString } from './model/Utils';
@@ -34,7 +32,8 @@ function App() {
       // currentUserから必要なユーザーデータを取得して、dispUserにセット
 
       const userInfo = collection(db, 'user');
-      getDocs(userInfo).then((snapShot) => {
+      const getQuery = query(userInfo, where('user_id', '==', currentUser.uid));
+      getDocs(getQuery).then((snapShot) => {
         const info = snapShot.docs.map((doc) => ({ ...doc.data() }));
         console.log(info);
         const dispUserData: DispUser = {
