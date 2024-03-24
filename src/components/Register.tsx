@@ -16,7 +16,7 @@ const Register = () => {
   const {
     register,
     handleSubmit,
-    watch,
+    // watch,
     formState: { errors },
   } = useForm<RegisterInputs>();
 
