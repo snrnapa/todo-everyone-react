@@ -62,9 +62,18 @@ function App() {
           <div>
             <Card className="p-3">
               <p>下記のユーザーでログインしています</p>
-              <p>{dispUser.user_id}</p>
-              <p>{dispUser.user_name}</p>
-              <p>{dispUser.updated_at}</p>
+              <div className="flex space-x-3">
+                <div>
+                  <p>ID</p>
+                  <p>なまえ</p>
+                  <p>アカウント作成日</p>
+                </div>
+                <div className="">
+                  <p>{dispUser.user_id}</p>
+                  <p>{dispUser.user_name}</p>
+                  <p>{dispUser.updated_at}</p>
+                </div>
+              </div>
             </Card>
             <Post />
 
