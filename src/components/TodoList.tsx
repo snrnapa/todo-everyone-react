@@ -1,14 +1,15 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Card, IconButton } from '@mui/material';
-import { collection, getDocs } from 'firebase/firestore';
+import { Timestamp, addDoc, collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../libs/firebase';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { convertTimestampToString } from '../model/Utils';
 
 type Todo = {
   user_id: string;
   context: string;
-  updated_at: string;
+  updated_at: Timestamp;
 };
 
 type ComponentsProps = {
@@ -28,10 +29,32 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
     });
   }, []);
 
-  const copyTodo = (todo: Todo) => {
+  const copyTodo = async (todo: Todo) => {
     console.log('copyボタンが押されました');
+    console.log('あなたのID' + user_id);
 
-    console.log(todo);
+    const nowTime = Timestamp.now();
+
+    try {
+      await addDoc(collection(db, 'todo'), {
+        user_id: user_id,
+        context: todo.context,
+        updated_at: nowTime,
+      });
+    } catch (error) {
+      alert(
+        'TodoのCopy時にエラーが起きました。下記を管理者に連絡してください。' +
+          error,
+      );
+      return;
+    }
+
+    const newTodo: Todo = {
+      user_id: user_id,
+      context: todo.context,
+      updated_at: nowTime,
+    };
+    setTodos((prevTodos) => [...prevTodos, newTodo]);
   };
 
   const deleteTodo = (todo: Todo) => {
@@ -52,9 +75,6 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
               <Card className="flex flex-col justify-center p-3 m-2 shadow-2xl space-y-3">
                 <p className="">{todo.context}</p>
                 <div className="flex justify-start space-x-3">
-                  <IconButton onClick={() => copyTodo(todo)}>
-                    <ContentCopyIcon fontSize="small" />
-                  </IconButton>
                   <IconButton onClick={() => deleteTodo(todo)}>
                     <DeleteForeverIcon fontSize="small" />
                   </IconButton>
@@ -78,9 +98,6 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
                 <div className="flex justify-start space-x-3">
                   <IconButton onClick={() => copyTodo(todo)}>
                     <ContentCopyIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton onClick={() => deleteTodo(todo)}>
-                    <DeleteForeverIcon fontSize="small" />
                   </IconButton>
                 </div>
               </Card>
