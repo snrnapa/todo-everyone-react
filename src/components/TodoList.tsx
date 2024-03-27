@@ -7,6 +7,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { convertTimestampToString } from '../model/Utils';
 
 type Todo = {
+  doc_id: string;
   user_id: string;
   context: string;
   updated_at: Timestamp;
@@ -19,14 +20,27 @@ type ComponentsProps = {
 const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   useEffect(() => {
-    const todosInfo = collection(db, 'todo');
+    const fetchTodos = async () => {
+      try {
+        const todosCollection = collection(db, 'todo');
+        const todosSnapshot = await getDocs(todosCollection);
+        const todosData = todosSnapshot.docs.map((doc) => ({
+          doc_id: doc.id,
+          user_id: doc.data().user_id,
+          context: doc.data().context,
+          updated_at: doc.data().updated_at,
+        }));
 
-    getDocs(todosInfo).then((snapShot) => {
-      const info: Todo[] = snapShot.docs.map((doc) => ({
-        ...(doc.data() as Todo),
-      }));
-      setTodos(info);
-    });
+        todosData.map((doc) => {
+          console.log(doc.doc_id);
+        }),
+          setTodos(todosData);
+      } catch (error) {
+        console.error('Error fetching todos:', error);
+      }
+    };
+
+    fetchTodos();
   }, []);
 
   const copyTodo = async (todo: Todo) => {
@@ -50,6 +64,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
     }
 
     const newTodo: Todo = {
+      doc_id: null,
       user_id: user_id,
       context: todo.context,
       updated_at: nowTime,
@@ -72,7 +87,10 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
           todos
             .filter((todo) => todo.user_id === user_id)
             .map((todo) => (
-              <Card className="flex flex-col justify-center p-3 m-2 shadow-2xl space-y-3">
+              <Card
+                key={todo.doc_id}
+                className="flex flex-col justify-center p-3 m-2 shadow-2xl space-y-3"
+              >
                 <p className="">{todo.context}</p>
                 <div className="flex justify-start space-x-3">
                   <IconButton onClick={() => deleteTodo(todo)}>
@@ -93,7 +111,10 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
           todos
             .filter((todo) => todo.user_id !== user_id)
             .map((todo) => (
-              <Card className="flex flex-col justify-center p-3 m-2 shadow-2xl space-y-3">
+              <Card
+                key={todo.doc_id}
+                className="flex flex-col justify-center p-3 m-2 shadow-2xl space-y-3"
+              >
                 <p className="">{todo.context}</p>
                 <div className="flex justify-start space-x-3">
                   <IconButton onClick={() => copyTodo(todo)}>
