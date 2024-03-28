@@ -2,6 +2,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, TextField } from '@mui/material';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../libs/firebase';
+import swal from 'sweetalert2';
 
 // Login画面で使用するinputの型を宣言
 type LoginInputs = {
@@ -23,11 +24,26 @@ const SignIn = () => {
   const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      alert('エラーが発生しました：' + error);
+      await swal.fire({
+        title: 'ログインが完了しました',
+        text: 'OKボタンを押してください',
+        icon: 'success',
+        confirmButtonText: 'OK',
+        timer: 7000,
+      });
+    } catch (error: any) {
+      await swal.fire({
+        title:
+          'エラーが発生しました。解決しない場合は、管理者に下記を伝えてください。',
+        text: error.toString(),
+        icon: 'error',
+        confirmButtonText: 'OK',
+        timer: 7000,
+      });
+
       return;
     }
-    alert('loginが成功しました');
+
     window.location.reload();
     console.log(data.email);
   };
