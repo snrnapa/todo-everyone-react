@@ -1,6 +1,9 @@
 import { Button, TextField } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from 'firebase/auth';
 import { auth, db } from '../libs/firebase';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
 
@@ -37,6 +40,13 @@ const Register = () => {
         data.email,
         data.password,
       );
+      // ユーザー登録後に確認メールを手動で送信する
+      const user = auth.currentUser;
+      if (user) {
+        await sendEmailVerification(user);
+      } else {
+        throw new Error('ユーザーがログインしていません');
+      }
     } catch (error) {
       alert('正しく情報を入力してください');
       console.log(error);
