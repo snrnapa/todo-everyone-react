@@ -10,6 +10,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import Todo from './components/Todo';
 import useCurrentUser from './components/hooks/UseCurrentUser';
 import { convertTimestampToString } from './model/Utils';
+import PlaceByGoogle from './components/PlaceByGoogle';
 
 type DispUser = {
   user_id: string;
@@ -69,6 +70,7 @@ function App() {
                 </div>
               </div>
             </Card>
+            {/* <PlaceByGoogle /> */}
             <Todo />
           </div>
         ) : (
