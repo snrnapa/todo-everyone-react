@@ -1,5 +1,7 @@
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { Card, IconButton } from '@mui/material';
+import { Card, IconButton, TextField } from '@mui/material';
 import { Timestamp, addDoc, collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../libs/firebase';
@@ -19,6 +21,9 @@ type ComponentsProps = {
 
 const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [editTodoId, setEditTodoId] = useState<string>(null);
+  const [editedTodo, setEditedTodo] = useState<string>();
   useEffect(() => {
     const fetchTodos = async () => {
       try {
@@ -78,6 +83,19 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
     console.log(todo);
   };
 
+  const handleEdit = (todo: Todo) => {
+    console.log('editボタンが押されました');
+
+    setEditMode(true);
+    setEditTodoId(todo.doc_id);
+  };
+
+  const saveTodo = (todo: Todo) => {
+    console.log('saveボタンが押下されました');
+    console.log(todo);
+    setEditMode(false);
+  };
+
   return (
     <div className="flex justify-center space-x-3">
       <div className="bg-blue-400 border border-black rounded-xl w-5/12 shadow-2xl">
@@ -91,12 +109,32 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
                 key={todo.doc_id}
                 className="flex flex-col justify-center p-3 m-2 shadow-2xl space-y-3"
               >
-                <p className="">{todo.context}</p>
-                <div className="flex justify-start space-x-3">
-                  <IconButton onClick={() => deleteTodo(todo)}>
-                    <DeleteForeverIcon fontSize="small" />
-                  </IconButton>
-                </div>
+                {editMode && todo.doc_id === editTodoId ? (
+                  <TextField
+                    value={editedTodo}
+                    onChange={(e) => setEditedTodo(e.target.value)}
+                    variant="outlined"
+                    fullWidth
+                  />
+                ) : (
+                  <p className="">{todo.context}</p>
+                )}
+                {editMode && todo.doc_id === editTodoId ? (
+                  <div className="flex justify-center space-x-3">
+                    <SaveAltIcon onClick={() => saveTodo(todo)}>
+                      <DeleteForeverIcon fontSize="small" />
+                    </SaveAltIcon>
+                  </div>
+                ) : (
+                  <div className="flex justify-start space-x-3">
+                    <IconButton onClick={() => deleteTodo(todo)}>
+                      <DeleteForeverIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton onClick={() => handleEdit(todo)}>
+                      <EditNoteIcon fontSize="small" />
+                    </IconButton>
+                  </div>
+                )}
               </Card>
             ))
         ) : (
