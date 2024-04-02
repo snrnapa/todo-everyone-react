@@ -1,3 +1,5 @@
+import LanguageIcon from '@mui/icons-material/Language';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -45,6 +47,9 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
           doc_id: doc.id,
           user_id: doc.data().user_id,
           context: doc.data().context,
+          detail: doc.data().detail,
+          place: doc.data().place,
+          placeUrl: doc.data().placeUrl,
           updated_at: doc.data().updated_at,
         }));
 
@@ -135,7 +140,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
             .map((todo) => (
               <Card
                 key={todo.doc_id}
-                className="flex flex-col justify-center p-3 m-2 shadow-2xl space-y-3"
+                className="flex flex-col justify-center p-2 m-2 shadow-2xl space-y-1"
               >
                 {editMode && todo.doc_id === editTodoId ? (
                   <TextField
@@ -145,7 +150,27 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                     fullWidth
                   />
                 ) : (
-                  <p className="">{todo.context}</p>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-xs">{todo.context}</p>
+                    <p className="text-gray-400 text-xs">{todo.detail}</p>
+                    <div className="flex">
+                      <LocationOnIcon fontSize="small" />
+                      <p className="text-sm ">{todo.place}</p>
+                    </div>
+                    {todo.placeUrl ? (
+                      <div className="flex">
+                        <LanguageIcon fontSize="small" />
+                        <a
+                          href={todo.placeUrl}
+                          className="text-sm text-gray-400"
+                        >
+                          サイトURL
+                        </a>
+                      </div>
+                    ) : (
+                      <div className="flex"></div>
+                    )}
+                  </div>
                 )}
                 {editMode && todo.doc_id === editTodoId ? (
                   <div className="flex justify-center space-x-3">
@@ -182,6 +207,8 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                 className="flex flex-col justify-center p-3 m-2 shadow-2xl space-y-3"
               >
                 <p className="">{todo.context}</p>
+                <p className="">{todo.place}</p>
+
                 <div className="flex justify-start space-x-3">
                   <IconButton onClick={() => copyTodo(todo)}>
                     <ContentCopyIcon fontSize="small" />
