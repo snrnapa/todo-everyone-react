@@ -12,6 +12,9 @@ type Todo = {
   doc_id: string;
   user_id: string;
   context: string;
+  place: string;
+  placeUrl: string;
+  detail: string;
   updated_at: Timestamp;
 };
 
@@ -72,6 +75,9 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
       doc_id: null,
       user_id: user_id,
       context: todo.context,
+      place: todo.place,
+      placeUrl: todo.placeUrl,
+      detail: todo.detail,
       updated_at: nowTime,
     };
     setTodos((prevTodos) => [...prevTodos, newTodo]);
