@@ -2,7 +2,14 @@ import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Card, IconButton, TextField } from '@mui/material';
-import { Timestamp, addDoc, collection, getDocs } from 'firebase/firestore';
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+} from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../libs/firebase';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -83,10 +90,16 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
     setTodos((prevTodos) => [...prevTodos, newTodo]);
   };
 
-  const deleteTodo = (todo: Todo) => {
+  const deleteTodo = async (todo: Todo) => {
     console.log('deleteボタンが押されました');
-
-    console.log(todo);
+    console.log(todo.doc_id);
+    await deleteDoc(doc(db, 'todo', todo.doc_id))
+      .then(() => {
+        console.log('Successfully deleted!!!' + todo);
+      })
+      .catch((error) => {
+        console.error('Error deleteing:', error);
+      });
   };
 
   const handleEdit = (todo: Todo) => {
