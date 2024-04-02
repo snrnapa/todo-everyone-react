@@ -48,25 +48,25 @@ function App() {
   }, [currentUser]); // currentUserが変更されたときに再実行
 
   return (
-    <div className="bg-gray-200">
+    <div className="bg-gray-200 ">
       <Header />
       <div className="h-20"></div>
 
-      <div className="flex flex-col p-2">
+      <div className="flex flex-col ">
         {dispUser != null ? (
           <div>
-            <Card className="p-3">
+            <Card className="p-3 space-y-2">
               <p>下記のユーザーでログインしています</p>
               <div className="flex space-x-3">
                 <div>
-                  <p>ID</p>
-                  <p>なまえ</p>
-                  <p>アカウント作成日</p>
+                  <p className="text-sm">ID</p>
+                  <p className="text-sm">なまえ</p>
+                  <p className="text-sm">アカウント作成日</p>
                 </div>
                 <div className="">
-                  <p>{dispUser.user_id}</p>
-                  <p>{dispUser.user_name}</p>
-                  <p>{dispUser.updated_at}</p>
+                  <p className="text-sm">{dispUser.user_id}</p>
+                  <p className="text-sm">{dispUser.user_name}</p>
+                  <p className="text-sm">{dispUser.updated_at}</p>
                 </div>
               </div>
             </Card>

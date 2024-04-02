@@ -3,7 +3,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { Card, IconButton, TextField } from '@mui/material';
+import { Button, Card, Divider, IconButton, TextField } from '@mui/material';
 import {
   Timestamp,
   addDoc,
@@ -75,6 +75,9 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
       await addDoc(collection(db, 'todo'), {
         user_id: user_id,
         context: todo.context,
+        place: todo.place,
+        placeUrl: todo.placeUrl,
+        detail: todo.detail,
         updated_at: nowTime,
       });
     } catch (error) {
@@ -130,8 +133,8 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
   };
 
   return (
-    <div className="flex justify-center space-x-3">
-      <div className="bg-blue-400 border border-black rounded-xl w-5/12 shadow-2xl">
+    <div className="flex justify-center space-x-2 p-1">
+      <div className="bg-blue-400 border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
         <p className="text-xl text-center">あなたのTodo</p>
 
         {todos.length > 0 ? (
@@ -140,7 +143,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
             .map((todo) => (
               <Card
                 key={todo.doc_id}
-                className="flex flex-col justify-center p-2 m-2 shadow-2xl space-y-1"
+                className="flex flex-col justify-center p-1 m-1 shadow-2xl space-y-1"
               >
                 {editMode && todo.doc_id === editTodoId ? (
                   <TextField
@@ -151,18 +154,18 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                   />
                 ) : (
                   <div className="flex flex-col space-y-1">
-                    <p className="text-xs">{todo.context}</p>
-                    <p className="text-gray-400 text-xs">{todo.detail}</p>
+                    <p className="text-sm">{todo.context}</p>
+                    <p className="text-gray-400 text-sm">{todo.detail}</p>
                     <div className="flex">
                       <LocationOnIcon fontSize="small" />
-                      <p className="text-sm ">{todo.place}</p>
+                      <p className="text-xs ">{todo.place}</p>
                     </div>
                     {todo.placeUrl ? (
                       <div className="flex">
                         <LanguageIcon fontSize="small" />
                         <a
                           href={todo.placeUrl}
-                          className="text-sm text-gray-400"
+                          className="text-xs text-gray-400"
                         >
                           サイトURL
                         </a>
@@ -196,7 +199,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
           </div>
         )}
       </div>
-      <div className="bg-green-50 border border-black rounded-xl w-5/12 shadow-2xl">
+      <div className="bg-orange-200 border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
         <p className="text-xl text-center ">みんなのTodo</p>
         {todos.length > 0 ? (
           todos
@@ -204,15 +207,35 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
             .map((todo) => (
               <Card
                 key={todo.doc_id}
-                className="flex flex-col justify-center p-3 m-2 shadow-2xl space-y-3"
+                className="flex flex-col justify-center p-1 m-1 shadow-2xl space-y-3"
               >
-                <p className="">{todo.context}</p>
-                <p className="">{todo.place}</p>
+                {/* 共通化コンポーネント */}
+                <div className="flex flex-col space-y-1 ">
+                  <p className="text-sm">{todo.context}</p>
+                  <p className="text-gray-400 text-sm">{todo.detail}</p>
+                  <div className="flex">
+                    <LocationOnIcon fontSize="small" />
+                    <p className="text-xs ">{todo.place}</p>
+                  </div>
+                  {todo.placeUrl ? (
+                    <div className="flex">
+                      <LanguageIcon fontSize="small" />
+                      <a href={todo.placeUrl} className="text-xs text-gray-400">
+                        サイトURL
+                      </a>
+                    </div>
+                  ) : (
+                    <div className="flex"></div>
+                  )}
+                </div>
 
-                <div className="flex justify-start space-x-3">
-                  <IconButton onClick={() => copyTodo(todo)}>
-                    <ContentCopyIcon fontSize="small" />
-                  </IconButton>
+                <div className="flex justify-center space-x-3">
+                  <button
+                    className="px-2 py-1 bg-pink-200 text-sm text-green-700 font-extrabold rounded "
+                    onClick={() => copyTodo(todo)}
+                  >
+                    私も！
+                  </button>
                 </div>
               </Card>
             ))

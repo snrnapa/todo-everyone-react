@@ -1,7 +1,6 @@
-import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { Button, Card, IconButton, TextField } from '@mui/material';
+import { Button, IconButton, TextField } from '@mui/material';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -68,7 +67,7 @@ const Todo = () => {
 
   return (
     <>
-      <div className="p-3 space-y-2">
+      <div className="p-1 space-y-2">
         {!postFlg ? (
           <IconButton onClick={dispPost}>
             <ExpandMoreIcon fontSize="large" />
