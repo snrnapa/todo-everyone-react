@@ -96,6 +96,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
     await deleteDoc(doc(db, 'todo', todo.doc_id))
       .then(() => {
         console.log('Successfully deleted!!!' + todo);
+        setTodos(todos.filter((elemment) => elemment.doc_id !== todo.doc_id));
       })
       .catch((error) => {
         console.error('Error deleteing:', error);
