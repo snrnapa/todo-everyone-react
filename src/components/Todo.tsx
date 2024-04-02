@@ -8,6 +8,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import useCurrentUser from './hooks/UseCurrentUser';
 import { db } from '../libs/firebase';
 import TodoList from './TodoList';
+import Swal from 'sweetalert2';
 
 type PostInput = {
   context: string;
@@ -19,6 +20,7 @@ type PostInput = {
 
 const Todo = () => {
   const [postFlg, setPostFlg] = useState<Boolean>(false);
+  const [reloadCount, setReloadCount] = useState<Number>(0);
   const currentUser = useCurrentUser();
   const {
     register,
@@ -31,8 +33,6 @@ const Todo = () => {
     console.log('post内容を登録しようとしています。');
     console.log(data);
 
-    // console.log(currentUser?.uid);
-
     try {
       await addDoc(collection(db, 'todo'), {
         user_id: currentUser?.uid,
@@ -44,12 +44,22 @@ const Todo = () => {
         updated_at: Timestamp.now(),
       });
     } catch (error) {
-      alert(
-        'Todoの登録の際にエラーが発生しました。管理者にお知らせください' +
-          error,
-      );
+      Swal.fire({
+        title: 'Todoの登録の際にエラーが発生しました。管理者にお知らせください',
+        text: '${error}',
+        icon: 'error',
+        confirmButtonText: 'OK',
+        timer: 7000,
+      });
     }
-    alert('todo登録完了');
+    Swal.fire({
+      title: 'Todo登録完了',
+      text: '',
+      icon: 'success',
+      confirmButtonText: 'OK',
+      timer: 7000,
+    });
+    setReloadCount(reloadCount + 1);
   };
 
   const dispPost = () => {
@@ -166,7 +176,7 @@ const Todo = () => {
         )}
       </div>
 
-      <TodoList user_id={currentUser?.uid || ''} />
+      <TodoList user_id={currentUser?.uid || ''} reloadCount={reloadCount} />
     </>
   );
 };

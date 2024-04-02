@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { db } from '../libs/firebase';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { convertTimestampToString } from '../model/Utils';
+import Swal from 'sweetalert2';
 
 type Todo = {
   doc_id: string;
@@ -27,9 +28,10 @@ type Todo = {
 
 type ComponentsProps = {
   user_id: string;
+  reloadCount: number;
 };
 
-const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
+const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editTodoId, setEditTodoId] = useState<string>(null);
@@ -56,7 +58,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
     };
 
     fetchTodos();
-  }, []);
+  }, [reloadCount]);
 
   const copyTodo = async (todo: Todo) => {
     console.log('copyボタンが押されました');
@@ -99,7 +101,13 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
         setTodos(todos.filter((elemment) => elemment.doc_id !== todo.doc_id));
       })
       .catch((error) => {
-        console.error('Error deleteing:', error);
+        Swal.fire({
+          title: 'delete中にエラーが発生しました',
+          text: error,
+          icon: 'error',
+          confirmButtonText: 'OK',
+          timer: 7000,
+        });
       });
   };
 
