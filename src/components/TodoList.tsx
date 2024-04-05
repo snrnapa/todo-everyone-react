@@ -144,10 +144,30 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                 className="flex flex-col justify-center p-1 m-1 shadow-2xl space-y-1"
               >
                 {editMode && todo.doc_id === editedTodo!.doc_id ? (
-                  <div className="flex justify-center space-x-3">
-                    <SaveAltIcon onClick={() => saveTodo(todo)}>
-                      <DeleteForeverIcon fontSize="small" />
-                    </SaveAltIcon>
+                  <div className="flex flex-col p-1 space-y-1 bg-gray-200">
+                    <p className="text-sm">題名</p>
+                    <textarea
+                      className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
+                      defaultValue={editedTodo!.context}
+                    />
+                    <p className="text-sm">詳細</p>
+                    <textarea
+                      className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
+                      defaultValue={editedTodo!.detail}
+                    />
+                    <p className="text-sm">場所</p>
+                    <textarea
+                      className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
+                      defaultValue={editedTodo!.place}
+                    />
+                    <p className="text-sm">サイトURL</p>
+                    <textarea
+                      className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
+                      defaultValue={editedTodo!.placeUrl}
+                    />
+                    <div className="flex justify-center space-x-3">
+                      <SaveAltIcon onClick={() => saveTodo(todo)}></SaveAltIcon>
+                    </div>
                   </div>
                 ) : (
                   <div className="flex flex-col space-y-1">
