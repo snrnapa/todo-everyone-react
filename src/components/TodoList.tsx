@@ -2,8 +2,7 @@ import LanguageIcon from '@mui/icons-material/Language';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import EditNoteIcon from '@mui/icons-material/EditNote';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { Button, Card, Divider, IconButton, TextField } from '@mui/material';
+import { Card, IconButton, TextField } from '@mui/material';
 import {
   Timestamp,
   addDoc,
@@ -36,8 +35,7 @@ type ComponentsProps = {
 const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [editTodoId, setEditTodoId] = useState<string>(null);
-  const [editedTodo, setEditedTodo] = useState<string>();
+  const [editedTodo, setEditedTodo] = useState<Todo>();
   useEffect(() => {
     const fetchTodos = async () => {
       try {
@@ -123,7 +121,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
     console.log('editボタンが押されました');
 
     setEditMode(true);
-    setEditTodoId(todo.doc_id);
+    setEditedTodo(todo);
   };
 
   const saveTodo = (todo: Todo) => {
@@ -145,13 +143,8 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                 key={todo.doc_id}
                 className="flex flex-col justify-center p-1 m-1 shadow-2xl space-y-1"
               >
-                {editMode && todo.doc_id === editTodoId ? (
-                  <TextField
-                    value={editedTodo}
-                    onChange={(e) => setEditedTodo(e.target.value)}
-                    variant="outlined"
-                    fullWidth
-                  />
+                {editMode && todo.doc_id === editedTodo!.doc_id ? (
+                  <div></div>
                 ) : (
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm">{todo.context}</p>
@@ -175,7 +168,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                     )}
                   </div>
                 )}
-                {editMode && todo.doc_id === editTodoId ? (
+                {editMode && todo.doc_id === editedTodo!.doc_id ? (
                   <div className="flex justify-center space-x-3">
                     <SaveAltIcon onClick={() => saveTodo(todo)}>
                       <DeleteForeverIcon fontSize="small" />
