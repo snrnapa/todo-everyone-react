@@ -91,7 +91,7 @@ const Todo = () => {
                   {...register('context', {
                     required: '内容を入力してください',
                     maxLength: {
-                      value: 50,
+                      value: 30,
                       message: '３０文字以内で簡潔に書きましょう',
                     },
                   })}
@@ -111,8 +111,8 @@ const Todo = () => {
                   {...register('detail', {
                     required: '内容を入力してください',
                     maxLength: {
-                      value: 30,
-                      message: '３０文字以内で簡潔に書きましょう',
+                      value: 200,
+                      message: '200文字以内で簡潔に書きましょう',
                     },
                   })}
                   id="filled-basic"
@@ -131,8 +131,8 @@ const Todo = () => {
                   type="text"
                   {...register('place', {
                     maxLength: {
-                      value: 50,
-                      message: '50文字以内で入力してください。',
+                      value: 100,
+                      message: '100文字以内で入力してください。',
                     },
                   })}
                   id="filled-basic"
@@ -141,6 +141,11 @@ const Todo = () => {
                   className="bg-white"
                   multiline
                 ></TextField>
+                {errors.place?.message && (
+                  <p className="text-red-800 text-sm">
+                    {errors.place?.message}
+                  </p>
+                )}
 
                 {/* 場所URL */}
                 <TextField

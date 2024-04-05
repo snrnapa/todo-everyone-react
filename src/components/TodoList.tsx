@@ -10,12 +10,14 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  updateDoc,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../libs/firebase';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { convertTimestampToString } from '../model/Utils';
 import Swal from 'sweetalert2';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 type Todo = {
   doc_id: string;
@@ -27,6 +29,14 @@ type Todo = {
   updated_at: Timestamp;
 };
 
+type PostInput = {
+  context: string;
+  detail: string;
+  place: string;
+  placeUrl: string;
+  timeLimit: Date;
+};
+
 type ComponentsProps = {
   user_id: string;
   reloadCount: number;
@@ -36,6 +46,45 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editedTodo, setEditedTodo] = useState<Todo>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<PostInput>();
+
+  const onSubmit: SubmitHandler<PostInput> = async (data) => {
+    console.log('todoの編集内容を更新します');
+    console.log(data);
+
+    try {
+      const todoRef = doc(db, 'todo', editedTodo!.doc_id);
+      await updateDoc(todoRef, {
+        context: data.context,
+        detail: data.detail,
+        place: data.place,
+        placeUrl: data.placeUrl,
+        // timeLimit: editedTodo!.timeLimit,
+        updated_at: Timestamp.now(),
+      });
+    } catch (error) {
+      Swal.fire({
+        title: 'Todoの更新の際にエラーが発生しました。管理者にお知らせください',
+        text: '${error}',
+        icon: 'error',
+        confirmButtonText: 'OK',
+        timer: 7000,
+      });
+    }
+    Swal.fire({
+      title: 'Todo更新完了',
+      text: '',
+      icon: 'success',
+      confirmButtonText: 'OK',
+      timer: 7000,
+    });
+    setEditMode(false);
+  };
+
   useEffect(() => {
     const fetchTodos = async () => {
       try {
@@ -144,31 +193,75 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                 className="flex flex-col justify-center p-1 m-1 shadow-2xl space-y-1"
               >
                 {editMode && todo.doc_id === editedTodo!.doc_id ? (
-                  <div className="flex flex-col p-1 space-y-1 bg-gray-200">
-                    <p className="text-sm">題名</p>
-                    <textarea
-                      className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
-                      defaultValue={editedTodo!.context}
-                    />
-                    <p className="text-sm">詳細</p>
-                    <textarea
-                      className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
-                      defaultValue={editedTodo!.detail}
-                    />
-                    <p className="text-sm">場所</p>
-                    <textarea
-                      className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
-                      defaultValue={editedTodo!.place}
-                    />
-                    <p className="text-sm">サイトURL</p>
-                    <textarea
-                      className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
-                      defaultValue={editedTodo!.placeUrl}
-                    />
-                    <div className="flex justify-center space-x-3">
-                      <SaveAltIcon onClick={() => saveTodo(todo)}></SaveAltIcon>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="flex flex-col p-1 space-y-1 bg-gray-200">
+                      <p className="text-sm">題名</p>
+                      <textarea
+                        className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
+                        {...register('context', {
+                          required: '内容を入力してください',
+                          maxLength: {
+                            value: 30,
+                            message: '３０文字以内で簡潔に書きましょう',
+                          },
+                        })}
+                        defaultValue={editedTodo!.context}
+                      />
+                      {errors.context?.message && (
+                        <p className="text-red-800 text-sm">
+                          {errors.context?.message}
+                        </p>
+                      )}
+
+                      <p className="text-sm">詳細</p>
+                      <textarea
+                        className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
+                        {...register('detail', {
+                          required: '内容を入力してください',
+                          maxLength: {
+                            value: 200,
+                            message: '200文字以内で簡潔に書きましょう',
+                          },
+                        })}
+                        defaultValue={editedTodo!.detail}
+                      />
+                      {errors.detail?.message && (
+                        <p className="text-red-800 text-sm">
+                          {errors.context?.message}
+                        </p>
+                      )}
+
+                      <p className="text-sm">場所</p>
+                      <textarea
+                        className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
+                        {...register('place', {
+                          maxLength: {
+                            value: 100,
+                            message: '100文字以内で入力してください。',
+                          },
+                        })}
+                        defaultValue={editedTodo!.place}
+                      />
+                      {errors.place?.message && (
+                        <p className="text-red-800 text-sm">
+                          {errors.place?.message}
+                        </p>
+                      )}
+
+                      <p className="text-sm">サイトURL</p>
+                      <textarea
+                        className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
+                        {...register('placeUrl', {})}
+                        defaultValue={editedTodo!.placeUrl}
+                      />
                     </div>
-                  </div>
+
+                    <div className="flex justify-center space-x-3">
+                      <button type="submit">
+                        <SaveAltIcon />
+                      </button>
+                    </div>
+                  </form>
                 ) : (
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm">{todo.context}</p>
