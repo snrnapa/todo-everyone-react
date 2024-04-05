@@ -144,7 +144,11 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                 className="flex flex-col justify-center p-1 m-1 shadow-2xl space-y-1"
               >
                 {editMode && todo.doc_id === editedTodo!.doc_id ? (
-                  <div></div>
+                  <div className="flex justify-center space-x-3">
+                    <SaveAltIcon onClick={() => saveTodo(todo)}>
+                      <DeleteForeverIcon fontSize="small" />
+                    </SaveAltIcon>
+                  </div>
                 ) : (
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm">{todo.context}</p>
@@ -166,22 +170,14 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                     ) : (
                       <div className="flex"></div>
                     )}
-                  </div>
-                )}
-                {editMode && todo.doc_id === editedTodo!.doc_id ? (
-                  <div className="flex justify-center space-x-3">
-                    <SaveAltIcon onClick={() => saveTodo(todo)}>
-                      <DeleteForeverIcon fontSize="small" />
-                    </SaveAltIcon>
-                  </div>
-                ) : (
-                  <div className="flex justify-start space-x-3">
-                    <IconButton onClick={() => deleteTodo(todo)}>
-                      <DeleteForeverIcon fontSize="small" />
-                    </IconButton>
-                    <IconButton onClick={() => handleEdit(todo)}>
-                      <EditNoteIcon fontSize="small" />
-                    </IconButton>
+                    <div className="flex justify-start space-x-3">
+                      <IconButton onClick={() => deleteTodo(todo)}>
+                        <DeleteForeverIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton onClick={() => handleEdit(todo)}>
+                        <EditNoteIcon fontSize="small" />
+                      </IconButton>
+                    </div>
                   </div>
                 )}
               </Card>
