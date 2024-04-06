@@ -20,10 +20,12 @@ type PostInput = {
 const Todo = () => {
   const [postFlg, setPostFlg] = useState<Boolean>(false);
   const [reloadCount, setReloadCount] = useState<number>(0);
+
   const currentUser = useCurrentUser();
   const {
     register,
     handleSubmit,
+    reset,
     // watch,
     formState: { errors },
   } = useForm<PostInput>();
@@ -51,6 +53,9 @@ const Todo = () => {
         timer: 7000,
       });
     }
+    reset();
+    setPostFlg(!postFlg);
+    setReloadCount(reloadCount + 1);
     Swal.fire({
       title: 'Todo登録完了',
       text: '',
@@ -58,23 +63,25 @@ const Todo = () => {
       confirmButtonText: 'OK',
       timer: 7000,
     });
-
-    setReloadCount(reloadCount + 1);
-  };
-
-  const dispPost = () => {
-    setPostFlg(!postFlg);
   };
 
   return (
     <>
       <div className="p-1 space-y-2">
         {!postFlg ? (
-          <IconButton onClick={dispPost}>
+          <IconButton
+            onClick={() => {
+              setPostFlg(!postFlg);
+            }}
+          >
             <ExpandMoreIcon fontSize="large" />
           </IconButton>
         ) : (
-          <IconButton onClick={dispPost}>
+          <IconButton
+            onClick={() => {
+              setPostFlg(!postFlg);
+            }}
+          >
             <ExpandLessIcon fontSize="large" />
           </IconButton>
         )}
