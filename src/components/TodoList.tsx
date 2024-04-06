@@ -2,6 +2,7 @@ import LanguageIcon from '@mui/icons-material/Language';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { Card, IconButton, TextField } from '@mui/material';
 import {
   Timestamp,
@@ -52,6 +53,33 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
     formState: { errors },
   } = useForm<PostInput>();
 
+  const fetchTodos = async () => {
+    try {
+      const todosCollection = collection(db, 'todo');
+      const todosSnapshot = await getDocs(todosCollection);
+      const todosData = todosSnapshot.docs.map((doc) => ({
+        doc_id: doc.id,
+        user_id: doc.data().user_id,
+        context: doc.data().context,
+        detail: doc.data().detail,
+        place: doc.data().place,
+        placeUrl: doc.data().placeUrl,
+        updated_at: doc.data().updated_at,
+      }));
+
+      todosData.map((doc) => {
+        console.log(doc.doc_id);
+      }),
+        setTodos(todosData);
+    } catch (error) {
+      console.error('Error fetching todos:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTodos();
+  }, [reloadCount]);
+
   const onSubmit: SubmitHandler<PostInput> = async (data) => {
     console.log('todoの編集内容を更新します');
     console.log(data);
@@ -66,6 +94,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
         // timeLimit: editedTodo!.timeLimit,
         updated_at: Timestamp.now(),
       });
+      fetchTodos();
     } catch (error) {
       Swal.fire({
         title: 'Todoの更新の際にエラーが発生しました。管理者にお知らせください',
@@ -82,35 +111,10 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
       confirmButtonText: 'OK',
       timer: 7000,
     });
+    // Todoのリストを最新に更新する
+
     setEditMode(false);
   };
-
-  useEffect(() => {
-    const fetchTodos = async () => {
-      try {
-        const todosCollection = collection(db, 'todo');
-        const todosSnapshot = await getDocs(todosCollection);
-        const todosData = todosSnapshot.docs.map((doc) => ({
-          doc_id: doc.id,
-          user_id: doc.data().user_id,
-          context: doc.data().context,
-          detail: doc.data().detail,
-          place: doc.data().place,
-          placeUrl: doc.data().placeUrl,
-          updated_at: doc.data().updated_at,
-        }));
-
-        todosData.map((doc) => {
-          console.log(doc.doc_id);
-        }),
-          setTodos(todosData);
-      } catch (error) {
-        console.error('Error fetching todos:', error);
-      }
-    };
-
-    fetchTodos();
-  }, [reloadCount]);
 
   const copyTodo = async (todo: Todo) => {
     console.log('copyボタンが押されました');
@@ -164,19 +168,6 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
           timer: 7000,
         });
       });
-  };
-
-  const handleEdit = (todo: Todo) => {
-    console.log('editボタンが押されました');
-
-    setEditMode(true);
-    setEditedTodo(todo);
-  };
-
-  const saveTodo = (todo: Todo) => {
-    console.log('saveボタンが押下されました');
-    console.log(todo);
-    setEditMode(false);
   };
 
   return (
@@ -257,9 +248,12 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                     </div>
 
                     <div className="flex justify-center space-x-3">
-                      <button type="submit">
+                      <IconButton onClick={() => setEditMode(false)}>
+                        <CancelIcon />
+                      </IconButton>
+                      <IconButton type="submit">
                         <SaveAltIcon />
-                      </button>
+                      </IconButton>
                     </div>
                   </form>
                 ) : (
@@ -287,7 +281,12 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                       <IconButton onClick={() => deleteTodo(todo)}>
                         <DeleteForeverIcon fontSize="small" />
                       </IconButton>
-                      <IconButton onClick={() => handleEdit(todo)}>
+                      <IconButton
+                        onClick={() => {
+                          setEditMode(true);
+                          setEditedTodo(todo);
+                        }}
+                      >
                         <EditNoteIcon fontSize="small" />
                       </IconButton>
                     </div>
