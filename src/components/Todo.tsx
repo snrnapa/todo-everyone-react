@@ -19,7 +19,7 @@ type PostInput = {
 
 const Todo = () => {
   const [postFlg, setPostFlg] = useState<Boolean>(false);
-  const [reloadCount, setReloadCount] = useState<Number>(0);
+  const [reloadCount, setReloadCount] = useState<number>(0);
   const currentUser = useCurrentUser();
   const {
     register,
@@ -58,6 +58,7 @@ const Todo = () => {
       confirmButtonText: 'OK',
       timer: 7000,
     });
+
     setReloadCount(reloadCount + 1);
   };
 

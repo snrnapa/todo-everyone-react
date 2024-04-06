@@ -3,7 +3,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { Card, IconButton, TextField } from '@mui/material';
+import { Card, IconButton } from '@mui/material';
 import {
   Timestamp,
   addDoc,
@@ -16,7 +16,7 @@ import {
 import { useEffect, useState } from 'react';
 import { db } from '../libs/firebase';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { convertTimestampToString } from '../model/Utils';
+
 import Swal from 'sweetalert2';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -140,7 +140,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
     }
 
     const newTodo: Todo = {
-      doc_id: null,
+      doc_id: '',
       user_id: user_id,
       context: todo.context,
       place: todo.place,
