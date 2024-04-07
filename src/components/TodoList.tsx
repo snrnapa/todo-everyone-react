@@ -173,7 +173,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
   return (
     <div className="flex justify-center space-x-2 p-1">
       <div className="bg-blue-400 border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
-        <p className="text-xl text-center">あなたのTodo</p>
+        <p className="text-xl text-center font-Darumadrop" >あなたのよてい</p>
 
         {todos.length > 0 ? (
           todos
@@ -296,12 +296,12 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
             ))
         ) : (
           <div>
-            <p>todoがありません</p>
+            <p>やることがありません🥺🥺</p>
           </div>
         )}
       </div>
       <div className="bg-orange-200 border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
-        <p className="text-xl text-center ">みんなのTodo</p>
+        <p className="text-xl text-center font-Darumadrop">みんなのよてい</p>
         {todos.length > 0 ? (
           todos
             .filter((todo) => todo.user_id !== user_id)

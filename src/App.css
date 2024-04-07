@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Kosugi&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Darumadrop+One&display=swap');
 
 body {
   font-family: 'Kosugi';
+}
+
+.font-Darumadrop {
+  font-family: 'Darumadrop One', sans-serif;
 }
