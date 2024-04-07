@@ -1,3 +1,4 @@
+import {Trash ,Pen ,XCircle,Check , Globe , MapTrifold  } from "phosphor-react";
 import LanguageIcon from '@mui/icons-material/Language';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
@@ -15,7 +16,6 @@ import {
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../libs/firebase';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import Swal from 'sweetalert2';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -249,10 +249,10 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
 
                     <div className="flex justify-center space-x-3">
                       <IconButton onClick={() => setEditMode(false)}>
-                        <CancelIcon />
+                      <XCircle size={28} color="#120fd2" weight="thin" />
                       </IconButton>
                       <IconButton type="submit">
-                        <SaveAltIcon />
+                      <Check size={28} color="#120fd2" weight="thin" />
                       </IconButton>
                     </div>
                   </form>
@@ -261,12 +261,12 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                     <p className="text-sm">{todo.context}</p>
                     <p className="text-gray-400 text-sm">{todo.detail}</p>
                     <div className="flex">
-                      <LocationOnIcon fontSize="small" />
+                    <MapTrifold size={20} color="#120fd2" weight="thin" />
                       <p className="text-xs ">{todo.place}</p>
                     </div>
                     {todo.placeUrl ? (
                       <div className="flex">
-                        <LanguageIcon fontSize="small" />
+                        <Globe size={20} color="#120fd2" weight="thin" />
                         <a
                           href={todo.placeUrl}
                           className="text-xs text-gray-400"
@@ -279,7 +279,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                     )}
                     <div className="flex justify-start space-x-3">
                       <IconButton onClick={() => deleteTodo(todo)}>
-                        <DeleteForeverIcon fontSize="small" />
+                      <Trash size={28} color="#120fd2" weight="thin" />
                       </IconButton>
                       <IconButton
                         onClick={() => {
@@ -287,7 +287,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                           setEditedTodo(todo);
                         }}
                       >
-                        <EditNoteIcon fontSize="small" />
+                   <Pen size={28} color="#120fd2" weight="thin" />
                       </IconButton>
                     </div>
                   </div>
@@ -315,12 +315,12 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                   <p className="text-sm">{todo.context}</p>
                   <p className="text-gray-400 text-sm">{todo.detail}</p>
                   <div className="flex">
-                    <LocationOnIcon fontSize="small" />
+                  <MapTrifold size={20} color="#120fd2" weight="thin" />
                     <p className="text-xs ">{todo.place}</p>
                   </div>
                   {todo.placeUrl ? (
                     <div className="flex">
-                      <LanguageIcon fontSize="small" />
+                      <Globe size={20} color="#120fd2" weight="thin" />
                       <a href={todo.placeUrl} className="text-xs text-gray-400">
                         サイトURL
                       </a>
