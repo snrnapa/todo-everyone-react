@@ -1,5 +1,7 @@
 import './App.css';
-import { Button, Card, Divider } from '@mui/material';
+import { Button,  Divider } from '@mui/material';
+
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { useEffect, useState } from 'react';
 import Header from './components/Header';
@@ -47,28 +49,30 @@ function App() {
   }, [currentUser]); // currentUserが変更されたときに再実行
 
   return (
-    <div className="bg-gray-200 ">
+
+    <div className="h-screen">
+
       <Header />
       <div className="h-20"></div>
 
-      <div className="flex flex-col ">
+      <div className="flex flex-col">
         {dispUser != null ? (
           <div>
-            <Card className="p-3 space-y-2">
+            <div className="p-3 space-y-2 max-w-md mx-auto  rounded-xl shadow-md overflow-hidden  ">
               <p>下記のユーザーでログインしています</p>
               <div className="flex space-x-3">
                 <div>
-                  <p className="text-sm">ID</p>
-                  <p className="text-sm">あどれす</p>
-                  <p className="text-sm">アカウント作成日</p>
+                  <p className="text-sm text-gray-800">ID</p>
+                  <p className="text-sm text-gray-800">あどれす</p>
+                  <p className="text-sm text-gray-800">アカウント作成日</p>
                 </div>
                 <div className="">
-                  <p className="text-sm">{dispUser.user_id}</p>
-                  <p className="text-sm">{currentUser?.email}</p>
-                  <p className="text-sm">{dispUser.updated_at}</p>
+                  <p className="text-sm text-gray-800">{dispUser.user_id}</p>
+                  <p className="text-sm text-gray-800">{currentUser?.email}</p>
+                  <p className="text-sm text-gray-800">{dispUser.updated_at}</p>
                 </div>
               </div>
-            </Card>
+            </div>
             {/* <PlaceByGoogle /> */}
             <Todo />
           </div>

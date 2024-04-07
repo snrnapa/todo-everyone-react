@@ -1,8 +1,10 @@
 import { IconButton } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { signOut } from 'firebase/auth';
 import { auth } from '../libs/firebase';
 import Swal from 'sweetalert2';
+import { Link } from 'react-router-dom';
+import {Envelope ,SignOut } from "phosphor-react";
+
 
 const Header = () => {
   const logout = async () => {
@@ -16,11 +18,16 @@ const Header = () => {
     });
     window.location.reload();
   };
+
+
   return (
-    <header className="fixed top-0 w-full h-12  shadow bg-lime-700 flex items-center justify-center">
-      <div className="font-zenKurenaido text-2xl">きょう、なにしますか？</div>
+    <header className="fixed top-0 w-full h-12 bg-white shadow-md flex items-center justify-center px-4">
+      <div className="font-Darumadrop text-2xl">きょう、なにしますか??</div>
+      <Link to="/contact">
+      <Envelope size={32} color="#120fd2" weight="thin" />
+        </Link>
       <IconButton onClick={logout}>
-        <LogoutIcon fontSize="medium" />
+      <SignOut size={32} color="#120fd2" weight="thin" />
       </IconButton>
     </header>
   );
