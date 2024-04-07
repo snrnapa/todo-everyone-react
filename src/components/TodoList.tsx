@@ -270,6 +270,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                         <a
                           href={todo.placeUrl}
                           className="text-xs text-gray-400"
+                          target="_blank"
                         >
                           サイトURL
                         </a>
@@ -321,7 +322,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                   {todo.placeUrl ? (
                     <div className="flex">
                       <Globe size={20} color="#120fd2" weight="thin" />
-                      <a href={todo.placeUrl} className="text-xs text-gray-400">
+                      <a href={todo.placeUrl} className="text-xs text-gray-400"   target="_blank">
                         サイトURL
                       </a>
                     </div>

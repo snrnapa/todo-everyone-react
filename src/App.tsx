@@ -59,12 +59,12 @@ function App() {
               <div className="flex space-x-3">
                 <div>
                   <p className="text-sm">ID</p>
-                  <p className="text-sm">なまえ</p>
+                  <p className="text-sm">あどれす</p>
                   <p className="text-sm">アカウント作成日</p>
                 </div>
                 <div className="">
                   <p className="text-sm">{dispUser.user_id}</p>
-                  <p className="text-sm">{dispUser.user_name}</p>
+                  <p className="text-sm">{currentUser?.email}</p>
                   <p className="text-sm">{dispUser.updated_at}</p>
                 </div>
               </div>
