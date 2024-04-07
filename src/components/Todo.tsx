@@ -1,5 +1,4 @@
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import {NotePencil, ArrowsInLineVertical  } from "phosphor-react";
 import { Button, IconButton, TextField } from '@mui/material';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { useState } from 'react';
@@ -68,23 +67,31 @@ const Todo = () => {
   return (
     <>
       <div className="p-1 space-y-2">
+        
         {!postFlg ? (
+          <div className="flex items-center justify-center">
           <IconButton
             onClick={() => {
               setPostFlg(!postFlg);
             }}
           >
-            <ExpandMoreIcon fontSize="large" />
+            <NotePencil size={52} color="#120fd2" weight="thin" />
           </IconButton>
+          <p>やることを書く</p>
+          </div>
         ) : (
+          <div className="flex items-center justify-center">
           <IconButton
             onClick={() => {
               setPostFlg(!postFlg);
             }}
           >
-            <ExpandLessIcon fontSize="large" />
+            <ArrowsInLineVertical size={52} color="#120fd2" weight="thin" />
           </IconButton>
+          <p>とじる</p>
+          </div>
         )}
+        
 
         {postFlg ? (
           <div className="space-y-2">
