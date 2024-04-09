@@ -3,8 +3,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../libs/firebase';
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
-import {Envelope ,SignOut } from "phosphor-react";
-
+import { Envelope, SignOut, HouseLine } from 'phosphor-react';
 
 const Header = () => {
   const logout = async () => {
@@ -19,16 +18,31 @@ const Header = () => {
     window.location.reload();
   };
 
-
   return (
-    <header className="fixed top-0 w-full h-12 bg-white shadow-md flex items-center justify-center px-4">
-      <div className="font-Darumadrop text-2xl">きょう、なにしますか??</div>
-      <Link to="/contact">
-      <Envelope size={32} color="#120fd2" weight="thin" />
-        </Link>
-      <IconButton onClick={logout}>
-      <SignOut size={32} color="#120fd2" weight="thin" />
-      </IconButton>
+    <header className="fixed top-0 w-full h-12 bg-white shadow-md flex items-center justify-center  px-4">
+      <div className="font-Darumadrop text-2xl flex items-center space-x-9">
+        <div className="flex ">きょう、なにしますか??</div>
+        <div className="flex items-center space-x-4">
+          <div className="flex flex-col items-center">
+            <Link to="/">
+              <HouseLine size={26} color="#120fd2" weight="thin" />
+            </Link>
+            <p className="text-xs">ほーむ</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <Link to="/contact">
+              <Envelope size={26} color="#120fd2" weight="thin" />
+            </Link>
+            <p className="text-xs">といあわせ</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <IconButton onClick={logout} size="small" className="h-7">
+              <SignOut size={26} color="#120fd2" weight="thin" />
+            </IconButton>
+            <p className="text-xs">ろぐあうと</p>
+          </div>
+        </div>
+      </div>
     </header>
   );
 };

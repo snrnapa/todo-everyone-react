@@ -41,7 +41,7 @@ const AuthenticatedContent = () => {
 
   return (
     <div className="h-screen">
-      <div className="h-20"></div>
+      <div className="h-10"></div>
       <div className="flex flex-col">
         {dispUser != null ? (
           <div>
