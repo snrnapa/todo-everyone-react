@@ -1,9 +1,4 @@
-import {Trash ,Pen ,XCircle,Check , Globe , MapTrifold  } from "phosphor-react";
-import LanguageIcon from '@mui/icons-material/Language';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import CancelIcon from '@mui/icons-material/Cancel';
+import { Trash, Pen, XCircle, Check, Globe, MapTrifold } from 'phosphor-react';
 import { Card, IconButton } from '@mui/material';
 import {
   Timestamp,
@@ -173,7 +168,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
   return (
     <div className="flex justify-center space-x-2 p-1">
       <div className="bg-blue-400 border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
-        <p className="text-xl text-center font-Darumadrop" >あなたのよてい</p>
+        <p className="text-xl text-center font-Darumadrop">あなたのよてい</p>
 
         {todos.length > 0 ? (
           todos
@@ -249,10 +244,10 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
 
                     <div className="flex justify-center space-x-3">
                       <IconButton onClick={() => setEditMode(false)}>
-                      <XCircle size={28} color="#120fd2" weight="thin" />
+                        <XCircle size={28} color="#120fd2" weight="thin" />
                       </IconButton>
                       <IconButton type="submit">
-                      <Check size={28} color="#120fd2" weight="thin" />
+                        <Check size={28} color="#120fd2" weight="thin" />
                       </IconButton>
                     </div>
                   </form>
@@ -261,7 +256,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                     <p className="text-sm">{todo.context}</p>
                     <p className="text-gray-400 text-sm">{todo.detail}</p>
                     <div className="flex">
-                    <MapTrifold size={20} color="#120fd2" weight="thin" />
+                      <MapTrifold size={20} color="#120fd2" weight="thin" />
                       <p className="text-xs ">{todo.place}</p>
                     </div>
                     {todo.placeUrl ? (
@@ -280,7 +275,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                     )}
                     <div className="flex justify-start space-x-3">
                       <IconButton onClick={() => deleteTodo(todo)}>
-                      <Trash size={28} color="#120fd2" weight="thin" />
+                        <Trash size={28} color="#120fd2" weight="thin" />
                       </IconButton>
                       <IconButton
                         onClick={() => {
@@ -288,7 +283,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                           setEditedTodo(todo);
                         }}
                       >
-                   <Pen size={28} color="#120fd2" weight="thin" />
+                        <Pen size={28} color="#120fd2" weight="thin" />
                       </IconButton>
                     </div>
                   </div>
@@ -316,13 +311,17 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                   <p className="text-sm">{todo.context}</p>
                   <p className="text-gray-400 text-sm">{todo.detail}</p>
                   <div className="flex">
-                  <MapTrifold size={20} color="#120fd2" weight="thin" />
+                    <MapTrifold size={20} color="#120fd2" weight="thin" />
                     <p className="text-xs ">{todo.place}</p>
                   </div>
                   {todo.placeUrl ? (
                     <div className="flex">
                       <Globe size={20} color="#120fd2" weight="thin" />
-                      <a href={todo.placeUrl} className="text-xs text-gray-400"   target="_blank">
+                      <a
+                        href={todo.placeUrl}
+                        className="text-xs text-gray-400"
+                        target="_blank"
+                      >
                         サイトURL
                       </a>
                     </div>

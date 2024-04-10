@@ -1,5 +1,5 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { NotePencil, Envelope, PaperPlane } from 'phosphor-react';
+import { NotePencil, PaperPlane } from 'phosphor-react';
 import { IconButton } from '@mui/material';
 import useCurrentUser from '../components/hooks/UseCurrentUser';
 import { addDoc, collection } from 'firebase/firestore';
@@ -11,12 +11,7 @@ type ContactInput = {
 };
 
 const Contact = () => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<ContactInput>();
+  const { register, handleSubmit } = useForm<ContactInput>();
   const currentUser = useCurrentUser();
 
   const onSubmit: SubmitHandler<ContactInput> = async (data) => {
