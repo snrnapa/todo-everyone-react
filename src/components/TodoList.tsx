@@ -1,5 +1,13 @@
-import { Trash, Pen, XCircle, Check, Globe, MapTrifold } from 'phosphor-react';
-import { Card, IconButton } from '@mui/material';
+import {
+  Trash,
+  Pen,
+  XCircle,
+  Check,
+  Globe,
+  MapTrifold,
+  Timer,
+} from 'phosphor-react';
+import { Card, IconButton, TextField } from '@mui/material';
 import {
   Timestamp,
   addDoc,
@@ -22,6 +30,7 @@ type Todo = {
   place: string;
   placeUrl: string;
   detail: string;
+  timeLimit: string;
   updated_at: Timestamp;
 };
 
@@ -60,6 +69,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
         detail: doc.data().detail,
         place: doc.data().place,
         placeUrl: doc.data().placeUrl,
+        timeLimit: doc.data().timeLimit,
         updated_at: doc.data().updated_at,
       }));
 
@@ -101,7 +111,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
       });
     }
     Swal.fire({
-      title: 'Todo更新完了',
+      title: 'やることの更新が完了しました',
       text: '',
       icon: 'success',
       confirmButtonText: 'OK',
@@ -142,6 +152,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
       place: todo.place,
       placeUrl: todo.placeUrl,
       detail: todo.detail,
+      timeLimit: todo.timeLimit,
       updated_at: nowTime,
     };
     setTodos((prevTodos) => [...prevTodos, newTodo]);
@@ -199,7 +210,6 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                           {errors.context?.message}
                         </p>
                       )}
-
                       <p className="text-sm">詳細</p>
                       <textarea
                         className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
@@ -217,7 +227,6 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                           {errors.context?.message}
                         </p>
                       )}
-
                       <p className="text-sm">場所</p>
                       <textarea
                         className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
@@ -234,13 +243,26 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                           {errors.place?.message}
                         </p>
                       )}
-
                       <p className="text-sm">サイトURL</p>
                       <textarea
                         className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
                         {...register('placeUrl', {})}
                         defaultValue={editedTodo!.placeUrl}
                       />
+                      {/* 締切日 */}
+                      <TextField
+                        type="date"
+                        {...register('timeLimit', {})}
+                        id="filled-basic"
+                        variant="filled"
+                        className="bg-white"
+                        defaultValue={editedTodo?.timeLimit}
+                      ></TextField>
+                      {errors.placeUrl?.message && (
+                        <p className="text-red-800 text-sm">
+                          {errors.timeLimit?.message}
+                        </p>
+                      )}
                     </div>
 
                     <div className="flex justify-center space-x-3">
@@ -275,6 +297,14 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                         >
                           サイトURL
                         </a>
+                      </div>
+                    ) : (
+                      <div className="flex"></div>
+                    )}
+                    {todo.timeLimit ? (
+                      <div className="flex">
+                        <Timer size={20} color="#120fd2" weight="thin" />
+                        <p className="text-sm">{todo.timeLimit}</p>
                       </div>
                     ) : (
                       <div className="flex"></div>
@@ -330,6 +360,15 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                       >
                         サイトURL
                       </a>
+                    </div>
+                  ) : (
+                    <div className="flex"></div>
+                  )}
+
+                  {todo.timeLimit ? (
+                    <div className="flex">
+                      <Timer size={20} color="#120fd2" weight="thin" />
+                      <p className="text-sm">{todo.timeLimit}</p>
                     </div>
                   ) : (
                     <div className="flex"></div>
