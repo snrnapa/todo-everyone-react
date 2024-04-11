@@ -21,7 +21,7 @@ const SignIn = () => {
   } = useForm<LoginInputs>();
 
   // submitが押下されたタイミングで行う動作
-  const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
+  const onSubmit: SubmitHandler<LoginInputs> = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       await swal.fire({
@@ -45,7 +45,6 @@ const SignIn = () => {
     }
 
     window.location.reload();
-    console.log(data.email);
   };
 
   // watch

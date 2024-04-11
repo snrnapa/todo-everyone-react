@@ -15,11 +15,6 @@ const Contact = () => {
   const currentUser = useCurrentUser();
 
   const onSubmit: SubmitHandler<ContactInput> = async (data) => {
-    console.log('お問い合わせ内容を送信しようとしています');
-    console.log(data);
-    console.log(currentUser?.uid);
-    console.log(currentUser?.email);
-
     try {
       await addDoc(collection(db, 'contact'), {
         user_id: currentUser?.uid,

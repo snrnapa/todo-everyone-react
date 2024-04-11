@@ -78,10 +78,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
         updated_at: doc.data().updated_at,
       }));
 
-      todosData.map((doc) => {
-        console.log(doc.doc_id);
-      }),
-        setTodos(todosData);
+      todosData.map(() => {}), setTodos(todosData);
     } catch (error) {
       console.error('Error fetching todos:', error);
     }
@@ -92,9 +89,6 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
   }, [reloadCount]);
 
   const onSubmit: SubmitHandler<PostInput> = async (data) => {
-    console.log('todoの編集内容を更新します');
-    console.log(data);
-
     try {
       const todoRef = doc(db, 'todo', editedTodo!.doc_id);
       await updateDoc(todoRef, {
@@ -128,9 +122,6 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
   };
 
   const copyTodo = async (todo: Todo) => {
-    console.log('copyボタンが押されました');
-    console.log('あなたのID' + user_id);
-
     const nowTime = Timestamp.now();
 
     try {
@@ -143,10 +134,13 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
         updated_at: nowTime,
       });
     } catch (error) {
-      alert(
-        'TodoのCopy時にエラーが起きました。下記を管理者に連絡してください。' +
-          error,
-      );
+      await Swal.fire({
+        title: 'TodoのCopy時にエラーが起きました。',
+        text: '下記を管理者に連絡してください。${error}',
+        icon: 'error',
+        confirmButtonText: 'OK',
+        timer: 7000,
+      });
       return;
     }
 
@@ -164,11 +158,8 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
   };
 
   const deleteTodo = async (todo: Todo) => {
-    console.log('deleteボタンが押されました');
-    console.log(todo.doc_id);
     await deleteDoc(doc(db, 'todo', todo.doc_id))
       .then(() => {
-        console.log('Successfully deleted!!!' + todo);
         setTodos(todos.filter((elemment) => elemment.doc_id !== todo.doc_id));
       })
       .catch((error) => {

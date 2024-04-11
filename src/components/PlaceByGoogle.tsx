@@ -23,7 +23,6 @@ const PlaceByGoogle = () => {
 
   const fetchData = async () => {
     try {
-      console.log(placeRef.current);
       if (!placeRef.current) {
         throw new Error('URLから場所の名前を取得できませんでした');
       }

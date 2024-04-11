@@ -30,9 +30,6 @@ const Todo = () => {
   } = useForm<PostInput>();
 
   const onSubmit: SubmitHandler<PostInput> = async (data) => {
-    console.log('post内容を登録しようとしています。');
-    console.log(data);
-
     try {
       await addDoc(collection(db, 'todo'), {
         user_id: currentUser?.uid,
@@ -45,7 +42,8 @@ const Todo = () => {
       });
     } catch (error) {
       Swal.fire({
-        title: 'Todoの登録の際にエラーが発生しました。管理者にお知らせください',
+        title:
+          'やることの登録の際にエラーが発生しました。管理者にお知らせください',
         text: '${error}',
         icon: 'error',
         confirmButtonText: 'OK',
