@@ -15,6 +15,8 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  orderBy,
+  query,
   updateDoc,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -61,7 +63,10 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
   const fetchTodos = async () => {
     try {
       const todosCollection = collection(db, 'todo');
-      const todosSnapshot = await getDocs(todosCollection);
+      const todosSnapshot = await getDocs(
+        query(todosCollection, orderBy('timeLimit')),
+      );
+      // const todosSnapshot = await getDocs(todosCollection);
       const todosData = todosSnapshot.docs.map((doc) => ({
         doc_id: doc.id,
         user_id: doc.data().user_id,
