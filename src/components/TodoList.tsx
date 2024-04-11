@@ -44,6 +44,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
   const [editedTodo, setEditedTodo] = useState<Todo>();
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm<PostInput>();
@@ -106,7 +107,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
       confirmButtonText: 'OK',
       timer: 7000,
     });
-    // Todoのリストを最新に更新する
+    reset();
 
     setEditMode(false);
   };
@@ -243,7 +244,12 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                     </div>
 
                     <div className="flex justify-center space-x-3">
-                      <IconButton onClick={() => setEditMode(false)}>
+                      <IconButton
+                        onClick={() => {
+                          setEditMode(false);
+                          reset();
+                        }}
+                      >
                         <XCircle size={28} color="#120fd2" weight="thin" />
                       </IconButton>
                       <IconButton type="submit">
