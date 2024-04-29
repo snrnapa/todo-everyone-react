@@ -96,7 +96,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
         detail: data.detail,
         place: data.place,
         placeUrl: data.placeUrl,
-        // timeLimit: editedTodo!.timeLimit,
+        timeLimit: data.timeLimit,
         updated_at: Timestamp.now(),
       });
       fetchTodos();

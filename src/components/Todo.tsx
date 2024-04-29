@@ -17,7 +17,7 @@ type PostInput = {
 };
 
 const Todo = () => {
-  const [postFlg, setPostFlg] = useState<Boolean>(false);
+  const [postFlg, setPostFlg] = useState<boolean>(false);
   const [reloadCount, setReloadCount] = useState<number>(0);
 
   const currentUser = useCurrentUser();
@@ -29,6 +29,7 @@ const Todo = () => {
     formState: { errors },
   } = useForm<PostInput>();
 
+  // submitが押下されると、todoを登録する
   const onSubmit: SubmitHandler<PostInput> = async (data) => {
     try {
       await addDoc(collection(db, 'todo'), {
@@ -39,6 +40,7 @@ const Todo = () => {
         placeUrl: data.placeUrl,
         timeLimit: data.timeLimit,
         updated_at: Timestamp.now(),
+        completedAt: '',
       });
     } catch (error) {
       Swal.fire({
