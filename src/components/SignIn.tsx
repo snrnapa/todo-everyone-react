@@ -1,8 +1,7 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, TextField } from '@mui/material';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../libs/firebase';
 import swal from 'sweetalert2';
+import { useEffect } from 'react';
 
 // Login画面で使用するinputの型を宣言
 type LoginInputs = {
@@ -20,17 +19,35 @@ const SignIn = () => {
     formState: { errors },
   } = useForm<LoginInputs>();
 
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   // submitが押下されたタイミングで行う動作
-  const onSubmit: SubmitHandler<LoginInputs> = async () => {
+  const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      await swal.fire({
-        title: 'ログインが完了しました',
-        text: 'OKボタンを押してください',
-        icon: 'success',
-        confirmButtonText: 'OK',
-        timer: 7000,
+      const response = await fetch('http://localhost:8080/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const responseData = await response.json();
+      const token = responseData.token;
+
+      if (token) {
+        localStorage.setItem('token', token);
+        await swal.fire({
+          title: 'ログインが完了しました',
+          text: 'OKボタンを押してください',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          timer: 7000,
+        });
+      }
     } catch (error: any) {
       await swal.fire({
         title:
@@ -40,16 +57,14 @@ const SignIn = () => {
         confirmButtonText: 'OK',
         timer: 7000,
       });
-
       return;
     }
-
     window.location.reload();
   };
 
-  // watch
-  const email = watch('email');
-  const password = watch('password');
+  // // watch
+  // const email = watch('email');
+  // const password = watch('password');
 
   return (
     <div className="p-3 space-y-5">

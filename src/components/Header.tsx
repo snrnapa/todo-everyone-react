@@ -1,13 +1,11 @@
 import { IconButton } from '@mui/material';
-import { signOut } from 'firebase/auth';
-import { auth } from '../libs/firebase';
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
 import { Envelope, SignOut, LockKey } from 'phosphor-react';
 
 const Header = () => {
   const logout = async () => {
-    await signOut(auth);
+    localStorage.removeItem('token');
     await Swal.fire({
       title: 'ログアウトしました',
       text: '',

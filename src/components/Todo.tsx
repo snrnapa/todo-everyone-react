@@ -1,26 +1,34 @@
 import { NotePencil, ArrowsInLineVertical } from 'phosphor-react';
 import { Button, IconButton, TextField } from '@mui/material';
-import { Timestamp, addDoc, collection } from 'firebase/firestore';
-import { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import useCurrentUser from './hooks/UseCurrentUser';
-import { db } from '../libs/firebase';
-import TodoList from './TodoList';
+import { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 
 type PostInput = {
-  context: string;
+  title: string;
   detail: string;
-  place: string;
-  placeUrl: string;
-  timeLimit: Date;
+  completed: boolean;
+  limit: Date;
+  // place: string;
+  // placeUrl: string;
+};
+
+type UserInfo = {
+  ID: number;
+  email: string;
+  CreatedAt: string;
+};
+
+const currentToken = localStorage.getItem('token');
+const headers = {
+  'Content-Type': 'application/json',
+  ...(currentToken && { Authorization: `Bearer ${currentToken}` }),
 };
 
 const Todo = () => {
+  const [userInfo, setUserInfo] = useState<userInfo | null>(null);
   const [postFlg, setPostFlg] = useState<boolean>(false);
-  const [reloadCount, setReloadCount] = useState<number>(0);
 
-  const currentUser = useCurrentUser();
   const {
     register,
     handleSubmit,
@@ -29,44 +37,58 @@ const Todo = () => {
     formState: { errors },
   } = useForm<PostInput>();
 
+  useEffect(() => {
+    fetch('http://localhost:8080/current-user', {
+      method: 'POST',
+      headers: headers,
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('Network response was not ok');
+      })
+      .then((data: UserInfo) => {
+        setUserInfo(data);
+      });
+  }, []);
+
   // submitが押下されると、todoを登録する
   const onSubmit: SubmitHandler<PostInput> = async (data) => {
-    try {
-      await addDoc(collection(db, 'todo'), {
-        user_id: currentUser?.uid,
-        context: data.context,
-        detail: data.detail,
-        place: data.place,
-        placeUrl: data.placeUrl,
-        timeLimit: data.timeLimit,
-        updated_at: Timestamp.now(),
-        completedAt: '',
-      });
-    } catch (error) {
-      Swal.fire({
-        title:
-          'やることの登録の際にエラーが発生しました。管理者にお知らせください',
-        text: '${error}',
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
-    }
-    reset();
-    setPostFlg(!postFlg);
-    setReloadCount(reloadCount + 1);
-    Swal.fire({
-      title: 'やることの登録が完了しました',
-      text: '',
-      icon: 'success',
-      confirmButtonText: 'OK',
-      timer: 7000,
+    fetch('http://localhost:8080/todo', {
+      method: 'POST',
+      headers: headers,
+    }).then((response) => {
+      if (response.ok) {
+        // todolistに追加する処理
+        // ・・・・・・
+        Swal.fire({
+          title: '登録完了',
+          text: 'Todoを登録しました',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          timer: 7000,
+        });
+      } else {
+        Swal.fire({
+          title: '登録失敗',
+          text: 'Todoの登録に失敗しました',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          timer: 7000,
+        });
+      }
     });
   };
 
   return (
     <>
       <div className="p-1 space-y-2">
+        <div className="max-w-sm w-full bg-white shadow-md rounded-lg p-6 ">
+          <p>{userInfo.email}</p>
+          <p>{userInfo.ID}</p>
+        </div>
+
         {!postFlg ? (
           <div className="flex items-center justify-center">
             <IconButton
@@ -101,11 +123,11 @@ const Todo = () => {
                 {/* 題名 */}
                 <TextField
                   type="text"
-                  {...register('context', {
-                    required: '内容を入力してください',
+                  {...register('title', {
+                    required: 'タイトルを入力してください',
                     maxLength: {
                       value: 30,
-                      message: '３０文字以内で簡潔に書きましょう',
+                      message: '100文字以内',
                     },
                   })}
                   id="filled-basic"
@@ -113,9 +135,9 @@ const Todo = () => {
                   variant="filled"
                   className="bg-white"
                 ></TextField>
-                {errors.context?.message && (
+                {errors.title?.message && (
                   <p className="text-red-800 text-sm">
-                    {errors.context?.message}
+                    {errors.title?.message}
                   </p>
                 )}
                 {/* 詳細 */}
@@ -136,52 +158,21 @@ const Todo = () => {
                 ></TextField>
                 {errors.detail?.message && (
                   <p className="text-red-800 text-sm">
-                    {errors.context?.message}
+                    {errors.detail?.message}
                   </p>
                 )}
-                {/* 場所 */}
-                <TextField
-                  type="text"
-                  {...register('place', {
-                    maxLength: {
-                      value: 100,
-                      message: '100文字以内で入力してください。',
-                    },
-                  })}
-                  id="filled-basic"
-                  label="place"
-                  variant="filled"
-                  className="bg-white"
-                  multiline
-                ></TextField>
-                {errors.place?.message && (
-                  <p className="text-red-800 text-sm">
-                    {errors.place?.message}
-                  </p>
-                )}
-
-                {/* 場所URL */}
-                <TextField
-                  type="text"
-                  {...register('placeUrl', {})}
-                  id="filled-basic"
-                  label="placeUrl"
-                  variant="filled"
-                  className="bg-white"
-                  multiline
-                ></TextField>
 
                 {/* 締切日 */}
                 <TextField
                   type="date"
-                  {...register('timeLimit', {})}
+                  {...register('limit', {})}
                   id="filled-basic"
                   variant="filled"
                   className="bg-white"
                 ></TextField>
-                {errors.placeUrl?.message && (
+                {errors.limit?.message && (
                   <p className="text-red-800 text-sm">
-                    {errors.timeLimit?.message}
+                    {errors.limit?.message}
                   </p>
                 )}
                 <Button type="submit">追加</Button>
@@ -192,8 +183,6 @@ const Todo = () => {
           <div></div>
         )}
       </div>
-
-      <TodoList user_id={currentUser?.uid || ''} reloadCount={reloadCount} />
     </>
   );
 };
