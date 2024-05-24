@@ -22,8 +22,8 @@ import {
 import { useEffect, useState } from 'react';
 import { db } from '../libs/firebase';
 
-import Swal from 'sweetalert2';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 
 type Todo = {
   doc_id: string;
@@ -101,23 +101,14 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
       });
       fetchTodos();
     } catch (error) {
-      Swal.fire({
-        title: 'Todoの更新の際にエラーが発生しました。管理者にお知らせください',
-        text: '${error}',
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
+      showErrorAlert(
+        'Todoの更新の際にエラーが発生しました。管理者にお知らせください',
+        '${error}',
+      );
     }
-    Swal.fire({
-      title: 'やることの更新が完了しました',
-      text: '',
-      icon: 'success',
-      confirmButtonText: 'OK',
-      timer: 7000,
-    });
-    reset();
 
+    showSuccessAlert('やることの更新が完了しました', '');
+    reset();
     setEditMode(false);
   };
 
@@ -134,13 +125,10 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
         updated_at: nowTime,
       });
     } catch (error) {
-      await Swal.fire({
-        title: 'TodoのCopy時にエラーが起きました。',
-        text: '下記を管理者に連絡してください。${error}',
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
+      await showErrorAlert(
+        'TodoのCopy時にエラーが起きました。',
+        '下記を管理者に連絡してください。${error}',
+      );
       return;
     }
 
@@ -163,13 +151,7 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
         setTodos(todos.filter((elemment) => elemment.doc_id !== todo.doc_id));
       })
       .catch((error) => {
-        Swal.fire({
-          title: 'delete中にエラーが発生しました',
-          text: error,
-          icon: 'error',
-          confirmButtonText: 'OK',
-          timer: 7000,
-        });
+        showErrorAlert('delete中にエラーが発生しました', error);
       });
   };
 

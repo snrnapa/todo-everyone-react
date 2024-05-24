@@ -6,7 +6,7 @@ import {
 } from 'firebase/auth';
 import { auth, db } from '../libs/firebase';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
-import Swal from 'sweetalert2';
+import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 
 // Register（初期登録）画面で使用するinputの型を宣言
 type RegisterInputs = {
@@ -27,13 +27,11 @@ const Register = () => {
   // submitが押下されたタイミングで行う動作
   const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
     if (data.password != data.retypePassword) {
-      await Swal.fire({
-        title: '入力したパスワードが異なります',
-        text: '再度確認して再入力してください。',
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
+      await showErrorAlert(
+        '入力したパスワードが異なります',
+        '再度確認して再入力してください',
+      );
+
       return;
     }
 
@@ -54,13 +52,10 @@ const Register = () => {
         throw new Error('ユーザーがログインしていません');
       }
     } catch (error) {
-      await Swal.fire({
-        title: '入力情報に誤りがあり、成功しませんでした。',
-        text: '正しい情報を入力してください。',
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
+      await showErrorAlert(
+        '入力情報に誤りがあり、失敗しました。',
+        '正しい情報を入力してください',
+      );
       return;
     }
 
@@ -75,22 +70,15 @@ const Register = () => {
         updated_at: currentTimestamp,
       });
     } catch (error) {
-      await Swal.fire({
-        title: '登録においてエラーが発生しました。',
-        text: '管理者にお知らせください。  ${error}',
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
+      await showErrorAlert(
+        '登録においてエラーが発生しました。',
+        '管理者にお知らせください。  ${error}',
+      );
     }
-    await Swal.fire({
-      title: 'アカウントが正常に登録されました。',
-      text: '登録したアドレスのメールボックスを確認してください。',
-      icon: 'success',
-      confirmButtonText: 'OK',
-      timer: 7000,
-    });
-
+    showSuccessAlert(
+      'accountが正常に登録されました。',
+      '登録したアドレスのメールボックスを確認してください。',
+    );
     window.location.reload();
   };
 

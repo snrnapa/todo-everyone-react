@@ -2,7 +2,7 @@ import { NotePencil, ArrowsInLineVertical } from 'phosphor-react';
 import { Button, IconButton, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import Swal from 'sweetalert2';
+import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 
 type PostInput = {
   title: string;
@@ -80,20 +80,16 @@ const Todo = () => {
           if (responseData.error) {
             setErrorMessage(responseData.error);
           } else {
-            Swal.fire({
-              title: '登録完了',
-              text: 'Todoを登録しました',
-              icon: 'success',
-              confirmButtonText: 'OK',
-              timer: 7000,
-            });
+            showSuccessAlert('登録完了', 'Todoを登録しました');
             reset();
             setErrorMessage(null);
           }
         })
         .catch((err) => {
-          console.error(err);
-          setErrorMessage('サーバーに問題が発生しました');
+          showErrorAlert(
+            'サーバー処理中に問題が発生しました',
+            '${errorMessage}',
+          );
         });
     }
   };

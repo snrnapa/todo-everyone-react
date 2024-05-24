@@ -4,7 +4,7 @@ import { IconButton } from '@mui/material';
 import useCurrentUser from '../components/hooks/UseCurrentUser';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../libs/firebase';
-import Swal from 'sweetalert2';
+import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 
 type ContactInput = {
   context: string;
@@ -21,22 +21,16 @@ const Contact = () => {
         user_email: currentUser?.email,
         context: data.context,
       });
-      await Swal.fire({
-        title: 'ご連絡いただき、ありがとうございます！',
-        text: '問い合わせ内容を送信しました。トップ画面に戻ります',
-        icon: 'info',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
+      await showSuccessAlert(
+        'ご連絡いただき、ありがとうございます！',
+        '問い合わせ内容を送信しました。トップ画面に戻ります。',
+      );
       window.location.href = 'http://localhost:5173/';
     } catch (error) {
-      await Swal.fire({
-        title: '送信中にエラーが発生しました。',
-        text: '再度実行してください。それでも解決しない場合は、管理者に問い合わせてください。${error}',
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
+      await showErrorAlert(
+        '送信中にエラーが発生しました。',
+        '再度実行してください。それでも解決しない場合は、管理者に問い合わせてください。${error}',
+      );
     }
   };
   return (

@@ -1,7 +1,7 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, TextField } from '@mui/material';
-import swal from 'sweetalert2';
 import { useEffect } from 'react';
+import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 
 // Login画面で使用するinputの型を宣言
 type LoginInputs = {
@@ -40,23 +40,13 @@ const SignIn = () => {
 
       if (token) {
         localStorage.setItem('token', token);
-        await swal.fire({
-          title: 'ログインが完了しました',
-          text: 'OKボタンを押してください',
-          icon: 'success',
-          confirmButtonText: 'OK',
-          timer: 7000,
-        });
+        await showSuccessAlert('ログインが完了しました。', '');
       }
     } catch (error: any) {
-      await swal.fire({
-        title:
-          'エラーが発生しました。解決しない場合は、管理者に下記を伝えてください。',
-        text: error.toString(),
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
+      await showErrorAlert(
+        'エラーが発生しました。解決しない場合は、管理者に下記を伝えてください。',
+        '${error.toString()}',
+      );
       return;
     }
     window.location.reload();

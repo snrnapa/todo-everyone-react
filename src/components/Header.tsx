@@ -1,18 +1,12 @@
 import { IconButton } from '@mui/material';
-import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
 import { Envelope, SignOut, LockKey } from 'phosphor-react';
+import { showSuccessAlert } from '../model/Utils';
 
 const Header = () => {
   const logout = async () => {
     localStorage.removeItem('token');
-    await Swal.fire({
-      title: 'ログアウトしました',
-      text: '',
-      icon: 'info',
-      confirmButtonText: 'OK',
-      timer: 7000,
-    });
+    await showSuccessAlert('ログアウトしました', '');
     window.location.reload();
   };
 
