@@ -8,7 +8,7 @@ type PostInput = {
   title: string;
   detail: string;
   completed: boolean;
-  limit: Date;
+  limit: string;
   // place: string;
   // placeUrl: string;
 };
@@ -26,8 +26,10 @@ const headers = {
 };
 
 const Todo = () => {
-  const [userInfo, setUserInfo] = useState<userInfo | null>(null);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [postFlg, setPostFlg] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -50,43 +52,62 @@ const Todo = () => {
       })
       .then((data: UserInfo) => {
         setUserInfo(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
       });
   }, []);
 
   // submitが押下されると、todoを登録する
   const onSubmit: SubmitHandler<PostInput> = async (data) => {
-    fetch('http://localhost:8080/todo', {
-      method: 'POST',
-      headers: headers,
-    }).then((response) => {
-      if (response.ok) {
-        // todolistに追加する処理
-        // ・・・・・・
-        Swal.fire({
-          title: '登録完了',
-          text: 'Todoを登録しました',
-          icon: 'success',
-          confirmButtonText: 'OK',
-          timer: 7000,
+    if (userInfo) {
+      const todoData = {
+        user_id: userInfo.ID.toString(),
+        title: data.title,
+        detail: data.detail,
+        completed: data.completed,
+        limit: new Date(data.limit).toISOString(),
+      };
+
+      fetch('http://localhost:8080/v1/todo', {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(todoData),
+      })
+        .then((response) => response.json())
+        .then((responseData) => {
+          if (responseData.error) {
+            setErrorMessage(responseData.error);
+          } else {
+            Swal.fire({
+              title: '登録完了',
+              text: 'Todoを登録しました',
+              icon: 'success',
+              confirmButtonText: 'OK',
+              timer: 7000,
+            });
+            reset();
+            setErrorMessage(null);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          setErrorMessage('サーバーに問題が発生しました');
         });
-      } else {
-        Swal.fire({
-          title: '登録失敗',
-          text: 'Todoの登録に失敗しました',
-          icon: 'error',
-          confirmButtonText: 'OK',
-          timer: 7000,
-        });
-      }
-    });
+    }
   };
+
+  if (loading) {
+    return <div>Loading Now......</div>;
+  }
 
   return (
     <>
       <div className="p-1 space-y-2">
         <div className="max-w-sm w-full bg-white shadow-md rounded-lg p-6 ">
-          <p>{userInfo.email}</p>
-          <p>{userInfo.ID}</p>
+          <p>{userInfo!.email}</p>
+          <p>{userInfo!.ID}</p>
         </div>
 
         {!postFlg ? (
