@@ -1,6 +1,5 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, TextField } from '@mui/material';
-import { useEffect } from 'react';
 import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 
 // Login画面で使用するinputの型を宣言

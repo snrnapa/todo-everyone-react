@@ -1,23 +1,22 @@
 import { NotePencil, ArrowsInLineVertical } from 'phosphor-react';
-import { Button, IconButton, TextField } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler } from 'react-hook-form';
 import { showErrorAlert, showSuccessAlert } from '../model/Utils';
-
-type PostInput = {
-  title: string;
-  detail: string;
-  completed: boolean;
-  limit: string;
-  // place: string;
-  // placeUrl: string;
-};
+import TodoInputForm from './form/TodoInputForm';
 
 type UserInfo = {
   ID: number;
   email: string;
   CreatedAt: string;
 };
+
+interface PostInput {
+  title: string;
+  detail: string;
+  limit: string;
+  completed: boolean;
+}
 
 const currentToken = localStorage.getItem('token');
 const headers = {
@@ -30,14 +29,6 @@ const Todo = () => {
   const [postFlg, setPostFlg] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    // watch,
-    formState: { errors },
-  } = useForm<PostInput>();
 
   useEffect(() => {
     fetch('http://localhost:8080/current-user', {
@@ -60,7 +51,7 @@ const Todo = () => {
   }, []);
 
   // submitが押下されると、todoを登録する
-  const onSubmit: SubmitHandler<PostInput> = async (data) => {
+  const postTodo: SubmitHandler<PostInput> = async (data, event) => {
     if (userInfo) {
       const todoData = {
         user_id: userInfo.ID.toString(),
@@ -81,11 +72,11 @@ const Todo = () => {
             setErrorMessage(responseData.error);
           } else {
             showSuccessAlert('登録完了', 'Todoを登録しました');
-            reset();
+            event?.target.reset();
             setErrorMessage(null);
           }
         })
-        .catch((err) => {
+        .catch(() => {
           showErrorAlert(
             'サーバー処理中に問題が発生しました',
             '${errorMessage}',
@@ -132,69 +123,7 @@ const Todo = () => {
 
         {postFlg ? (
           <div className="space-y-2">
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col space-x-4"
-            >
-              <div className="flex flex-col space-y-2 m-2 p-3 bg-blue-200 border border-black rounded-xl shadow-2xl">
-                {/* 題名 */}
-                <TextField
-                  type="text"
-                  {...register('title', {
-                    required: 'タイトルを入力してください',
-                    maxLength: {
-                      value: 30,
-                      message: '100文字以内',
-                    },
-                  })}
-                  id="filled-basic"
-                  label="Todo"
-                  variant="filled"
-                  className="bg-white"
-                ></TextField>
-                {errors.title?.message && (
-                  <p className="text-red-800 text-sm">
-                    {errors.title?.message}
-                  </p>
-                )}
-                {/* 詳細 */}
-                <TextField
-                  type="text"
-                  {...register('detail', {
-                    required: '内容を入力してください',
-                    maxLength: {
-                      value: 200,
-                      message: '200文字以内で簡潔に書きましょう',
-                    },
-                  })}
-                  id="filled-basic"
-                  label="detail"
-                  variant="filled"
-                  className="bg-white"
-                  multiline
-                ></TextField>
-                {errors.detail?.message && (
-                  <p className="text-red-800 text-sm">
-                    {errors.detail?.message}
-                  </p>
-                )}
-
-                {/* 締切日 */}
-                <TextField
-                  type="date"
-                  {...register('limit', {})}
-                  id="filled-basic"
-                  variant="filled"
-                  className="bg-white"
-                ></TextField>
-                {errors.limit?.message && (
-                  <p className="text-red-800 text-sm">
-                    {errors.limit?.message}
-                  </p>
-                )}
-                <Button type="submit">追加</Button>
-              </div>
-            </form>
+            <TodoInputForm onSubmit={postTodo} />
           </div>
         ) : (
           <div></div>
