@@ -1,58 +1,50 @@
-import {
-  Trash,
-  Pen,
-  XCircle,
-  Check,
-  Globe,
-  MapTrifold,
-  Timer,
-} from 'phosphor-react';
+import { Trash, Pen, XCircle, Check, Timer } from 'phosphor-react';
 import { Card, IconButton, TextField } from '@mui/material';
-import {
-  Timestamp,
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  orderBy,
-  query,
-  updateDoc,
-} from 'firebase/firestore';
+
 import { useEffect, useState } from 'react';
-import { db } from '../libs/firebase';
 
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { showErrorAlert, showSuccessAlert } from '../model/Utils';
+import {
+  formatDateForInput,
+  showErrorAlert,
+  showSuccessAlert,
+} from '../model/Utils';
+import Todo from './Todo';
 
 type Todo = {
-  doc_id: string;
-  user_id: string;
-  context: string;
-  place: string;
-  placeUrl: string;
+  user_id: number;
+  title: string;
+  limit: string;
   detail: string;
-  timeLimit: string;
-  updated_at: Timestamp;
+  completed: boolean;
+  ID: number;
+  CreatedAt: string;
+  UpdatedAt: string;
+  DeletedAt: string | null;
 };
 
 type PostInput = {
-  context: string;
+  title: string;
   detail: string;
-  place: string;
-  placeUrl: string;
-  timeLimit: Date;
+  limit: Date;
 };
 
 type ComponentsProps = {
-  user_id: string;
-  reloadCount: number;
+  user_id: number;
 };
 
-const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
+const currentToken = localStorage.getItem('token');
+const headers = {
+  'Content-Type': 'application/json',
+  ...(currentToken && { Authorization: `Bearer ${currentToken}` }),
+};
+
+const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editedTodo, setEditedTodo] = useState<Todo>();
+  const [reloadCount, setReloadCount] = useState<number>(0);
+
   const {
     register,
     reset,
@@ -60,99 +52,96 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
     formState: { errors },
   } = useForm<PostInput>();
 
-  const fetchTodos = async () => {
-    try {
-      const todosCollection = collection(db, 'todo');
-      const todosSnapshot = await getDocs(
-        query(todosCollection, orderBy('timeLimit')),
-      );
-      // const todosSnapshot = await getDocs(todosCollection);
-      const todosData = todosSnapshot.docs.map((doc) => ({
-        doc_id: doc.id,
-        user_id: doc.data().user_id,
-        context: doc.data().context,
-        detail: doc.data().detail,
-        place: doc.data().place,
-        placeUrl: doc.data().placeUrl,
-        timeLimit: doc.data().timeLimit,
-        updated_at: doc.data().updated_at,
-      }));
-
-      todosData.map(() => {}), setTodos(todosData);
-    } catch (error) {
-      console.error('Error fetching todos:', error);
-    }
-  };
-
   useEffect(() => {
-    fetchTodos();
+    fetch('http://localhost:8080/v1/todos', {
+      method: 'GET',
+      headers: headers,
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('Network response was not Ok in get todos');
+      })
+      .then((data: Todo[]) => {
+        setTodos(data);
+      });
   }, [reloadCount]);
 
   const onSubmit: SubmitHandler<PostInput> = async (data) => {
-    try {
-      const todoRef = doc(db, 'todo', editedTodo!.doc_id);
-      await updateDoc(todoRef, {
-        context: data.context,
-        detail: data.detail,
-        place: data.place,
-        placeUrl: data.placeUrl,
-        timeLimit: data.timeLimit,
-        updated_at: Timestamp.now(),
-      });
-      fetchTodos();
-    } catch (error) {
-      showErrorAlert(
-        'Todoの更新の際にエラーが発生しました。管理者にお知らせください',
-        '${error}',
-      );
-    }
-
-    showSuccessAlert('やることの更新が完了しました', '');
-    reset();
-    setEditMode(false);
-  };
-
-  const copyTodo = async (todo: Todo) => {
-    const nowTime = Timestamp.now();
-
-    try {
-      await addDoc(collection(db, 'todo'), {
-        user_id: user_id,
-        context: todo.context,
-        place: todo.place,
-        placeUrl: todo.placeUrl,
-        detail: todo.detail,
-        updated_at: nowTime,
-      });
-    } catch (error) {
-      await showErrorAlert(
-        'TodoのCopy時にエラーが起きました。',
-        '下記を管理者に連絡してください。${error}',
-      );
-      return;
-    }
-
-    const newTodo: Todo = {
-      doc_id: '',
-      user_id: user_id,
-      context: todo.context,
-      place: todo.place,
-      placeUrl: todo.placeUrl,
-      detail: todo.detail,
-      timeLimit: todo.timeLimit,
-      updated_at: nowTime,
+    const todoData: Todo = {
+      user_id: editedTodo?.user_id,
+      title: data.title,
+      detail: data.detail,
+      limit: new Date(data.limit).toISOString(),
+      completed: editedTodo?.completed,
+      ID: editedTodo?.ID,
     };
-    setTodos((prevTodos) => [...prevTodos, newTodo]);
+
+    fetch('http://localhost:8080/v1/todo', {
+      method: 'PATCH',
+      headers: headers,
+      body: JSON.stringify(todoData),
+    }).then((response) => {
+      if (response.ok) {
+        showSuccessAlert('更新完了', 'todoの更新が完了しました');
+        setEditMode(false);
+        setReloadCount(reloadCount + 1);
+      } else {
+        showErrorAlert('更新失敗', 'todoの更新中にエラーが発生しました');
+      }
+    });
   };
+
+  // const copyTodo = async (todo: Todo) => {
+  //   const nowTime = Timestamp.now();
+
+  //   try {
+  //     await addDoc(collection(db, 'todo'), {
+  //       user_id: user_id,
+  //       context: todo.context,
+  //       place: todo.place,
+  //       placeUrl: todo.placeUrl,
+  //       detail: todo.detail,
+  //       updated_at: nowTime,
+  //     });
+  //   } catch (error) {
+  //     await showErrorAlert(
+  //       'TodoのCopy時にエラーが起きました。',
+  //       '下記を管理者に連絡してください。${error}',
+  //     );
+  //     return;
+  //   }
+
+  //   const newTodo: Todo = {
+  //     doc_id: '',
+  //     user_id: user_id,
+  //     context: todo.context,
+  //     place: todo.place,
+  //     placeUrl: todo.placeUrl,
+  //     detail: todo.detail,
+  //     timeLimit: todo.timeLimit,
+  //     updated_at: nowTime,
+  //   };
+  //   setTodos((prevTodos) => [...prevTodos, newTodo]);
+  // };
 
   const deleteTodo = async (todo: Todo) => {
-    await deleteDoc(doc(db, 'todo', todo.doc_id))
-      .then(() => {
-        setTodos(todos.filter((elemment) => elemment.doc_id !== todo.doc_id));
-      })
-      .catch((error) => {
-        showErrorAlert('delete中にエラーが発生しました', error);
-      });
+    fetch('http://localhost:8080/v1/todo', {
+      method: 'DELETE',
+      headers: headers,
+      body: JSON.stringify(todo),
+    }).then((response) => {
+      if (!response.ok) {
+        showErrorAlert(
+          'エラーが発生しました',
+          'todoの削除中にエラーが発生しました',
+        );
+      } else {
+        showSuccessAlert('削除完了', 'todoの削除が完了しました');
+        setReloadCount(reloadCount + 1);
+      }
+    });
   };
 
   return (
@@ -165,27 +154,27 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
             .filter((todo) => todo.user_id === user_id)
             .map((todo) => (
               <Card
-                key={todo.doc_id}
+                key={todo.ID}
                 className="flex flex-col justify-center p-1 m-1 shadow-2xl space-y-1"
               >
-                {editMode && todo.doc_id === editedTodo!.doc_id ? (
+                {editMode && todo.ID === editedTodo!.ID ? (
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex flex-col p-1 space-y-1 bg-gray-200">
-                      <p className="text-sm">題名</p>
+                      <p className="text-sm">Title</p>
                       <textarea
                         className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
-                        {...register('context', {
+                        {...register('title', {
                           required: '内容を入力してください',
                           maxLength: {
                             value: 30,
                             message: '３０文字以内で簡潔に書きましょう',
                           },
                         })}
-                        defaultValue={editedTodo!.context}
+                        defaultValue={editedTodo!.title}
                       />
-                      {errors.context?.message && (
+                      {errors.title?.message && (
                         <p className="text-red-800 text-sm">
-                          {errors.context?.message}
+                          {errors.title?.message}
                         </p>
                       )}
                       <p className="text-sm">詳細</p>
@@ -202,43 +191,24 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                       />
                       {errors.detail?.message && (
                         <p className="text-red-800 text-sm">
-                          {errors.context?.message}
+                          {errors.detail?.message}
                         </p>
                       )}
-                      <p className="text-sm">場所</p>
-                      <textarea
-                        className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
-                        {...register('place', {
-                          maxLength: {
-                            value: 100,
-                            message: '100文字以内で入力してください。',
-                          },
-                        })}
-                        defaultValue={editedTodo!.place}
-                      />
-                      {errors.place?.message && (
-                        <p className="text-red-800 text-sm">
-                          {errors.place?.message}
-                        </p>
-                      )}
-                      <p className="text-sm">サイトURL</p>
-                      <textarea
-                        className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
-                        {...register('placeUrl', {})}
-                        defaultValue={editedTodo!.placeUrl}
-                      />
+
                       {/* 締切日 */}
                       <TextField
                         type="date"
-                        {...register('timeLimit', {})}
+                        {...register('limit', {})}
                         id="filled-basic"
                         variant="filled"
                         className="bg-white"
-                        defaultValue={editedTodo?.timeLimit}
+                        defaultValue={
+                          editedTodo ? formatDateForInput(editedTodo.limit) : ''
+                        }
                       ></TextField>
-                      {errors.placeUrl?.message && (
+                      {errors.limit?.message && (
                         <p className="text-red-800 text-sm">
-                          {errors.timeLimit?.message}
+                          {errors.limit?.message}
                         </p>
                       )}
                     </div>
@@ -259,30 +229,15 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
                   </form>
                 ) : (
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm">{todo.context}</p>
+                    <p className="text-sm">{todo.title}</p>
                     <p className="text-gray-400 text-sm">{todo.detail}</p>
-                    <div className="flex">
-                      <MapTrifold size={20} color="#120fd2" weight="thin" />
-                      <p className="text-xs ">{todo.place}</p>
-                    </div>
-                    {todo.placeUrl ? (
-                      <div className="flex">
-                        <Globe size={20} color="#120fd2" weight="thin" />
-                        <a
-                          href={todo.placeUrl}
-                          className="text-xs text-gray-400"
-                          target="_blank"
-                        >
-                          サイトURL
-                        </a>
-                      </div>
-                    ) : (
-                      <div className="flex"></div>
-                    )}
-                    {todo.timeLimit ? (
+
+                    {todo.limit ? (
                       <div className="flex">
                         <Timer size={20} color="#120fd2" weight="thin" />
-                        <p className="text-sm">{todo.timeLimit}</p>
+                        <p className="text-sm">
+                          {formatDateForInput(todo.limit)}
+                        </p>
                       </div>
                     ) : (
                       <div className="flex"></div>
@@ -307,65 +262,6 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id, reloadCount }) => {
         ) : (
           <div>
             <p>やることがありません🥺🥺</p>
-          </div>
-        )}
-      </div>
-      <div className="bg-orange-200 border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
-        <p className="text-xl text-center font-Darumadrop">みんなのよてい</p>
-        {todos.length > 0 ? (
-          todos
-            .filter((todo) => todo.user_id !== user_id)
-            .map((todo) => (
-              <Card
-                key={todo.doc_id}
-                className="flex flex-col justify-center p-1 m-1 shadow-2xl space-y-3"
-              >
-                {/* 共通化コンポーネント */}
-                <div className="flex flex-col space-y-1 ">
-                  <p className="text-sm">{todo.context}</p>
-                  <p className="text-gray-400 text-sm">{todo.detail}</p>
-                  <div className="flex">
-                    <MapTrifold size={20} color="#120fd2" weight="thin" />
-                    <p className="text-xs ">{todo.place}</p>
-                  </div>
-                  {todo.placeUrl ? (
-                    <div className="flex">
-                      <Globe size={20} color="#120fd2" weight="thin" />
-                      <a
-                        href={todo.placeUrl}
-                        className="text-xs text-gray-400"
-                        target="_blank"
-                      >
-                        サイトURL
-                      </a>
-                    </div>
-                  ) : (
-                    <div className="flex"></div>
-                  )}
-
-                  {todo.timeLimit ? (
-                    <div className="flex">
-                      <Timer size={20} color="#120fd2" weight="thin" />
-                      <p className="text-sm">{todo.timeLimit}</p>
-                    </div>
-                  ) : (
-                    <div className="flex"></div>
-                  )}
-                </div>
-
-                <div className="flex justify-center space-x-3">
-                  <button
-                    className="px-2 py-1 bg-pink-200 text-sm text-green-700 font-extrabold rounded "
-                    onClick={() => copyTodo(todo)}
-                  >
-                    私も！
-                  </button>
-                </div>
-              </Card>
-            ))
-        ) : (
-          <div>
-            <p>todoがありません</p>
           </div>
         )}
       </div>

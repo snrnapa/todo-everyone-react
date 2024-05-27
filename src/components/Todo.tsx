@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 import TodoInputForm from './form/TodoInputForm';
+import TodoList from './TodoList';
 
 type UserInfo = {
   ID: number;
@@ -54,7 +55,7 @@ const Todo = () => {
   const postTodo: SubmitHandler<PostInput> = async (data, event) => {
     if (userInfo) {
       const todoData = {
-        user_id: userInfo.ID.toString(),
+        user_id: userInfo.ID,
         title: data.title,
         detail: data.detail,
         completed: data.completed,
@@ -128,6 +129,7 @@ const Todo = () => {
         ) : (
           <div></div>
         )}
+        <TodoList user_id={userInfo?.ID} />
       </div>
     </>
   );
