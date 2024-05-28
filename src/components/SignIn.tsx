@@ -1,6 +1,8 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, TextField } from '@mui/material';
 import { showErrorAlert, showSuccessAlert } from '../model/Utils';
+import { auth } from '../libs/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 // Login画面で使用するinputの型を宣言
 type LoginInputs = {
@@ -23,37 +25,12 @@ const SignIn = () => {
   // submitが押下されたタイミングで行う動作
   const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
     try {
-      const response = await fetch('http://localhost:8080/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const responseData = await response.json();
-      const token = responseData.token;
-
-      if (token) {
-        localStorage.setItem('token', token);
-        await showSuccessAlert('ログインが完了しました。', '');
-      }
-    } catch (error: any) {
-      await showErrorAlert(
-        'エラーが発生しました。解決しない場合は、管理者に下記を伝えてください。',
-        '${error.toString()}',
-      );
-      return;
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+      showSuccessAlert('ログイン成功', 'ログインに成功しました。');
+    } catch (error) {
+      showErrorAlert('ログイン失敗', `ログインに失敗しました。${error}`);
     }
-    window.location.reload();
   };
-
-  // // watch
-  // const email = watch('email');
-  // const password = watch('password');
 
   return (
     <div className="p-3 space-y-5">

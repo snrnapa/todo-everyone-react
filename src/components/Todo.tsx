@@ -31,26 +31,6 @@ const Todo = () => {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetch('http://localhost:8080/current-user', {
-      method: 'POST',
-      headers: headers,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('Network response was not ok');
-      })
-      .then((data: UserInfo) => {
-        setUserInfo(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  }, []);
-
   // submitが押下されると、todoを登録する
   const postTodo: SubmitHandler<PostInput> = async (data, event) => {
     if (userInfo) {

@@ -2,9 +2,6 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { NotePencil, PaperPlane } from 'phosphor-react';
 import { IconButton } from '@mui/material';
 import useCurrentUser from '../components/hooks/UseCurrentUser';
-import { addDoc, collection } from 'firebase/firestore';
-import { db } from '../libs/firebase';
-import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 
 type ContactInput = {
   context: string;
@@ -15,23 +12,7 @@ const Contact = () => {
   const currentUser = useCurrentUser();
 
   const onSubmit: SubmitHandler<ContactInput> = async (data) => {
-    try {
-      await addDoc(collection(db, 'contact'), {
-        user_id: currentUser?.uid,
-        user_email: currentUser?.email,
-        context: data.context,
-      });
-      await showSuccessAlert(
-        'ご連絡いただき、ありがとうございます！',
-        '問い合わせ内容を送信しました。トップ画面に戻ります。',
-      );
-      window.location.href = 'http://localhost:5173/';
-    } catch (error) {
-      await showErrorAlert(
-        '送信中にエラーが発生しました。',
-        '再度実行してください。それでも解決しない場合は、管理者に問い合わせてください。${error}',
-      );
-    }
+    console.log(data);
   };
   return (
     <div className="flex flex-col justify-center space-y-5">

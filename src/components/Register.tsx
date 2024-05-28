@@ -1,12 +1,9 @@
 import { Button, TextField } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-} from 'firebase/auth';
-import { auth, db } from '../libs/firebase';
-import { Timestamp, addDoc, collection } from 'firebase/firestore';
+
+import { auth } from '../libs/firebase';
 import { showErrorAlert, showSuccessAlert } from '../model/Utils';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 // Register（初期登録）画面で使用するinputの型を宣言
 type RegisterInputs = {
@@ -31,55 +28,36 @@ const Register = () => {
         '入力したパスワードが異なります',
         '再度確認して再入力してください',
       );
-
       return;
     }
 
-    // firebase autehnticationによりメール登録を行う
-    var userCredential;
     try {
       // メール認証により、firebase authenticationに登録するとともに、その情報をuserCredential変数に保持
-      userCredential = await createUserWithEmailAndPassword(
+      const userCredential = await createUserWithEmailAndPassword(
         auth,
         data.email,
         data.password,
       );
-      // ユーザー登録後に確認メールを手動で送信する
-      const user = auth.currentUser;
-      if (user) {
-        await sendEmailVerification(user);
+
+      var idToken;
+      if (userCredential.user != null) {
+        idToken = await userCredential.user.getIdToken();
+        console.log(idToken);
       } else {
-        throw new Error('ユーザーがログインしていません');
+        throw new Error('ユーザー情報が取得できませんでした');
       }
-    } catch (error) {
-      await showErrorAlert(
-        '入力情報に誤りがあり、失敗しました。',
-        '正しい情報を入力してください',
-      );
-      return;
-    }
 
-    const { user } = userCredential;
-    const { uid } = user;
-    const currentTimestamp = Timestamp.now();
-
-    try {
-      await addDoc(collection(db, 'user'), {
-        user_id: uid,
-        user_name: 'ゆーざー',
-        updated_at: currentTimestamp,
+      await fetch('http://localhost:8080/protected', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ message: 'Hello, backend!' }),
       });
     } catch (error) {
-      await showErrorAlert(
-        '登録においてエラーが発生しました。',
-        '管理者にお知らせください。  ${error}',
-      );
+      showErrorAlert('登録失敗', `登録に失敗しました : ${error}`);
     }
-    showSuccessAlert(
-      'accountが正常に登録されました。',
-      '登録したアドレスのメールボックスを確認してください。',
-    );
-    window.location.reload();
   };
 
   return (
