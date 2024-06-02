@@ -29,21 +29,12 @@ type PostInput = {
   limit: Date;
 };
 
-type ComponentsProps = {
-  user_id: number;
-};
-
-const currentToken = localStorage.getItem('token');
-const headers = {
-  'Content-Type': 'application/json',
-  ...(currentToken && { Authorization: `Bearer ${currentToken}` }),
-};
-
-const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
+const TodoList = ({ reloadCount }: { reloadCount: number }) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editedTodo, setEditedTodo] = useState<Todo>();
-  const [reloadCount, setReloadCount] = useState<number>(0);
+  const user_id = localStorage.getItem('firebaseUserId');
+  const token = localStorage.getItem('firebaseToken');
 
   const {
     register,
@@ -53,19 +44,23 @@ const TodoList: React.FC<ComponentsProps> = ({ user_id }) => {
   } = useForm<PostInput>();
 
   useEffect(() => {
-    fetch('http://localhost:8080/v1/todos', {
-      method: 'GET',
-      headers: headers,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('Network response was not Ok in get todos');
+    const getTodos = async () => {
+      fetch('http://localhost:8080/v1/todos', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .then((data: Todo[]) => {
-        setTodos(data);
-      });
+        .then((response) => response.json())
+        .then((responseData) => {
+          console.log(responseData);
+          setTodos(responseData);
+        })
+        .catch((error) => {
+          showErrorAlert('errorが発生しました', `${error}`);
+        });
+    };
+    getTodos();
   }, [reloadCount]);
 
   const onSubmit: SubmitHandler<PostInput> = async (data) => {

@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 
 import { auth } from '../libs/firebase';
 import { showErrorAlert, showSuccessAlert } from '../model/Utils';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, deleteUser } from 'firebase/auth';
 
 // Register（初期登録）画面で使用するinputの型を宣言
 type RegisterInputs = {
@@ -40,21 +40,28 @@ const Register = () => {
       );
 
       var idToken;
+      var userId;
       if (userCredential.user != null) {
         idToken = await userCredential.user.getIdToken();
-        console.log(idToken);
+        userId = userCredential.user.uid;
+        localStorage.setItem('firebaseToken', idToken);
+        localStorage.setItem('firebaseUserId', userId);
       } else {
         throw new Error('ユーザー情報が取得できませんでした');
       }
-
-      await fetch('http://localhost:8080/protected', {
+      const response = await fetch('http://localhost:8080/v1/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${idToken}`,
         },
-        body: JSON.stringify({ message: 'Hello, backend!' }),
+        body: JSON.stringify({ user_id: userId }),
       });
+
+      if (!response.ok) {
+        await deleteUser(auth.currentUser);
+        throw new Error('サーバーエラーが発生しました');
+      }
     } catch (error) {
       showErrorAlert('登録失敗', `登録に失敗しました : ${error}`);
     }

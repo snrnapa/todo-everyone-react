@@ -7,9 +7,7 @@ import TodoInputForm from './form/TodoInputForm';
 import TodoList from './TodoList';
 
 type UserInfo = {
-  ID: number;
-  email: string;
-  CreatedAt: string;
+  userId: string;
 };
 
 interface PostInput {
@@ -19,23 +17,20 @@ interface PostInput {
   completed: boolean;
 }
 
-const currentToken = localStorage.getItem('token');
-const headers = {
-  'Content-Type': 'application/json',
-  ...(currentToken && { Authorization: `Bearer ${currentToken}` }),
-};
-
 const Todo = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [postFlg, setPostFlg] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const userId = localStorage.getItem('firebaseUserId');
+  const token = localStorage.getItem('firebaseToken');
+  const [reloadCount, setReloadCount] = useState(0);
 
   // submitが押下されると、todoを登録する
   const postTodo: SubmitHandler<PostInput> = async (data, event) => {
     if (userInfo) {
       const todoData = {
-        user_id: userInfo.ID,
+        user_id: userInfo.userId,
         title: data.title,
         detail: data.detail,
         completed: data.completed,
@@ -44,7 +39,9 @@ const Todo = () => {
 
       fetch('http://localhost:8080/v1/todo', {
         method: 'POST',
-        headers: headers,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(todoData),
       })
         .then((response) => response.json())
@@ -55,6 +52,7 @@ const Todo = () => {
             showSuccessAlert('登録完了', 'Todoを登録しました');
             event?.target.reset();
             setErrorMessage(null);
+            setReloadCount((prev) => prev + 1);
           }
         })
         .catch(() => {
@@ -66,6 +64,17 @@ const Todo = () => {
     }
   };
 
+  useEffect(() => {
+    if (userId == null) {
+      throw new Error('User ID not found in local storage.');
+    }
+    const user: UserInfo = {
+      userId: userId,
+    };
+    setUserInfo(user);
+    setLoading(false);
+  }, []);
+
   if (loading) {
     return <div>Loading Now......</div>;
   }
@@ -73,11 +82,6 @@ const Todo = () => {
   return (
     <>
       <div className="p-1 space-y-2">
-        <div className="max-w-sm w-full bg-white shadow-md rounded-lg p-6 ">
-          <p>{userInfo!.email}</p>
-          <p>{userInfo!.ID}</p>
-        </div>
-
         {!postFlg ? (
           <div className="flex items-center justify-center">
             <IconButton
@@ -109,7 +113,7 @@ const Todo = () => {
         ) : (
           <div></div>
         )}
-        <TodoList user_id={userInfo?.ID} />
+        <TodoList reloadCount={reloadCount} />
       </div>
     </>
   );

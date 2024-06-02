@@ -17,7 +17,9 @@ const AuthenticatedContent = () => {
         setIsAuthenticated(true); // ユーザーがログインしている場合、isAuthenticatedをtrueに設定する
         try {
           const idToken = await user.getIdToken();
-          console.log(idToken); // トークンをconsole.logで出力する
+          const userId = user.uid;
+          localStorage.setItem('firebaseToken', idToken);
+          localStorage.setItem('firebaseUserId', userId);
         } catch (error) {
           console.error('Error fetching ID token:', error);
         }

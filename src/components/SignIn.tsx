@@ -25,7 +25,16 @@ const SignIn = () => {
   // submitが押下されたタイミングで行う動作
   const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
+      const loginUser = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      );
+      const token = await loginUser.user.getIdToken;
+      const userId = loginUser.user.uid;
+      localStorage.setItem('firebaseToken', token);
+      localStorage.setItem('firebaseUserId', userId);
+
       showSuccessAlert('ログイン成功', 'ログインに成功しました。');
     } catch (error) {
       showErrorAlert('ログイン失敗', `ログインに失敗しました。${error}`);

@@ -2,10 +2,13 @@ import { IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Envelope, SignOut, LockKey } from 'phosphor-react';
 import { showSuccessAlert } from '../model/Utils';
+import { auth } from '../libs/firebase';
 
 const Header = () => {
   const logout = async () => {
-    localStorage.removeItem('token');
+    await auth.signOut();
+    localStorage.removeItem('firebaseToken');
+    localStorage.removeItem('firebaseUserId');
     await showSuccessAlert('ログアウトしました', '');
     window.location.reload();
   };
