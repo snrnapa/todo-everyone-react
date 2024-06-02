@@ -1,5 +1,6 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button, TextField } from '@mui/material';
+import { formatTodayForInput } from '../../model/Utils';
 
 interface FormValue {
   title: string;
@@ -18,9 +19,14 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ onSubmit }) => {
     formState: { errors },
   } = useForm<FormValue>();
 
+  const today = formatTodayForInput;
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-x-4">
-      <div className="flex flex-col space-y-2 m-2 p-3 bg-blue-200 border border-black rounded-xl shadow-2xl">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col space-x-4 items-center"
+    >
+      <div className="flex flex-col space-y-2 m-2 p-3 bg-blue-200 border border-gray-300 rounded-xl shadow-2xl sm:w-5/12">
         {/* 題名 */}
         <TextField
           type="text"
@@ -31,11 +37,12 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ onSubmit }) => {
               message: '100文字以内',
             },
           })}
-          id="filled-basic"
+          id="title"
           label="Todo"
           variant="filled"
           className="bg-white"
-        ></TextField>
+          InputProps={{ className: 'focus:ring-blue-500' }}
+        />
         {errors.title?.message && (
           <p className="text-red-800 text-sm">{errors.title?.message}</p>
         )}
@@ -49,12 +56,13 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ onSubmit }) => {
               message: '200文字以内で簡潔に書きましょう',
             },
           })}
-          id="filled-basic"
+          id="detail"
           label="detail"
           variant="filled"
           className="bg-white"
+          InputProps={{ className: 'focus:ring-blue-500' }}
           multiline
-        ></TextField>
+        />
         {errors.detail?.message && (
           <p className="text-red-800 text-sm">{errors.detail?.message}</p>
         )}
@@ -63,10 +71,12 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ onSubmit }) => {
         <TextField
           type="date"
           {...register('limit', {})}
-          id="filled-basic"
+          id="limit"
           variant="filled"
+          defaultValue={today}
           className="bg-white"
-        ></TextField>
+          InputProps={{ className: 'focus:ring-blue-500' }}
+        />
         {errors.limit?.message && (
           <p className="text-red-800 text-sm">{errors.limit?.message}</p>
         )}

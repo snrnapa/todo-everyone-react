@@ -81,7 +81,7 @@ const Todo = () => {
 
   return (
     <>
-      <div className="p-1 space-y-2">
+      <div className="p-1 space-y-2 w-full justify-center">
         {!postFlg ? (
           <div className="flex items-center justify-center">
             <IconButton
@@ -107,13 +107,13 @@ const Todo = () => {
         )}
 
         {postFlg ? (
-          <div className="space-y-2">
+          <div className="space-y-2 ">
             <TodoInputForm onSubmit={postTodo} />
           </div>
         ) : (
           <div></div>
         )}
-        <TodoList reloadCount={reloadCount} />
+        <TodoList reloadCount={reloadCount} setReloadCount={setReloadCount} />
       </div>
     </>
   );

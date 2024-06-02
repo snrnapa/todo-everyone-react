@@ -1,7 +1,7 @@
 import { Trash, Pen, XCircle, Check, Timer } from 'phosphor-react';
 import { Card, IconButton, TextField } from '@mui/material';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {
@@ -12,7 +12,7 @@ import {
 import Todo from './Todo';
 
 type Todo = {
-  user_id: number;
+  user_id: string;
   title: string;
   limit: string;
   detail: string;
@@ -29,12 +29,20 @@ type PostInput = {
   limit: Date;
 };
 
-const TodoList = ({ reloadCount }: { reloadCount: number }) => {
+interface TodoListProps {
+  reloadCount: number;
+  setReloadCount: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editedTodo, setEditedTodo] = useState<Todo>();
   const user_id = localStorage.getItem('firebaseUserId');
   const token = localStorage.getItem('firebaseToken');
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
 
   const {
     register,
@@ -47,9 +55,7 @@ const TodoList = ({ reloadCount }: { reloadCount: number }) => {
     const getTodos = async () => {
       fetch('http://localhost:8080/v1/todos', {
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: headers,
       })
         .then((response) => response.json())
         .then((responseData) => {
@@ -64,15 +70,21 @@ const TodoList = ({ reloadCount }: { reloadCount: number }) => {
   }, [reloadCount]);
 
   const onSubmit: SubmitHandler<PostInput> = async (data) => {
+    const userId = editedTodo?.user_id;
+    const completed = editedTodo?.completed;
+    const ID = editedTodo?.ID;
+    if (userId == null || completed == null || ID == null) {
+      showErrorAlert('更新失敗', 'todoの更新中にエラーが発生しました');
+      return;
+    }
     const todoData: Todo = {
-      user_id: editedTodo?.user_id,
+      user_id: userId,
       title: data.title,
       detail: data.detail,
       limit: new Date(data.limit).toISOString(),
-      completed: editedTodo?.completed,
-      ID: editedTodo?.ID,
+      completed: completed,
+      ID: ID,
     };
-
     fetch('http://localhost:8080/v1/todo', {
       method: 'PATCH',
       headers: headers,
@@ -80,6 +92,7 @@ const TodoList = ({ reloadCount }: { reloadCount: number }) => {
     }).then((response) => {
       if (response.ok) {
         showSuccessAlert('更新完了', 'todoの更新が完了しました');
+        setEditedTodo(undefined);
         setEditMode(false);
         setReloadCount(reloadCount + 1);
       } else {
@@ -88,39 +101,32 @@ const TodoList = ({ reloadCount }: { reloadCount: number }) => {
     });
   };
 
-  // const copyTodo = async (todo: Todo) => {
-  //   const nowTime = Timestamp.now();
+  const copyTodo = async (todo: Todo) => {
+    if (user_id == null) {
+      showErrorAlert('todoコピー失敗', 'todoのコピー中に失敗しました');
+      return;
+    }
+    todo.user_id = user_id;
+    fetch('http://localhost:8080/v1/todo', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(todo),
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        if (responseData.error) {
+          showErrorAlert('todoのコピーに失敗しました', '');
+          return;
+        } else {
+          showSuccessAlert('登録完了', 'Todoを登録しました');
+          setReloadCount((prev) => prev + 1);
+        }
+      });
+  };
 
-  //   try {
-  //     await addDoc(collection(db, 'todo'), {
-  //       user_id: user_id,
-  //       context: todo.context,
-  //       place: todo.place,
-  //       placeUrl: todo.placeUrl,
-  //       detail: todo.detail,
-  //       updated_at: nowTime,
-  //     });
-  //   } catch (error) {
-  //     await showErrorAlert(
-  //       'TodoのCopy時にエラーが起きました。',
-  //       '下記を管理者に連絡してください。${error}',
-  //     );
-  //     return;
-  //   }
-
-  //   const newTodo: Todo = {
-  //     doc_id: '',
-  //     user_id: user_id,
-  //     context: todo.context,
-  //     place: todo.place,
-  //     placeUrl: todo.placeUrl,
-  //     detail: todo.detail,
-  //     timeLimit: todo.timeLimit,
-  //     updated_at: nowTime,
-  //   };
-  //   setTodos((prevTodos) => [...prevTodos, newTodo]);
-  // };
-
+  // todoの削除
   const deleteTodo = async (todo: Todo) => {
     fetch('http://localhost:8080/v1/todo', {
       method: 'DELETE',
@@ -152,6 +158,7 @@ const TodoList = ({ reloadCount }: { reloadCount: number }) => {
                 key={todo.ID}
                 className="flex flex-col justify-center p-1 m-1 shadow-2xl space-y-1"
               >
+                {/* 編集状態の場合 */}
                 {editMode && todo.ID === editedTodo!.ID ? (
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex flex-col p-1 space-y-1 bg-gray-200">
