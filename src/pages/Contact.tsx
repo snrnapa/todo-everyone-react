@@ -1,7 +1,7 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { NotePencil, PaperPlane } from 'phosphor-react';
 import { IconButton } from '@mui/material';
-import useCurrentUser from '../components/hooks/UseCurrentUser';
+import useCurrentUser from '../components/hooks/useCurrentUser';
 
 type ContactInput = {
   context: string;
