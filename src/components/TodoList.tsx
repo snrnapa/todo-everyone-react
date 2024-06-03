@@ -53,18 +53,19 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
 
   useEffect(() => {
     const getTodos = async () => {
-      fetch('http://localhost:8080/v1/todos', {
-        method: 'GET',
-        headers: headers,
-      })
-        .then((response) => response.json())
-        .then((responseData) => {
-          console.log(responseData);
-          setTodos(responseData);
-        })
-        .catch((error) => {
-          showErrorAlert('errorが発生しました', `${error}`);
+      try {
+        const response = await fetch('http://localhost:8080/v1/todos', {
+          method: 'GET',
+          headers: headers,
         });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const responseData = await response.json();
+        setTodos(responseData);
+      } catch (error) {
+        showErrorAlert('errorが発生しました', `${error}`);
+      }
     };
     getTodos();
   }, [reloadCount]);

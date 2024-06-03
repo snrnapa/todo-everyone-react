@@ -3,18 +3,18 @@ import { IconButton } from '@mui/material';
 import { useState } from 'react';
 import TodoInputForm from './form/TodoInputForm';
 import TodoList from './TodoList';
-import useUserInfo from './hooks/useUserInfo';
 import usePostTodo from './hooks/usePostTodo';
 
 const Todo = () => {
-  const { userInfo, loading } = useUserInfo();
+  // const { userInfo, loading } = useUserInfo();
   const [postFlg, setPostFlg] = useState<boolean>(false);
   const token = localStorage.getItem('firebaseToken');
   const [reloadCount, setReloadCount] = useState(0);
+  const userId = localStorage.getItem('firebaseUserId');
 
-  const { postTodo } = usePostTodo(userInfo, token, setReloadCount);
+  const { postTodo } = usePostTodo(userId, token, setReloadCount);
 
-  if (loading) {
+  if (userId == null) {
     return <div>Loading Now......</div>;
   }
 

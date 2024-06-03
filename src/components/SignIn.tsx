@@ -3,12 +3,13 @@ import { Button, TextField } from '@mui/material';
 import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 import { auth } from '../libs/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import React from 'react';
 
 // Login画面で使用するinputの型を宣言
 type LoginInputs = {
   email: string;
   password: string;
-  submit: any;
+  submit: (event: React.FormEvent<HTMLFormElement>) => void;
 };
 
 const SignIn = () => {
@@ -16,11 +17,8 @@ const SignIn = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<LoginInputs>();
-
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // submitが押下されたタイミングで行う動作
   const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
@@ -30,14 +28,14 @@ const SignIn = () => {
         data.email,
         data.password,
       );
-      const token = await loginUser.user.getIdToken;
+      const token = await loginUser.user.getIdToken();
       const userId = loginUser.user.uid;
       localStorage.setItem('firebaseToken', token);
       localStorage.setItem('firebaseUserId', userId);
 
-      showSuccessAlert('ログイン成功', 'ログインに成功しました。');
+      await showSuccessAlert('ログイン成功', 'ログインに成功しました。');
     } catch (error) {
-      showErrorAlert('ログイン失敗', `ログインに失敗しました。${error}`);
+      await showErrorAlert('ログイン失敗', `ログインに失敗しました。${error}`);
     }
   };
 

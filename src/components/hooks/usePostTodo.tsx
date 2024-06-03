@@ -9,21 +9,17 @@ interface PostInput {
   completed: boolean;
 }
 
-type UserInfo = {
-  userId: string;
-};
-
 const usePostTodo = (
-  userInfo: UserInfo | null,
+  userId: string | null,
   token: string | null,
   setReloadCount: React.Dispatch<React.SetStateAction<number>>,
 ) => {
   const [errorMassage, setErrorMessage] = useState<string | null>(null);
 
   const postTodo: SubmitHandler<PostInput> = async (data, event) => {
-    if (userInfo && token) {
+    if (userId && token) {
       const todoData = {
-        user_id: userInfo.userId,
+        user_id: userId,
         title: data.title,
         detail: data.detail,
         completed: data.completed,
