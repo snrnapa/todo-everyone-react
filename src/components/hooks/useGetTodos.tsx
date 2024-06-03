@@ -33,7 +33,7 @@ const useGetTodos = (reloadCount: number, headers: HeadersInit) => {
       }
     };
     getTodos();
-  }, [reloadCount, headers]);
+  }, [reloadCount]);
 
   return todos;
 };

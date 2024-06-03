@@ -2,16 +2,11 @@ import { IconButton, TextField } from '@mui/material';
 import { Check, XCircle } from 'phosphor-react';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-
-type PostInput = {
-  title: string;
-  detail: string;
-  limit: Date;
-};
+import { Todo } from '../../model/TodoTypes';
 
 interface TodoFormProps {
-  defaultValues: PostInput;
-  onSubmit: SubmitHandler<PostInput>;
+  defaultValues: Todo;
+  onSubmit: SubmitHandler<Todo>;
   onCancel: () => void;
 }
 
@@ -20,11 +15,15 @@ const TodoForm: React.FC<TodoFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
+  const formattedDefaultValues = {
+    ...defaultValues,
+    limit: defaultValues.limit.split('T')[0],
+  };
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PostInput>({ defaultValues });
+  } = useForm<Todo>({ defaultValues: formattedDefaultValues });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 
 import { SubmitHandler } from 'react-hook-form';
 import { showErrorAlert, showSuccessAlert } from '../model/Utils';
-import { PostInput, Todo } from '../model/TodoTypes';
+import { Todo } from '../model/TodoTypes';
 import useGetTodos from './hooks/useGetTodos';
-import TodoForm from './form/TodoForm';
 import TodoItem from './TodoItem';
 
 interface TodoListProps {
@@ -28,6 +27,11 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
     setEditMode(true);
   };
 
+  const onCancel = () => {
+    setEditedTodo(undefined);
+    setEditMode(false);
+  };
+
   const handleDelete = async (todo: Todo) => {
     fetch('http://localhost:8080/v1/todo', {
       method: 'DELETE',
@@ -46,7 +50,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
     });
   };
 
-  const handleSubmit: SubmitHandler<PostInput> = async (data) => {
+  const handleSubmit: SubmitHandler<Todo> = async (data) => {
     if (!editedTodo) return;
 
     const todoData: Todo = {
@@ -109,24 +113,17 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
                 key={todo.ID}
                 todo={todo}
                 onEdit={() => handleEdit(todo)}
+                onSubmit={handleSubmit}
+                onCancel={() => onCancel()}
                 onDelete={() => handleDelete(todo)}
+                editMode={editMode}
+                editedTodo={editedTodo}
               />
             ))
         ) : (
           <div>
             <p>やることがありません🥺🥺</p>
           </div>
-        )}
-        {editMode && editedTodo && (
-          <TodoForm
-            defaultValues={{
-              title: editedTodo.title,
-              detail: editedTodo.detail,
-              limit: new Date(editedTodo.limit),
-            }}
-            onSubmit={handleSubmit}
-            onCancel={() => setEditMode(false)}
-          />
         )}
       </div>
     </div>
