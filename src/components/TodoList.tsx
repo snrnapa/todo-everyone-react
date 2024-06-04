@@ -57,7 +57,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
       ...editedTodo,
       title: data.title,
       detail: data.detail,
-      limit: new Date(data.limit).toISOString(),
+      deadline: new Date(data.deadline).toISOString(),
     };
 
     fetch('http://localhost:8080/v1/todo', {
@@ -86,7 +86,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
       user_id: user_id,
       title: todo.title,
       detail: todo.detail,
-      limit: todo.limit,
+      deadline: todo.deadline,
     };
     fetch('http://localhost:8080/v1/todo', {
       method: 'POST',

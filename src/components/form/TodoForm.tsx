@@ -17,7 +17,7 @@ const TodoForm: React.FC<TodoFormProps> = ({
 }) => {
   const formattedDefaultValues = {
     ...defaultValues,
-    limit: defaultValues.limit.split('T')[0],
+    deadline: defaultValues.deadline.split('T')[0],
   };
   const {
     register,
@@ -58,13 +58,13 @@ const TodoForm: React.FC<TodoFormProps> = ({
         )}
         <TextField
           type="date"
-          {...register('limit', {})}
+          {...register('deadline', {})}
           id="filled-basic"
           variant="filled"
           className="bg-white"
         />
-        {errors.limit?.message && (
-          <p className="text-red-800 text-sm">{errors.limit?.message}</p>
+        {errors.deadline?.message && (
+          <p className="text-red-800 text-sm">{errors.deadline?.message}</p>
         )}
       </div>
       <div className="flex justify-center space-x-3">

@@ -4,7 +4,7 @@ import { showErrorAlert } from '../../model/Utils';
 type Todo = {
   user_id: string;
   title: string;
-  limit: string;
+  deadline: string;
   detail: string;
   completed: boolean;
   ID: number;

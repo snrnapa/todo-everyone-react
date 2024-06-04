@@ -5,7 +5,7 @@ import { formatTodayForInput } from '../../model/Utils';
 interface FormValue {
   title: string;
   detail: string;
-  limit: string;
+  deadline: string;
   completed: boolean;
 }
 interface TodoInputFormProps {
@@ -70,15 +70,15 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ onSubmit }) => {
         {/* 締切日 */}
         <TextField
           type="date"
-          {...register('limit', {})}
-          id="limit"
+          {...register('deadline', {})}
+          id="deadline"
           variant="filled"
           defaultValue={today}
           className="bg-white"
           InputProps={{ className: 'focus:ring-blue-500' }}
         />
-        {errors.limit?.message && (
-          <p className="text-red-800 text-sm">{errors.limit?.message}</p>
+        {errors.deadline?.message && (
+          <p className="text-red-800 text-sm">{errors.deadline?.message}</p>
         )}
         <Button type="submit">追加</Button>
       </div>

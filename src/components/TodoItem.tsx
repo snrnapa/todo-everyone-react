@@ -44,7 +44,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
             <p className="text-gray-400 text-sm">{todo.detail}</p>
             <div className="flex">
               <Timer size={20} color="#120fd2" weight="thin" />
-              <p className="text-sm">{formatDateForInput(todo.limit)}</p>
+              <p className="text-sm">{formatDateForInput(todo.deadline)}</p>
             </div>
 
             {myTodoFlg ? (
@@ -60,6 +60,10 @@ const TodoItem: React.FC<TodoItemProps> = ({
               <div className="flex justify-start space-x-3">
                 <IconButton onClick={onCopy}>
                   <Copy size={28} color="#120fd2" weight="thin" />
+                </IconButton>
+
+                <IconButton onClick={onFavorite}>
+                  <Star size={28} color="#120fd2" weight="thin" />
                 </IconButton>
               </div>
             )}

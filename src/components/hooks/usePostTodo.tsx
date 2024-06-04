@@ -5,7 +5,7 @@ import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
 interface PostInput {
   title: string;
   detail: string;
-  limit: string;
+  deadline: string;
   completed: boolean;
 }
 
@@ -23,7 +23,7 @@ const usePostTodo = (
         title: data.title,
         detail: data.detail,
         completed: data.completed,
-        limit: new Date(data.limit).toISOString(),
+        deadline: new Date(data.deadline).toISOString(),
       };
       try {
         const response = await fetch('http://localhost:8080/v1/todo', {
