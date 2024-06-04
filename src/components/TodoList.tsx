@@ -76,23 +76,30 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
     });
   };
 
-  const copyTodo = async (todo: Todo) => {
+  const onCopy = async (todo: Todo) => {
     if (user_id == null) {
       showErrorAlert('todoコピー失敗', 'todoのコピー中に失敗しました');
       return;
     }
-    todo.user_id = user_id;
+
+    const newTodo: Todo = {
+      user_id: user_id,
+      title: todo.title,
+      detail: todo.detail,
+      limit: todo.limit,
+    };
     fetch('http://localhost:8080/v1/todo', {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(todo),
+      headers: headers,
+      body: JSON.stringify(newTodo),
     })
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.error) {
-          showErrorAlert('todoのコピーに失敗しました', '');
+          showErrorAlert(
+            'todoのコピー失敗',
+            `todoのコピー中にエラーが発生しました${responseData.error}`,
+          );
           return;
         } else {
           showSuccessAlert('登録完了', 'Todoを登録しました');
@@ -116,8 +123,35 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
                 onSubmit={handleSubmit}
                 onCancel={() => onCancel()}
                 onDelete={() => handleDelete(todo)}
+                onCopy={() => onCopy(todo)}
                 editMode={editMode}
                 editedTodo={editedTodo}
+                myTodoFlg={true}
+              />
+            ))
+        ) : (
+          <div>
+            <p>やることがありません🥺🥺</p>
+          </div>
+        )}
+      </div>
+      <div className="bg-orange-200 border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
+        <p className="text-xl text-center font-Darumadrop">みんなのよてい</p>
+        {todos.length > 0 ? (
+          todos
+            .filter((todo) => todo.user_id != user_id)
+            .map((todo) => (
+              <TodoItem
+                key={todo.ID}
+                todo={todo}
+                onEdit={() => handleEdit(todo)}
+                onSubmit={handleSubmit}
+                onCancel={() => onCancel()}
+                onDelete={() => handleDelete(todo)}
+                onCopy={() => onCopy(todo)}
+                editMode={editMode}
+                editedTodo={editedTodo}
+                myTodoFlg={false}
               />
             ))
         ) : (

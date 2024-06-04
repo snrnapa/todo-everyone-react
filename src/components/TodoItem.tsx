@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, IconButton } from '@mui/material';
-import { Trash, Pen, Timer } from 'phosphor-react';
+import { Trash, Pen, Timer, Copy } from 'phosphor-react';
 import { Todo } from '../model/TodoTypes';
 import { formatDateForInput } from '../model/Utils';
 import TodoForm from './form/TodoForm';
@@ -11,8 +11,10 @@ interface TodoItemProps {
   onSubmit: (data: Todo) => void;
   onCancel: () => void;
   onDelete: () => void;
+  onCopy: () => void;
   editMode: boolean;
   editedTodo?: Todo;
+  myTodoFlg: boolean;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({
@@ -21,8 +23,10 @@ const TodoItem: React.FC<TodoItemProps> = ({
   onSubmit,
   onCancel,
   onDelete,
+  onCopy,
   editMode,
   editedTodo,
+  myTodoFlg,
 }) => {
   return (
     <div>
@@ -42,14 +46,23 @@ const TodoItem: React.FC<TodoItemProps> = ({
               <Timer size={20} color="#120fd2" weight="thin" />
               <p className="text-sm">{formatDateForInput(todo.limit)}</p>
             </div>
-            <div className="flex justify-start space-x-3">
-              <IconButton onClick={onDelete}>
-                <Trash size={28} color="#120fd2" weight="thin" />
-              </IconButton>
-              <IconButton onClick={onEdit}>
-                <Pen size={28} color="#120fd2" weight="thin" />
-              </IconButton>
-            </div>
+
+            {myTodoFlg ? (
+              <div className="flex justify-start space-x-3">
+                <IconButton onClick={onDelete}>
+                  <Trash size={28} color="#120fd2" weight="thin" />
+                </IconButton>
+                <IconButton onClick={onEdit}>
+                  <Pen size={28} color="#120fd2" weight="thin" />
+                </IconButton>
+              </div>
+            ) : (
+              <div className="flex justify-start space-x-3">
+                <IconButton onClick={onCopy}>
+                  <Copy size={28} color="#120fd2" weight="thin" />
+                </IconButton>
+              </div>
+            )}
           </div>
         </Card>
       )}
