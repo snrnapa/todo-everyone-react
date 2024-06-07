@@ -18,3 +18,7 @@ export type PostInput = {
   detail: string;
   deadline: Date;
 };
+
+export type CommentInput = {
+  commentText: string;
+};

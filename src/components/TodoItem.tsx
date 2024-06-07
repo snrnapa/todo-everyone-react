@@ -8,10 +8,12 @@ import {
   Bookmark,
   Heart,
   Confetti,
+  Chat,
 } from 'phosphor-react';
 import { Todo } from '../model/TodoTypes';
 import { formatDateForInput, showErrorAlert } from '../model/Utils';
 import TodoForm from './form/TodoForm';
+import CommentForm from './form/CommentForm';
 
 type AdditionInput = {
   todo_id: number;
@@ -19,6 +21,12 @@ type AdditionInput = {
   is_favorite: boolean;
   is_booked: boolean;
   is_cheered: boolean;
+};
+
+type Comment = {
+  user_id: string;
+  todo_id: number;
+  text: string;
 };
 
 interface TodoItemProps {
@@ -44,6 +52,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   editedTodo,
   myTodoFlg,
 }) => {
+  const [isComment, setIsComment] = useState(false);
   const [isCheered, setIsCheered] = useState(todo.is_cheered_me);
   const [isFavo, setIsFavo] = useState(todo.is_favorite_me);
   const [isBooked, setIsBooked] = useState(todo.is_booked_me);
@@ -75,6 +84,10 @@ const TodoItem: React.FC<TodoItemProps> = ({
         console.log(response.ok);
       }
     });
+  };
+
+  const handleDispComment = () => {
+    setIsComment(!isComment);
   };
 
   const handleIsCheered = () => {
@@ -114,44 +127,118 @@ const TodoItem: React.FC<TodoItemProps> = ({
             {myTodoFlg ? (
               <div className="flex flex-col space-x-3">
                 <div className="flex justify-start space-x-3">
-                  <IconButton onClick={handleIsCheered}>
-                    <Confetti
-                      size={28}
-                      color={isCheered ? '#DC143C' : '#A9A9A9'}
-                      weight={isCheered ? 'fill' : 'thin'}
-                    />
-                  </IconButton>
-                  <IconButton onClick={handleIsFavo}>
-                    <Heart
-                      size={28}
-                      color={isFavo ? '#DC143C' : '#A9A9A9'}
-                      weight={isFavo ? 'fill' : 'thin'}
-                    />
-                  </IconButton>
-                  <IconButton onClick={handleIsBooked}>
-                    <Bookmark
-                      size={28}
-                      color={isBooked ? '#DC143C' : '#A9A9A9'}
-                      weight={isBooked ? 'fill' : 'thin'}
-                    />
-                  </IconButton>
+                  <div className="flex items-center">
+                    <IconButton onClick={handleIsCheered}>
+                      <Confetti
+                        size={15}
+                        color={isCheered ? '#DC143C' : '#A9A9A9'}
+                        weight={isCheered ? 'fill' : 'thin'}
+                      />
+                    </IconButton>
+                    <p className="text-xs text-slate-700">
+                      {todo.cheered_count}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center">
+                    <IconButton onClick={handleIsFavo}>
+                      <Heart
+                        size={15}
+                        color={isFavo ? '#DC143C' : '#A9A9A9'}
+                        weight={isFavo ? 'fill' : 'thin'}
+                      />
+                    </IconButton>
+                    <p className="text-xs text-slate-700">
+                      {todo.favorite_count}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center">
+                    <IconButton onClick={handleIsBooked}>
+                      <Bookmark
+                        size={15}
+                        color={isBooked ? '#DC143C' : '#A9A9A9'}
+                        weight={isBooked ? 'fill' : 'thin'}
+                      />
+                    </IconButton>
+                    <p className="text-xs text-slate-700">
+                      {todo.booked_count}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="flex justify-start space-x-3">
+                  <IconButton onClick={handleDispComment}>
+                    <Chat size={20} color="#120fd2" weight="thin" />
+                  </IconButton>
                   <IconButton onClick={onDelete}>
-                    <Trash size={28} color="#120fd2" weight="thin" />
+                    <Trash size={20} color="#120fd2" weight="thin" />
                   </IconButton>
                   <IconButton onClick={onEdit}>
-                    <Pen size={28} color="#120fd2" weight="thin" />
+                    <Pen size={20} color="#120fd2" weight="thin" />
                   </IconButton>
                 </div>
               </div>
             ) : (
-              <div className="flex justify-start space-x-3">
-                <IconButton onClick={onCopy}>
-                  <Copy size={28} color="#120fd2" weight="thin" />
-                </IconButton>
+              <div className="flex flex-col items-start  space-x-3">
+                <div className="flex justify-start space-x-3">
+                  <div className="flex items-center">
+                    <IconButton onClick={handleIsCheered}>
+                      <Confetti
+                        size={15}
+                        color={isCheered ? '#DC143C' : '#A9A9A9'}
+                        weight={isCheered ? 'fill' : 'thin'}
+                      />
+                    </IconButton>
+                    <p className="text-xs text-slate-700">
+                      {todo.cheered_count}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center">
+                    <IconButton onClick={handleIsFavo}>
+                      <Heart
+                        size={15}
+                        color={isFavo ? '#DC143C' : '#A9A9A9'}
+                        weight={isFavo ? 'fill' : 'thin'}
+                      />
+                    </IconButton>
+                    <p className="text-xs text-slate-700">
+                      {todo.favorite_count}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center">
+                    <IconButton onClick={handleIsBooked}>
+                      <Bookmark
+                        size={15}
+                        color={isBooked ? '#DC143C' : '#A9A9A9'}
+                        weight={isBooked ? 'fill' : 'thin'}
+                      />
+                    </IconButton>
+                    <p className="text-xs text-slate-700">
+                      {todo.booked_count}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <IconButton onClick={onCopy}>
+                    <Copy size={20} color="#120fd2" weight="thin" />
+                  </IconButton>
+                  {/* <IconButton component={Link} to={`/todo/${todo.id}`}>
+                    <Chat size={20} color="#120fd2" weight="thin" />
+                  </IconButton> */}
+                  <IconButton onClick={handleDispComment}>
+                    <Chat size={20} color="#120fd2" weight="thin" />
+                  </IconButton>
+                </div>
               </div>
+            )}
+
+            {isComment ? (
+              <CommentForm onCancel={handleDispComment} todoId={todo.id} />
+            ) : (
+              <div></div>
             )}
           </div>
         </Card>

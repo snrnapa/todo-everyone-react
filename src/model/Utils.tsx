@@ -51,3 +51,11 @@ export const parseDatetoYYYYMMDD = (dateString: string) => {
   const formattedDate = `${year}/${month}/${day}`;
   return formattedDate;
 };
+
+export const initTokenHeader = () => {
+  const token = localStorage.getItem('firebaseToken');
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  return headers;
+};
