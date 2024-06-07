@@ -1,13 +1,16 @@
 export type Todo = {
+  id: number;
   user_id: string;
   title: string;
-  deadline: string;
   detail: string;
+  deadline: string;
   completed: boolean;
-  ID: number;
-  CreatedAt: string;
-  UpdatedAt: string;
-  DeletedAt: string | null;
+  favorite_count: number;
+  booked_count: number;
+  cheered_count: number;
+  is_favorite_me: boolean;
+  is_booked_me: boolean;
+  is_cheered_me: boolean;
 };
 
 export type PostInput = {

@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, IconButton } from '@mui/material';
-import { Trash, Pen, Timer, Copy } from 'phosphor-react';
+import {
+  Trash,
+  Pen,
+  Timer,
+  Copy,
+  Bookmark,
+  Heart,
+  Confetti,
+} from 'phosphor-react';
 import { Todo } from '../model/TodoTypes';
-import { formatDateForInput } from '../model/Utils';
+import { formatDateForInput, showErrorAlert } from '../model/Utils';
 import TodoForm from './form/TodoForm';
+
+type AdditionInput = {
+  todo_id: number;
+  user_id: string;
+  is_favorite: boolean;
+  is_booked: boolean;
+  is_cheered: boolean;
+};
 
 interface TodoItemProps {
   todo: Todo;
@@ -28,11 +44,59 @@ const TodoItem: React.FC<TodoItemProps> = ({
   editedTodo,
   myTodoFlg,
 }) => {
+  const [isCheered, setIsCheered] = useState(todo.is_cheered_me);
+  const [isFavo, setIsFavo] = useState(todo.is_favorite_me);
+  const [isBooked, setIsBooked] = useState(todo.is_booked_me);
+  const token = localStorage.getItem('firebaseToken');
+
+  const updateAddition = (todo: Todo) => {
+    const targetInfo: AdditionInput = {
+      todo_id: todo.id,
+      user_id: todo.user_id,
+      is_favorite: todo.is_favorite_me,
+      is_cheered: todo.is_cheered_me,
+      is_booked: todo.is_booked_me,
+    };
+
+    fetch('http://localhost:8080/v1/addition', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(targetInfo),
+    }).then((response) => {
+      if (!response.ok) {
+        showErrorAlert(
+          '更新エラー',
+          `ステータス更新中にエラーが発生しました。${response.json}`,
+        );
+      } else {
+        console.log(response.ok);
+      }
+    });
+  };
+
+  const handleIsCheered = () => {
+    todo.is_cheered_me = !isCheered;
+    updateAddition(todo);
+    setIsCheered(todo.is_cheered_me);
+  };
+  const handleIsFavo = () => {
+    todo.is_favorite_me = !isFavo;
+    updateAddition(todo);
+    setIsFavo(todo.is_favorite_me);
+  };
+  const handleIsBooked = () => {
+    todo.is_booked_me = !isBooked;
+    updateAddition(todo);
+    setIsBooked(todo.is_booked_me);
+  };
   return (
     <div>
-      {editMode && editedTodo.ID == todo.ID ? (
+      {editMode && editedTodo.id == todo.id ? (
         <TodoForm
-          key={todo.ID}
+          key={todo.id}
           defaultValues={todo}
           onCancel={onCancel}
           onSubmit={onSubmit}
@@ -48,22 +112,44 @@ const TodoItem: React.FC<TodoItemProps> = ({
             </div>
 
             {myTodoFlg ? (
-              <div className="flex justify-start space-x-3">
-                <IconButton onClick={onDelete}>
-                  <Trash size={28} color="#120fd2" weight="thin" />
-                </IconButton>
-                <IconButton onClick={onEdit}>
-                  <Pen size={28} color="#120fd2" weight="thin" />
-                </IconButton>
+              <div className="flex flex-col space-x-3">
+                <div className="flex justify-start space-x-3">
+                  <IconButton onClick={handleIsCheered}>
+                    <Confetti
+                      size={28}
+                      color={isCheered ? '#DC143C' : '#A9A9A9'}
+                      weight={isCheered ? 'fill' : 'thin'}
+                    />
+                  </IconButton>
+                  <IconButton onClick={handleIsFavo}>
+                    <Heart
+                      size={28}
+                      color={isFavo ? '#DC143C' : '#A9A9A9'}
+                      weight={isFavo ? 'fill' : 'thin'}
+                    />
+                  </IconButton>
+                  <IconButton onClick={handleIsBooked}>
+                    <Bookmark
+                      size={28}
+                      color={isBooked ? '#DC143C' : '#A9A9A9'}
+                      weight={isBooked ? 'fill' : 'thin'}
+                    />
+                  </IconButton>
+                </div>
+
+                <div className="flex justify-start space-x-3">
+                  <IconButton onClick={onDelete}>
+                    <Trash size={28} color="#120fd2" weight="thin" />
+                  </IconButton>
+                  <IconButton onClick={onEdit}>
+                    <Pen size={28} color="#120fd2" weight="thin" />
+                  </IconButton>
+                </div>
               </div>
             ) : (
               <div className="flex justify-start space-x-3">
                 <IconButton onClick={onCopy}>
                   <Copy size={28} color="#120fd2" weight="thin" />
-                </IconButton>
-
-                <IconButton onClick={onFavorite}>
-                  <Star size={28} color="#120fd2" weight="thin" />
                 </IconButton>
               </div>
             )}
