@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react';
+import {
+  Note,
+  Timer,
+  Bookmark,
+  Heart,
+  Confetti,
+  Chat,
+  Divide,
+} from 'phosphor-react';
 import { useParams } from 'react-router-dom';
 import { showErrorAlert } from '../model/Utils';
-import { Card } from '@mui/material';
+import { Card, Divider } from '@mui/material';
 
 // Commentの型定義
 interface Comment {
@@ -69,26 +78,51 @@ const TodoInfo = () => {
 
   return (
     <div>
-      <Card className="flex flex-col justify-center p-1 m-1 shadow-2xl space-y-1">
-        <div>
-          <p className="text-sm">{todoInfo.title}</p>
-          <p className="text-gray-400 text-sm">{todoInfo.detail}</p>
-          <p className="text-gray-400 text-sm">{todoInfo.deadline}</p>
-          <p className="text-gray-400 text-sm">{todoInfo.booked_count}</p>
-          <p className="text-gray-400 text-sm">{todoInfo.cheered_count}</p>
-          <p className="text-gray-400 text-sm">{todoInfo.comment_count}</p>
-          <p className="text-gray-400 text-sm">{todoInfo.favorite_count}</p>
-          <p className="text-gray-400 text-sm">{todoInfo.favorite_count}</p>
-          <div className="space-y-3 ">
-            {(todoInfo.comments ?? []).map((comment) => (
-              <Card className="p-2">
-                <p className="text-sm">{comment.user_id}</p>
-                <p className="text-sm">{comment.text}</p>
-              </Card>
-            ))}
+      <div className="flex flex-col justify-center p-1 m-1 shadow-2xl space-y-1  rounded-lg">
+        <p className="text-base">{todoInfo.title}</p>
+
+        <div className="flex flex-col bg-sky-100 rounded-2xl p-2 text-sm">
+          <Note size={20} />
+          <p className="">{todoInfo.detail}</p>
+        </div>
+
+        <div className="flex space-x-2">
+          <Timer size={25} />
+          <p className="text-gray-400 ">{todoInfo.deadline}</p>
+        </div>
+
+        <div className="flex space-x-4">
+          <div className="flex space-x-1">
+            <Heart size={25} />
+            <p className="text-gray-400 text-sm">{todoInfo.favorite_count}</p>
+          </div>
+
+          <div className="flex space-x-1">
+            <Bookmark size={25} />
+            <p className="text-gray-400 text-sm">{todoInfo.booked_count}</p>
+          </div>
+
+          <div className="flex space-x-1">
+            <Confetti size={25} />
+            <p className="text-gray-400 text-sm">{todoInfo.cheered_count}</p>
+          </div>
+
+          <div className="flex space-x-1">
+            <Chat size={25} />
+            <p className="text-gray-400 text-sm">{todoInfo.comment_count}</p>
           </div>
         </div>
-      </Card>
+      </div>
+
+      <Divider />
+      <div className="space-y-3 p-3 ">
+        {(todoInfo.comments ?? []).map((comment) => (
+          <Card className="p-2 space-y-2">
+            <p className="text-sm text-gray-500">{comment.user_id}</p>
+            <p className="text-base">{comment.text}</p>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };
