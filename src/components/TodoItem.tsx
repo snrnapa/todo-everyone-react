@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardActions, IconButton } from '@mui/material';
+import { Card, IconButton } from '@mui/material';
 import {
   Trash,
   Pen,
@@ -9,6 +9,8 @@ import {
   Heart,
   Confetti,
   Chat,
+  CheckSquare,
+  Square,
 } from 'phosphor-react';
 import { Todo } from '../model/TodoTypes';
 import { formatDateForInput, showErrorAlert } from '../model/Utils';
@@ -57,7 +59,9 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const [isCheered, setIsCheered] = useState(todo.is_cheered_me);
   const [isFavo, setIsFavo] = useState(todo.is_favorite_me);
   const [isBooked, setIsBooked] = useState(todo.is_booked_me);
+  const [isCompleted, setIsCompleted] = useState(todo.completed);
   const token = localStorage.getItem('firebaseToken');
+  const firebaseUserId = localStorage.getItem('firebaseUserId');
 
   const navigate = useNavigate();
 
@@ -89,6 +93,21 @@ const TodoItem: React.FC<TodoItemProps> = ({
     });
   };
 
+  const updateCompleted = (todo: Todo) => {
+    if (firebaseUserId && firebaseUserId == todo.user_id) {
+      fetch('http://localhost:8080/v1/todo', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(todo),
+      });
+
+      console.log(todo);
+    }
+  };
+
   const handleDispComment = () => {
     setIsComment(!isComment);
   };
@@ -109,9 +128,16 @@ const TodoItem: React.FC<TodoItemProps> = ({
     setIsBooked(todo.is_booked_me);
   };
 
-  const navigateTodoInfo = (todoId) => {
+  const handleIsCompleted = () => {
+    todo.completed = !isCompleted;
+    updateCompleted(todo);
+    setIsCompleted(todo.completed);
+  };
+
+  const navigateTodoInfo = (todoId: string) => {
     navigate(`/todo/${todoId}`);
   };
+
   return (
     <div>
       {editMode && editedTodo.id == todo.id ? (
@@ -124,14 +150,39 @@ const TodoItem: React.FC<TodoItemProps> = ({
       ) : (
         <Card className="flex flex-col justify-center p-1 m-1 shadow-2xl space-y-1">
           <div className="flex flex-col space-y-1">
+            {todo.completed ? (
+              <div
+                className="flex "
+                onClick={() => {
+                  handleIsCompleted();
+                }}
+              >
+                <CheckSquare size={20} color="#120fd2" weight="thin" />
+                <p className="text-sm">完了！</p>
+              </div>
+            ) : (
+              <div
+                className="flex"
+                onClick={() => {
+                  handleIsCompleted();
+                }}
+              >
+                <Square size={20} color="#120fd2" weight="thin" />
+                <p className="text-sm">未完了</p>
+              </div>
+            )}
             <div
+              className="flex flex-col space-y-2"
               onClick={() => {
                 navigateTodoInfo(todo.id);
               }}
             >
               <p className="text-sm">{todo.title}</p>
               <p className="text-gray-400 text-sm">{todo.detail}</p>
-              <div className="flex">
+              <div
+                className="flex space-x-2"
+                onClick={() => console.log('ボタンが押下されました')}
+              >
                 <Timer size={20} color="#120fd2" weight="thin" />
                 <p className="text-sm">{formatDateForInput(todo.deadline)}</p>
               </div>
