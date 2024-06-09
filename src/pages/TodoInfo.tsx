@@ -1,15 +1,7 @@
 import { useEffect, useState } from 'react';
-import {
-  Note,
-  Timer,
-  Bookmark,
-  Heart,
-  Confetti,
-  Chat,
-  Divide,
-} from 'phosphor-react';
+import { Note, Timer, Bookmark, Heart, Confetti, Chat } from 'phosphor-react';
 import { useParams } from 'react-router-dom';
-import { showErrorAlert } from '../model/Utils';
+import { formatDateForInput, showErrorAlert } from '../model/Utils';
 import { Card, Divider } from '@mui/material';
 
 // Commentの型定義
@@ -88,10 +80,16 @@ const TodoInfo = () => {
 
         <div className="flex space-x-2">
           <Timer size={25} />
-          <p className="text-gray-400 ">{todoInfo.deadline}</p>
+          <p className="text-gray-400 ">
+            {formatDateForInput(todoInfo.deadline)}
+          </p>
         </div>
 
         <div className="flex space-x-4">
+          <div className="flex space-x-1">
+            <Confetti size={25} />
+            <p className="text-gray-400 text-sm">{todoInfo.cheered_count}</p>
+          </div>
           <div className="flex space-x-1">
             <Heart size={25} />
             <p className="text-gray-400 text-sm">{todoInfo.favorite_count}</p>
@@ -100,11 +98,6 @@ const TodoInfo = () => {
           <div className="flex space-x-1">
             <Bookmark size={25} />
             <p className="text-gray-400 text-sm">{todoInfo.booked_count}</p>
-          </div>
-
-          <div className="flex space-x-1">
-            <Confetti size={25} />
-            <p className="text-gray-400 text-sm">{todoInfo.cheered_count}</p>
           </div>
 
           <div className="flex space-x-1">
@@ -119,7 +112,7 @@ const TodoInfo = () => {
         {(todoInfo.comments ?? []).map((comment) => (
           <Card className="p-2 space-y-2">
             <p className="text-sm text-gray-500">{comment.user_id}</p>
-            <p className="text-base">{comment.text}</p>
+            <p className="text-sm">{comment.text}</p>
           </Card>
         ))}
       </div>

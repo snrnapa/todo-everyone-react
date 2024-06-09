@@ -1,8 +1,9 @@
-import React from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { CommentInput } from '../../model/TodoTypes';
 import { Check, XCircle } from 'phosphor-react';
 import { IconButton } from '@mui/material';
+import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
 
 interface CommentInput {
   commentText: string;
@@ -15,7 +16,6 @@ type Comment = {
 };
 
 interface CommentFormProps {
-  // onSubmit: SubmitHandler<CommentInput>;
   todoId: number;
   onCancel: () => void;
 }
@@ -24,10 +24,13 @@ const CommentForm: React.FC<CommentFormProps> = ({ todoId, onCancel }) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<CommentInput>();
 
-  const postComment = (data) => {
+  const [errorMassage, setErrorMessage] = useState<string | null>(null);
+
+  const postComment = async (data) => {
     const token = localStorage.getItem('firebaseToken');
     const userId = localStorage.getItem('firebaseUserId');
     if (userId == null) {
@@ -39,7 +42,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ todoId, onCancel }) => {
       todo_id: todoId,
       text: data.commentText,
     };
-    fetch('http://localhost:8080/v1/comment', {
+    const response = await fetch('http://localhost:8080/v1/comment', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -47,6 +50,18 @@ const CommentForm: React.FC<CommentFormProps> = ({ todoId, onCancel }) => {
       },
       body: JSON.stringify(targetComment),
     });
+
+    const responseData = await response.json();
+    if (responseData.error) {
+      showErrorAlert(
+        'コメント失敗',
+        `コメントの投稿中にエラーが発生しました：${responseData.error}`,
+      );
+    } else {
+      showSuccessAlert('登録完了', 'コメントを投稿しました');
+      reset();
+      onCancel();
+    }
   };
 
   return (

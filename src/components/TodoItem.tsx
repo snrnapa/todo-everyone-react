@@ -235,13 +235,19 @@ const TodoItem: React.FC<TodoItemProps> = ({
                     </p>
                   </div>
                 </div>
-                <div>
+                <div className="flex justify-start space-x-3">
                   <IconButton onClick={onCopy}>
                     <Copy size={20} color="#120fd2" weight="thin" />
                   </IconButton>
-                  <IconButton onClick={handleDispComment}>
-                    <Chat size={20} color="#120fd2" weight="thin" />
-                  </IconButton>
+
+                  <div className="flex items-center">
+                    <IconButton onClick={handleDispComment}>
+                      <Chat size={20} color="#120fd2" weight="thin" />
+                    </IconButton>
+                    <p className="text-xs text-slate-700">
+                      {todo.comment_count}
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
