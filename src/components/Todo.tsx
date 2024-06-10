@@ -2,11 +2,10 @@ import { NotePencil, ArrowsInLineVertical } from 'phosphor-react';
 import { IconButton } from '@mui/material';
 import { useState } from 'react';
 import TodoInputForm from './form/TodoInputForm';
-import TodoList from './TodoList';
+import TodoList from './template/TodoList';
 import usePostTodo from './hooks/usePostTodo';
 
 const Todo = () => {
-  // const { userInfo, loading } = useUserInfo();
   const [postFlg, setPostFlg] = useState<boolean>(false);
   const token = localStorage.getItem('firebaseToken');
   const [reloadCount, setReloadCount] = useState(0);

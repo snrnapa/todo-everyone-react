@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 
 import { SubmitHandler } from 'react-hook-form';
-import { showErrorAlert, showSuccessAlert } from '../model/Utils';
-import { Todo } from '../model/TodoTypes';
-import useGetTodos from './hooks/useGetTodos';
+import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
+
+import useGetTodos from '../hooks/useGetTodos';
 import TodoItem from './TodoItem';
+import { Todo } from '../../model/TodoTypes';
 
 interface TodoListProps {
   reloadCount: number;
@@ -83,6 +84,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
     }
 
     const newTodo: Todo = {
+      ...todo,
       user_id: user_id,
       title: todo.title,
       detail: todo.detail,
