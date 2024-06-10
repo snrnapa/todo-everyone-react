@@ -1,23 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Todo } from '../../model/TodoTypes';
 import { IconButton } from '@mui/material';
-import {
-  Trash,
-  Pen,
-  Copy,
-  Bookmark,
-  Heart,
-  Confetti,
-  Chat,
-} from 'phosphor-react';
+import { Trash, Pen, Copy, Bookmark, Confetti, Chat } from 'phosphor-react';
+import { showErrorAlert } from '../../model/Utils';
+
+type AdditionInput = {
+  todo_id: number;
+  user_id: string;
+  is_booked: boolean;
+  is_cheered: boolean;
+};
 
 interface TodoItemTemplateProps {
   myTodoFlg: boolean;
   todo: Todo;
-  isCheered: boolean;
-  isBooked: boolean;
-  handleIsCheered: () => void;
-  handleIsBooked: () => void;
   handleIsCompleted: () => void;
   handleDispComment: () => void;
   onDelete: () => void;
@@ -28,15 +24,58 @@ interface TodoItemTemplateProps {
 const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
   myTodoFlg,
   todo,
-  isCheered,
-  isBooked,
-  handleIsCheered,
-  handleIsBooked,
   handleDispComment,
   onDelete,
   onCopy,
   onEdit,
 }) => {
+  const [isCheered, setIsCheered] = useState(todo.is_cheered_me);
+  const [isBooked, setIsBooked] = useState(todo.is_booked_me);
+  const token = localStorage.getItem('firebaseToken');
+  const firebaseUserId = localStorage.getItem('firebaseUserId');
+
+  const handleIsCheered = () => {
+    todo.is_cheered_me = !isCheered;
+    updateAddition(todo);
+    setIsCheered(todo.is_cheered_me);
+  };
+
+  const handleIsBooked = () => {
+    todo.is_booked_me = !isBooked;
+    updateAddition(todo);
+    setIsBooked(todo.is_booked_me);
+  };
+
+  const updateAddition = (todo: Todo) => {
+    if (!firebaseUserId) {
+      return;
+    }
+    const targetInfo: AdditionInput = {
+      todo_id: todo.id,
+      user_id: firebaseUserId,
+      is_cheered: todo.is_cheered_me,
+      is_booked: todo.is_booked_me,
+    };
+
+    fetch('http://localhost:8080/v1/addition', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(targetInfo),
+    }).then((response) => {
+      if (!response.ok) {
+        showErrorAlert(
+          '更新エラー',
+          `ステータス更新中にエラーが発生しました。${response.json}`,
+        );
+      } else {
+        console.log(response.ok);
+      }
+    });
+  };
+
   if (myTodoFlg) {
     return (
       <div className="flex flex-col space-x-3">

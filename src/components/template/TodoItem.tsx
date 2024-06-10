@@ -2,19 +2,12 @@ import React, { useState } from 'react';
 import { Card } from '@mui/material';
 import { Timer } from 'phosphor-react';
 import { Todo } from '../../model/TodoTypes';
-import { formatDateForInput, showErrorAlert } from '../../model/Utils';
+import { formatDateForInput } from '../../model/Utils';
 import TodoForm from '../form/TodoForm';
 import CommentForm from '../form/CommentForm';
 import { useNavigate } from 'react-router-dom';
 import CompletedCheck from '../button/CompletedCheck';
 import TodoItemTemplate from './TodoItemTemplate';
-
-type AdditionInput = {
-  todo_id: number;
-  user_id: string;
-  is_booked: boolean;
-  is_cheered: boolean;
-};
 
 interface TodoItemProps {
   todo: Todo;
@@ -40,40 +33,12 @@ const TodoItem: React.FC<TodoItemProps> = ({
   myTodoFlg,
 }) => {
   const [isComment, setIsComment] = useState(false);
-  const [isCheered, setIsCheered] = useState(todo.is_cheered_me);
-  const [isBooked, setIsBooked] = useState(todo.is_booked_me);
+
   const [isCompleted, setIsCompleted] = useState(todo.completed);
   const token = localStorage.getItem('firebaseToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
 
   const navigate = useNavigate();
-
-  const updateAddition = (todo: Todo) => {
-    const targetInfo: AdditionInput = {
-      todo_id: todo.id,
-      user_id: todo.user_id,
-      is_cheered: todo.is_cheered_me,
-      is_booked: todo.is_booked_me,
-    };
-
-    fetch('http://localhost:8080/v1/addition', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(targetInfo),
-    }).then((response) => {
-      if (!response.ok) {
-        showErrorAlert(
-          '更新エラー',
-          `ステータス更新中にエラーが発生しました。${response.json}`,
-        );
-      } else {
-        console.log(response.ok);
-      }
-    });
-  };
 
   const updateCompleted = (todo: Todo) => {
     fetch('http://localhost:8080/v1/todo', {
@@ -90,18 +55,6 @@ const TodoItem: React.FC<TodoItemProps> = ({
 
   const handleDispComment = () => {
     setIsComment(!isComment);
-  };
-
-  const handleIsCheered = () => {
-    todo.is_cheered_me = !isCheered;
-    updateAddition(todo);
-    setIsCheered(todo.is_cheered_me);
-  };
-
-  const handleIsBooked = () => {
-    todo.is_booked_me = !isBooked;
-    updateAddition(todo);
-    setIsBooked(todo.is_booked_me);
   };
 
   const handleIsCompleted = () => {
@@ -145,10 +98,6 @@ const TodoItem: React.FC<TodoItemProps> = ({
             <TodoItemTemplate
               myTodoFlg={myTodoFlg}
               todo={todo}
-              isCheered={isCheered}
-              isBooked={isBooked}
-              handleIsCheered={handleIsCheered}
-              handleIsBooked={handleIsBooked}
               handleIsCompleted={handleIsCompleted}
               handleDispComment={handleDispComment}
               onDelete={onDelete}
