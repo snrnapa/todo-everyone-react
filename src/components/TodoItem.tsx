@@ -94,18 +94,16 @@ const TodoItem: React.FC<TodoItemProps> = ({
   };
 
   const updateCompleted = (todo: Todo) => {
-    if (firebaseUserId && firebaseUserId == todo.user_id) {
-      fetch('http://localhost:8080/v1/todo', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(todo),
-      });
+    fetch('http://localhost:8080/v1/todo', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(todo),
+    });
 
-      console.log(todo);
-    }
+    console.log(todo);
   };
 
   const handleDispComment = () => {
@@ -129,9 +127,11 @@ const TodoItem: React.FC<TodoItemProps> = ({
   };
 
   const handleIsCompleted = () => {
-    todo.completed = !isCompleted;
-    updateCompleted(todo);
-    setIsCompleted(todo.completed);
+    if (firebaseUserId && firebaseUserId == todo.user_id) {
+      todo.completed = !isCompleted;
+      updateCompleted(todo);
+      setIsCompleted(todo.completed);
+    }
   };
 
   const navigateTodoInfo = (todoId: string) => {
@@ -152,23 +152,23 @@ const TodoItem: React.FC<TodoItemProps> = ({
           <div className="flex flex-col space-y-1">
             {todo.completed ? (
               <div
-                className="flex "
+                className="flex justify-center items-center bg-blue-300 "
                 onClick={() => {
                   handleIsCompleted();
                 }}
               >
-                <CheckSquare size={20} color="#120fd2" weight="thin" />
-                <p className="text-sm">完了！</p>
+                <CheckSquare size={30} color="#120fd2" weight="thin" />
+                <p className="text-lg font-Darumadrop">かんりょう</p>
               </div>
             ) : (
               <div
-                className="flex"
+                className="flex justify-center items-center bg-gray-300"
                 onClick={() => {
                   handleIsCompleted();
                 }}
               >
-                <Square size={20} color="#120fd2" weight="thin" />
-                <p className="text-sm">未完了</p>
+                <Square size={30} color="#120fd2" weight="thin" />
+                <p className="text-lg font-Darumadrop">とちゅう</p>
               </div>
             )}
             <div
@@ -178,11 +178,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
               }}
             >
               <p className="text-sm">{todo.title}</p>
-              <p className="text-gray-400 text-sm">{todo.detail}</p>
-              <div
-                className="flex space-x-2"
-                onClick={() => console.log('ボタンが押下されました')}
-              >
+              <div className="flex space-x-2">
                 <Timer size={20} color="#120fd2" weight="thin" />
                 <p className="text-sm">{formatDateForInput(todo.deadline)}</p>
               </div>
