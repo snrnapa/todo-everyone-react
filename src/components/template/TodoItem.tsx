@@ -12,7 +12,6 @@ import TodoItemTemplate from './TodoItemTemplate';
 type AdditionInput = {
   todo_id: number;
   user_id: string;
-  is_favorite: boolean;
   is_booked: boolean;
   is_cheered: boolean;
 };
@@ -42,7 +41,6 @@ const TodoItem: React.FC<TodoItemProps> = ({
 }) => {
   const [isComment, setIsComment] = useState(false);
   const [isCheered, setIsCheered] = useState(todo.is_cheered_me);
-  const [isFavo, setIsFavo] = useState(todo.is_favorite_me);
   const [isBooked, setIsBooked] = useState(todo.is_booked_me);
   const [isCompleted, setIsCompleted] = useState(todo.completed);
   const token = localStorage.getItem('firebaseToken');
@@ -54,7 +52,6 @@ const TodoItem: React.FC<TodoItemProps> = ({
     const targetInfo: AdditionInput = {
       todo_id: todo.id,
       user_id: todo.user_id,
-      is_favorite: todo.is_favorite_me,
       is_cheered: todo.is_cheered_me,
       is_booked: todo.is_booked_me,
     };
@@ -100,11 +97,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
     updateAddition(todo);
     setIsCheered(todo.is_cheered_me);
   };
-  const handleIsFavo = () => {
-    todo.is_favorite_me = !isFavo;
-    updateAddition(todo);
-    setIsFavo(todo.is_favorite_me);
-  };
+
   const handleIsBooked = () => {
     todo.is_booked_me = !isBooked;
     updateAddition(todo);
@@ -153,10 +146,8 @@ const TodoItem: React.FC<TodoItemProps> = ({
               myTodoFlg={myTodoFlg}
               todo={todo}
               isCheered={isCheered}
-              isFavo={isFavo}
               isBooked={isBooked}
               handleIsCheered={handleIsCheered}
-              handleIsFavo={handleIsFavo}
               handleIsBooked={handleIsBooked}
               handleIsCompleted={handleIsCompleted}
               handleDispComment={handleDispComment}

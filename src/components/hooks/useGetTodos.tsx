@@ -15,14 +15,18 @@ type Todo = {
 
 const useGetTodos = (reloadCount: number, headers: HeadersInit) => {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const userId = localStorage.getItem('firebaseUserId');
 
   useEffect(() => {
     const getTodos = async () => {
       try {
-        const response = await fetch('http://localhost:8080/v1/todos', {
-          method: 'GET',
-          headers: headers,
-        });
+        const response = await fetch(
+          `http://localhost:8080/v1/todos/${userId}`,
+          {
+            method: 'GET',
+            headers: headers,
+          },
+        );
         if (!response.ok) {
           throw new Error(`HTTP Error! status : ${response.status} `);
         }

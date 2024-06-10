@@ -23,11 +23,9 @@ interface TodoInfo {
   detail: string;
   deadline: string; // 期限 (
   completed: boolean;
-  favorite_count: number;
   booked_count: number;
   cheered_count: number;
   comment_count: number;
-  is_favorite_me: boolean;
   is_booked_me: boolean;
   is_cheered_me: boolean;
   comments: Comment[];
@@ -89,10 +87,6 @@ const TodoInfo = () => {
           <div className="flex space-x-1">
             <Confetti size={25} />
             <p className="text-gray-400 text-sm">{todoInfo.cheered_count}</p>
-          </div>
-          <div className="flex space-x-1">
-            <Heart size={25} />
-            <p className="text-gray-400 text-sm">{todoInfo.favorite_count}</p>
           </div>
 
           <div className="flex space-x-1">
