@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Todo } from '../../model/TodoTypes';
 import { IconButton } from '@mui/material';
-import { Pen, Copy, Bookmark, Confetti, Chat } from 'phosphor-react';
+import { Pen, Bookmark, Confetti, Chat } from 'phosphor-react';
 import { showErrorAlert } from '../../model/Utils';
 import TodoDeleteButton from '../button/TodoDeleteButton';
+import TodoCopyButton from '../button/TodoCopyButton';
 
 type AdditionInput = {
   todo_id: number;
@@ -153,9 +154,7 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
           </div>
         </div>
         <div className="flex justify-start space-x-3">
-          <IconButton onClick={onCopy}>
-            <Copy size={20} color="#120fd2" weight="thin" />
-          </IconButton>
+          <TodoCopyButton onCopy={onCopy} />
         </div>
       </div>
     );
