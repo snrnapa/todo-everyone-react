@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Todo } from '../../model/TodoTypes';
 import { IconButton } from '@mui/material';
-import { Trash, Pen, Copy, Bookmark, Confetti, Chat } from 'phosphor-react';
+import { Pen, Copy, Bookmark, Confetti, Chat } from 'phosphor-react';
 import { showErrorAlert } from '../../model/Utils';
+import TodoDeleteButton from '../button/TodoDeleteButton';
 
 type AdditionInput = {
   todo_id: number;
@@ -33,6 +34,8 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
   const [isBooked, setIsBooked] = useState(todo.is_booked_me);
   const token = localStorage.getItem('firebaseToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
+
+  const [dispDelConfirm, setDispDelConfirm] = useState(false);
 
   const handleIsCheered = () => {
     todo.is_cheered_me = !isCheered;
@@ -110,9 +113,7 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
         </div>
 
         <div className="flex justify-evenly space-x-3">
-          <IconButton onClick={onDelete}>
-            <Trash size={20} color="#120fd2" weight="thin" />
-          </IconButton>
+          <TodoDeleteButton onDelete={onDelete} />
           <IconButton onClick={onEdit}>
             <Pen size={20} color="#120fd2" weight="thin" />
           </IconButton>
