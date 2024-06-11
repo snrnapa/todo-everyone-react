@@ -79,12 +79,17 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
   if (myTodoFlg) {
     return (
       <div className="flex flex-col space-x-3">
-        <p>mytodoフラグがTrue</p>
         <div className="flex justify-start space-x-3">
+          <div className="flex items-center">
+            <IconButton onClick={handleDispComment}>
+              <Chat size={20} color="#120fd2" weight="thin" />
+            </IconButton>
+            <p className="text-xs text-slate-700">{todo.comment_count}</p>
+          </div>
           <div className="flex items-center">
             <IconButton onClick={handleIsCheered}>
               <Confetti
-                size={15}
+                size={20}
                 color={isCheered ? '#DC143C' : '#A9A9A9'}
                 weight={isCheered ? 'fill' : 'thin'}
               />
@@ -95,7 +100,7 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
           <div className="flex items-center">
             <IconButton onClick={handleIsBooked}>
               <Bookmark
-                size={15}
+                size={20}
                 color={isBooked ? '#DC143C' : '#A9A9A9'}
                 weight={isBooked ? 'fill' : 'thin'}
               />
@@ -104,11 +109,7 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
           </div>
         </div>
 
-        <div className="flex justify-start space-x-3">
-          <IconButton onClick={handleDispComment}>
-            <Chat size={20} color="#120fd2" weight="thin" />
-          </IconButton>
-
+        <div className="flex justify-evenly space-x-3">
           <IconButton onClick={onDelete}>
             <Trash size={20} color="#120fd2" weight="thin" />
           </IconButton>
@@ -125,9 +126,15 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
       <div className="flex flex-col items-start  space-x-3">
         <div className="flex justify-start space-x-3">
           <div className="flex items-center">
+            <IconButton onClick={handleDispComment}>
+              <Chat size={20} color="#120fd2" weight="thin" />
+            </IconButton>
+            <p className="text-xs text-slate-700">{todo.comment_count}</p>
+          </div>
+          <div className="flex items-center">
             <IconButton onClick={handleIsCheered}>
               <Confetti
-                size={15}
+                size={20}
                 color={isCheered ? '#DC143C' : '#A9A9A9'}
                 weight={isCheered ? 'fill' : 'thin'}
               />
@@ -138,7 +145,7 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
           <div className="flex items-center">
             <IconButton onClick={handleIsBooked}>
               <Bookmark
-                size={15}
+                size={20}
                 color={isBooked ? '#DC143C' : '#A9A9A9'}
                 weight={isBooked ? 'fill' : 'thin'}
               />
@@ -150,13 +157,6 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
           <IconButton onClick={onCopy}>
             <Copy size={20} color="#120fd2" weight="thin" />
           </IconButton>
-
-          <div className="flex items-center">
-            <IconButton onClick={handleDispComment}>
-              <Chat size={20} color="#120fd2" weight="thin" />
-            </IconButton>
-            <p className="text-xs text-slate-700">{todo.comment_count}</p>
-          </div>
         </div>
       </div>
     );

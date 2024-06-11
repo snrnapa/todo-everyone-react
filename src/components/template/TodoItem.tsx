@@ -88,7 +88,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
                 navigateTodoInfo(todo.id);
               }}
             >
-              <p className="text-sm">{todo.title}</p>
+              <p className="text-sm font-bold ">{todo.title}</p>
               <div className="flex space-x-2">
                 <Timer size={20} color="#120fd2" weight="thin" />
                 <p className="text-sm">{formatDateForInput(todo.deadline)}</p>
