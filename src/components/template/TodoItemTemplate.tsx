@@ -35,8 +35,6 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
   const token = localStorage.getItem('firebaseToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
 
-  const [dispDelConfirm, setDispDelConfirm] = useState(false);
-
   const handleIsCheered = () => {
     todo.is_cheered_me = !isCheered;
     updateAddition(todo);

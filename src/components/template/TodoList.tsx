@@ -84,7 +84,6 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
     }
 
     const newTodo: Todo = {
-      ...todo,
       user_id: user_id,
       title: todo.title,
       detail: todo.detail,
@@ -114,7 +113,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
     <div className="flex justify-center space-x-2 p-1">
       <div className="bg-blue-400 border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
         <p className="text-xl text-center font-Darumadrop">あなたのよてい</p>
-        {todos.length > 0 ? (
+        {todos && todos.length > 0 ? (
           todos
             .filter((todo) => todo.user_id === user_id)
             .map((todo) => (
@@ -139,7 +138,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
       </div>
       <div className="bg-orange-200 border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
         <p className="text-xl text-center font-Darumadrop">みんなのよてい</p>
-        {todos.length > 0 ? (
+        {todos && todos.length > 0 ? (
           todos
             .filter((todo) => todo.user_id != user_id)
             .map((todo) => (
