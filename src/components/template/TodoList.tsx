@@ -6,6 +6,7 @@ import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
 import useGetTodos from '../hooks/useGetTodos';
 import TodoItem from './TodoItem';
 import { Todo } from '../../model/TodoTypes';
+import ToggleButtonSet from '../button/ToggleButtonSet';
 
 interface TodoListProps {
   reloadCount: number;
@@ -110,9 +111,12 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
   };
 
   return (
+
     <div className="flex justify-center space-x-2 p-1">
-      <div className="bg-blue-400 border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
+
+      <div className="bg-blue-300 border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
         <p className="text-xl text-center font-Darumadrop">あなたのよてい</p>
+        <ToggleButtonSet />
         {todos && todos.length > 0 ? (
           todos
             .filter((todo) => todo.user_id === user_id)
@@ -162,6 +166,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
         )}
       </div>
     </div>
+
   );
 };
 
