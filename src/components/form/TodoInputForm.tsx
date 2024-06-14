@@ -26,7 +26,7 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ onSubmit }) => {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col space-x-4 items-center"
     >
-      <div className="flex flex-col space-y-2 m-2 p-3 bg-blue-200 border border-gray-300 rounded-xl shadow-2xl sm:w-5/12">
+      <div className="flex flex-col space-y-2 m-2 p-3 bg-gray-200 border border-gray-300 rounded-xl shadow-2xl sm:w-5/12">
         {/* 題名 */}
         <TextField
           type="text"
@@ -40,7 +40,7 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ onSubmit }) => {
           id="title"
           label="Todo"
           variant="filled"
-          className="bg-white"
+          className="bg-cyan-100"
           InputProps={{ className: 'focus:ring-blue-500' }}
         />
         {errors.title?.message && (
@@ -59,7 +59,7 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ onSubmit }) => {
           id="detail"
           label="detail"
           variant="filled"
-          className="bg-white"
+          className="bg-cyan-100"
           InputProps={{ className: 'focus:ring-blue-500' }}
           multiline
         />
@@ -74,7 +74,7 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ onSubmit }) => {
           id="deadline"
           variant="filled"
           defaultValue={today}
-          className="bg-white"
+          className="bg-cyan-100"
           InputProps={{ className: 'focus:ring-blue-500' }}
         />
         {errors.deadline?.message && (

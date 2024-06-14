@@ -1,6 +1,6 @@
 import { IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { Envelope, SignOut, LockKey } from 'phosphor-react';
+import { Envelope, SignOut, LockKey, HouseLine } from 'phosphor-react';
 import { showSuccessAlert } from '../model/Utils';
 import { auth } from '../libs/firebase';
 
@@ -16,8 +16,9 @@ const Header = () => {
   return (
     <header className="fixed top-0 w-full h-12 bg-white shadow-md flex items-center justify-center  px-4">
       <div className="font-Darumadrop text-xl flex items-center space-x-9">
-        <Link to="/">
-          <div className="flex ">きょう、なにしますか??</div>
+        <Link to="/" className='flex'>
+          <div className=" ">きょう、なにしますか??</div>
+          <HouseLine size={32} />
         </Link>
         <div className="flex items-center space-x-4">
           <div className="flex flex-col items-center">

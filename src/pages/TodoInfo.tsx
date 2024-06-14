@@ -69,7 +69,7 @@ const TodoInfo = () => {
   return (
     <div>
       <div className="flex flex-col justify-center p-1 m-1 shadow-2xl space-y-1  rounded-lg">
-        <p className="text-base">{todoInfo.title}</p>
+        <p className="text-base font-bold">{todoInfo.title}</p>
 
         <div className="flex flex-col bg-sky-100 rounded-2xl p-2 text-sm">
           <Note size={20} />
@@ -78,7 +78,7 @@ const TodoInfo = () => {
 
         <div className="flex space-x-2">
           <Timer size={25} />
-          <p className="text-gray-400 ">
+          <p className=" ">
             {formatDateForInput(todoInfo.deadline)}
           </p>
         </div>

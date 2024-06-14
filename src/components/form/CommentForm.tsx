@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { CommentInput } from '../../model/TodoTypes';
 import { Check, XCircle } from 'phosphor-react';
 import { IconButton } from '@mui/material';
 import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
@@ -68,12 +67,12 @@ const CommentForm: React.FC<CommentFormProps> = ({ todoId, onCancel }) => {
     <form onSubmit={handleSubmit(postComment)}>
       <div className="flex flex-col p-1 space-y-1 bg-gray-200">
         <textarea
-          className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 border-black"
+          className="border text-xs rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-200 border-black"
           {...register('commentText', {
             required: '内容を入力してください',
             maxLength: {
-              value: 30,
-              message: '３０文字以内で簡潔に書きましょう',
+              value: 300,
+              message: '300文字以内で簡潔に書きましょう',
             },
           })}
         />
