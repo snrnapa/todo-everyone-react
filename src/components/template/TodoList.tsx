@@ -6,7 +6,7 @@ import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
 import useGetTodos from '../hooks/useGetTodos';
 import TodoItem from './TodoItem';
 import { Todo } from '../../model/TodoTypes';
-import ToggleButtonSet from '../button/ToggleButtonSet';
+import FilterButtons from '../button/FilterButtons';
 
 interface TodoListProps {
   reloadCount: number;
@@ -14,6 +14,7 @@ interface TodoListProps {
 }
 
 const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
+
   const user_id = localStorage.getItem('firebaseUserId');
   const token = localStorage.getItem('firebaseToken');
   const headers = {
@@ -23,6 +24,20 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
   const todos = useGetTodos(reloadCount, headers);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editedTodo, setEditedTodo] = useState<Todo>();
+
+  const [activeFilter, setActiveFilter] = useState<string>('all')
+  let filterdTodos
+  if (activeFilter == 'all') {
+    filterdTodos = todos;
+  }
+
+  if (activeFilter == 'completed') {
+    filterdTodos = todos.filter((todos) => todos.completed)
+  }
+
+  if (activeFilter == 'incomplete') {
+    filterdTodos = todos.filter((todos) => !todos.completed)
+  }
 
   const handleEdit = (todo: Todo) => {
     setEditedTodo(todo);
@@ -116,9 +131,9 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
 
       <div className="bg-blue-300 border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
         <p className="text-xl text-center font-Darumadrop">あなたのよてい</p>
-        <ToggleButtonSet />
-        {todos && todos.length > 0 ? (
-          todos
+        <FilterButtons activeFilter={activeFilter} onHandleFilterClick={setActiveFilter} />
+        {filterdTodos && filterdTodos.length > 0 ? (
+          filterdTodos
             .filter((todo) => todo.user_id === user_id)
             .map((todo) => (
               <TodoItem

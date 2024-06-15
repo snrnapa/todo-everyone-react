@@ -73,7 +73,6 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
           `ステータス更新中にエラーが発生しました。${response.json}`,
         );
       } else {
-        console.log(response.ok);
       }
     });
   };

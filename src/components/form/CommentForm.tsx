@@ -27,9 +27,8 @@ const CommentForm: React.FC<CommentFormProps> = ({ todoId, onCancel }) => {
     formState: { errors },
   } = useForm<CommentInput>();
 
-  const [errorMassage, setErrorMessage] = useState<string | null>(null);
 
-  const postComment = async (data) => {
+  const postComment = async (data: any) => {
     const token = localStorage.getItem('firebaseToken');
     const userId = localStorage.getItem('firebaseUserId');
     if (userId == null) {

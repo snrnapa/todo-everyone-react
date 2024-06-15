@@ -52,7 +52,6 @@ const TodoInfo = () => {
           throw new Error(`HTTP Error! status : ${response.status} `);
         }
         const responseData: TodoInfo = await response.json();
-        console.log(responseData);
         setTodoInfo(responseData);
         setIsLoading(false);
       } catch (error) {
