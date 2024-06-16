@@ -4,6 +4,7 @@ import { useState } from 'react';
 import TodoInputForm from './form/TodoInputForm';
 import TodoList from './template/TodoList';
 import usePostTodo from './hooks/usePostTodo';
+import { WeeklyCalender } from './template/WeeklyCalender';
 
 const Todo = () => {
   const [postFlg, setPostFlg] = useState<boolean>(false);
@@ -20,6 +21,7 @@ const Todo = () => {
   return (
     <>
       <div className="p-1 space-y-2 w-full justify-center">
+        <WeeklyCalender />
         {!postFlg ? (
           <div className="flex items-center justify-center">
             <IconButton

@@ -78,3 +78,10 @@ export const getColorForDeadline = (deadline: string) => {
   }
 
 }
+
+export const getColorForToday = (index: number) => {
+  if (index == 0) {
+    return "bg-blue-200 font-bold"
+  }
+
+}
