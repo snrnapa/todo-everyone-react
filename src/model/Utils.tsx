@@ -59,3 +59,22 @@ export const initTokenHeader = () => {
   };
   return headers;
 };
+
+
+
+export const getColorForDeadline = (deadline: string) => {
+  const today: Date = new Date()
+  const deadlineDate: Date = new Date(deadline)
+
+  const diffrenceInTime = deadlineDate.getTime() - today.getTime();
+  const diffrenceInDays = diffrenceInTime / (1000 * 3600 * 24);
+
+  if (diffrenceInDays < -1) {
+    return "bg-red-200 font-bold"
+  } else if (diffrenceInDays <= 0) {
+    return "bg-yellow-200 font-bold"
+  } else if (diffrenceInDays <= 1) {
+    return "text-gray-200"
+  }
+
+}

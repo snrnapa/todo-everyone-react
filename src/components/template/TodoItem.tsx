@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card } from '@mui/material';
 import { Timer } from 'phosphor-react';
 import { Todo } from '../../model/TodoTypes';
-import { formatDateForInput } from '../../model/Utils';
+import { formatDateForInput, getColorForDeadline } from '../../model/Utils';
 import TodoForm from '../form/TodoForm';
 import CommentForm from '../form/CommentForm';
 import { useNavigate } from 'react-router-dom';
@@ -37,6 +37,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const [isCompleted, setIsCompleted] = useState(todo.completed);
   const token = localStorage.getItem('firebaseToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
+  const deadlineColorClass = getColorForDeadline(todo.deadline)
 
   const navigate = useNavigate();
 
@@ -89,9 +90,9 @@ const TodoItem: React.FC<TodoItemProps> = ({
               }}
             >
               <p className="text-sm font-bold ">{todo.title}</p>
-              <div className="flex space-x-2">
+              <div className={`flex space-x-2 rounded-lg p-1 ${deadlineColorClass}`}>
                 <Timer size={20} color="#120fd2" weight="thin" />
-                <p className="text-sm">{formatDateForInput(todo.deadline)}</p>
+                <p className='text-sm'>{formatDateForInput(todo.deadline)}</p>
               </div>
             </div>
 
