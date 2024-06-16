@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Note, Timer, Bookmark, Heart, Confetti, Chat } from 'phosphor-react';
 import { useParams } from 'react-router-dom';
 import { formatDateForInput, showErrorAlert } from '../model/Utils';
-import { Card, Divider } from '@mui/material';
+import { Card, CircularProgress, Divider } from '@mui/material';
 
 // Commentの型定義
 interface Comment {
@@ -60,6 +60,15 @@ const TodoInfo = () => {
     };
     getTodoInfo();
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <CircularProgress />
+        <p>ロード中...</p>
+      </div>
+    )
+  }
 
   if (!todoInfo) {
     return <p>データが見つかりません</p>;
