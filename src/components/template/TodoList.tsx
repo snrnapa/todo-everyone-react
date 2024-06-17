@@ -129,7 +129,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
 
     <div className="flex justify-center space-x-2 p-1">
 
-      <div className="bg-blue-300 border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
+      <div className="bg-personaBlue border border-black rounded-xl w-6/12 shadow-2xl py-2 space-y-2">
         <p className="text-xl text-center font-Darumadrop">あなたのよてい</p>
         <FilterButtons activeFilter={activeFilter} onHandleFilterClick={setActiveFilter} />
         {filterdTodos && filterdTodos.length > 0 ? (

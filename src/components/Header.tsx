@@ -14,30 +14,30 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 w-full h-12 bg-white shadow-md flex items-center justify-center  px-4">
-      <div className="font-Darumadrop text-xl flex items-center space-x-9">
-        <Link to="/" className='flex'>
-          <div className=" ">きょう、なにしますか??</div>
-          <HouseLine size={32} />
+    <header className="fixed top-0 w-full h-12 bg-personaBlue shadow-lg flex items-center justify-center px-4">
+      <div className="font-Darumadrop text-xl flex items-center space-x-9 text-gray-200">
+        <Link to="/" className='flex items-center'>
+          <div className="mr-2 text-personaTextWhite">きょう、なにしますか??</div>
+          <HouseLine size={32} className="text-gray-300" />
         </Link>
         <div className="flex items-center space-x-4">
           <div className="flex flex-col items-center">
             <Link to="/contact">
-              <Envelope size={26} color="#120fd2" weight="thin" />
+              <Envelope size={26} weight="light" className="text-personaTextWhite" />
             </Link>
-            <p className="text-xs">といあわせ</p>
+            <p className="text-xs text-personaTextWhite">といあわせ</p>
           </div>
           <div className="flex flex-col items-center">
             <Link to="/privacy">
-              <LockKey size={26} color="#120fd2" weight="thin" />
+              <LockKey size={26} weight="light" className="text-personaTextWhite" />
             </Link>
-            <p className="text-xs">ぽりしー</p>
+            <p className="text-xs text-personaTextWhite">ぽりしー</p>
           </div>
           <div className="flex flex-col items-center">
-            <IconButton onClick={logout} size="small" className="h-7">
-              <SignOut size={26} color="#120fd2" weight="thin" />
-            </IconButton>
-            <p className="text-xs">ろぐあうと</p>
+            <button onClick={logout} className="h-7 text-personaTextWhite">
+              <SignOut size={26} weight="light" />
+            </button>
+            <p className="text-xs text-personaTextWhite">ろぐあうと</p>
           </div>
         </div>
       </div>

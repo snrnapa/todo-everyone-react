@@ -97,10 +97,10 @@ const TodoInfo = () => {
             <p className="text-gray-400 text-sm">{todoInfo.cheered_count}</p>
           </div>
 
-          <div className="flex space-x-1">
+          {/* <div className="flex space-x-1">
             <Bookmark size={25} />
             <p className="text-gray-400 text-sm">{todoInfo.booked_count}</p>
-          </div>
+          </div> */}
 
           <div className="flex space-x-1">
             <Chat size={25} />

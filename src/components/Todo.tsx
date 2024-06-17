@@ -23,15 +23,15 @@ const Todo = () => {
       <div className="p-1 space-y-2 w-full justify-center">
         <WeeklyCalender />
         {!postFlg ? (
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-start">
             <IconButton
               onClick={() => {
                 setPostFlg(!postFlg);
               }}
             >
-              <NotePencil size={52} color="#120fd2" weight="thin" />
+              <NotePencil size={32} color="#120fd2" weight="thin" />
             </IconButton>
-            <p>やることを書く</p>
+            <p className='text-base text-black'>やることを書く</p>
           </div>
         ) : (
           <div className="flex items-center justify-center">
@@ -40,7 +40,7 @@ const Todo = () => {
                 setPostFlg(!postFlg);
               }}
             >
-              <ArrowsInLineVertical size={52} color="#120fd2" weight="thin" />
+              <ArrowsInLineVertical size={32} color="#120fd2" weight="thin" />
             </IconButton>
             <p>とじる</p>
           </div>

@@ -48,7 +48,7 @@ interface Summary {
 export const WeeklyCalender: React.FC = () => {
     const today = new Date()
     const weekDates = getWeekDates(today)
-    const [dispCalender, setDispCalender] = useState<boolean>(false);
+    const [dispCalender, setDispCalender] = useState<boolean>(true);
     const [summarys, setSummarys] = useState<Summary[]>([]);
     const token = localStorage.getItem('firebaseToken')
     const userId = localStorage.getItem('firebaseUserId')

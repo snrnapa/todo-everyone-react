@@ -6,7 +6,12 @@ export default {
     './src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        personaBlue: '#15C2FC',
+        personaTextWhite: '#F9F9F9',
+      }
+    },
     fontFamily: {
       zenKurenaido: ['Zen Kurenaido', 'sans-serif'],
     },

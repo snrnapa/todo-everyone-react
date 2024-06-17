@@ -98,7 +98,7 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
             <p className="text-xs text-slate-700">{todo.cheered_count}</p>
           </div>
 
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <IconButton onClick={handleIsBooked}>
               <Bookmark
                 size={20}
@@ -107,7 +107,7 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
               />
             </IconButton>
             <p className="text-xs text-slate-700">{todo.booked_count}</p>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex justify-evenly space-x-3">
@@ -141,7 +141,7 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
             <p className="text-xs text-slate-700">{todo.cheered_count}</p>
           </div>
 
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <IconButton onClick={handleIsBooked}>
               <Bookmark
                 size={20}
@@ -150,7 +150,7 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
               />
             </IconButton>
             <p className="text-xs text-slate-700">{todo.booked_count}</p>
-          </div>
+          </div> */}
         </div>
         <div className="flex justify-start space-x-3">
           <TodoCopyButton onCopy={onCopy} />
