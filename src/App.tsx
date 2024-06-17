@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AuthenticatedContent from './AuthenticatedContent';
 import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
+import TodoInfo from './pages/TodoInfo';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
           <Route path={`/`} element={<AuthenticatedContent />} />
           <Route path={`/contact`} element={<Contact />} />
           <Route path={`/privacy`} element={<Privacy />} />
+          <Route path={`/todo/:id`} element={<TodoInfo />} />
         </Routes>
       </BrowserRouter>
     </div>

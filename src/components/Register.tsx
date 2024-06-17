@@ -1,12 +1,9 @@
 import { Button, TextField } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-} from 'firebase/auth';
-import { auth, db } from '../libs/firebase';
-import { Timestamp, addDoc, collection } from 'firebase/firestore';
-import Swal from 'sweetalert2';
+
+import { auth } from '../libs/firebase';
+import { showErrorAlert, showSuccessAlert } from '../model/Utils';
+import { createUserWithEmailAndPassword, deleteUser } from 'firebase/auth';
 
 // Register（初期登録）画面で使用するinputの型を宣言
 type RegisterInputs = {
@@ -27,71 +24,47 @@ const Register = () => {
   // submitが押下されたタイミングで行う動作
   const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
     if (data.password != data.retypePassword) {
-      await Swal.fire({
-        title: '入力したパスワードが異なります',
-        text: '再度確認して再入力してください。',
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
+      await showErrorAlert(
+        '入力したパスワードが異なります',
+        '再度確認して再入力してください',
+      );
       return;
     }
 
-    // firebase autehnticationによりメール登録を行う
-    var userCredential;
     try {
       // メール認証により、firebase authenticationに登録するとともに、その情報をuserCredential変数に保持
-      userCredential = await createUserWithEmailAndPassword(
+      const userCredential = await createUserWithEmailAndPassword(
         auth,
         data.email,
         data.password,
       );
-      // ユーザー登録後に確認メールを手動で送信する
-      const user = auth.currentUser;
-      if (user) {
-        await sendEmailVerification(user);
+
+      var idToken;
+      var userId;
+      if (userCredential.user != null) {
+        idToken = await userCredential.user.getIdToken();
+        userId = userCredential.user.uid;
+        localStorage.setItem('firebaseToken', idToken);
+        localStorage.setItem('firebaseUserId', userId);
       } else {
-        throw new Error('ユーザーがログインしていません');
+        throw new Error('ユーザー情報が取得できませんでした');
+      }
+      const response = await fetch('http://localhost:8080/v1/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ user_id: userId }),
+      });
+
+      if (!response.ok) {
+        await deleteUser(auth.currentUser);
+        throw new Error('サーバーエラーが発生しました');
       }
     } catch (error) {
-      await Swal.fire({
-        title: '入力情報に誤りがあり、成功しませんでした。',
-        text: '正しい情報を入力してください。',
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
-      return;
+      showErrorAlert('登録失敗', `登録に失敗しました : ${error}`);
     }
-
-    const { user } = userCredential;
-    const { uid } = user;
-    const currentTimestamp = Timestamp.now();
-
-    try {
-      await addDoc(collection(db, 'user'), {
-        user_id: uid,
-        user_name: 'ゆーざー',
-        updated_at: currentTimestamp,
-      });
-    } catch (error) {
-      await Swal.fire({
-        title: '登録においてエラーが発生しました。',
-        text: '管理者にお知らせください。  ${error}',
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
-    }
-    await Swal.fire({
-      title: 'アカウントが正常に登録されました。',
-      text: '登録したアドレスのメールボックスを確認してください。',
-      icon: 'success',
-      confirmButtonText: 'OK',
-      timer: 7000,
-    });
-
-    window.location.reload();
   };
 
   return (

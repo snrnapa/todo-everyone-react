@@ -1,42 +1,42 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { NotePencil, PaperPlane } from 'phosphor-react';
 import { IconButton } from '@mui/material';
-import useCurrentUser from '../components/hooks/UseCurrentUser';
-import { addDoc, collection } from 'firebase/firestore';
-import { db } from '../libs/firebase';
-import Swal from 'sweetalert2';
+import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 
 type ContactInput = {
   context: string;
 };
 
 const Contact = () => {
-  const { register, handleSubmit } = useForm<ContactInput>();
-  const currentUser = useCurrentUser();
+  const { register, handleSubmit, reset } = useForm<ContactInput>();
+  const firebaseUserId = localStorage.getItem('firebaseUserId')
+  const firebaseToken = localStorage.getItem('firebaseToken')
 
   const onSubmit: SubmitHandler<ContactInput> = async (data) => {
-    try {
-      await addDoc(collection(db, 'contact'), {
-        user_id: currentUser?.uid,
-        user_email: currentUser?.email,
-        context: data.context,
-      });
-      await Swal.fire({
-        title: 'ご連絡いただき、ありがとうございます！',
-        text: '問い合わせ内容を送信しました。トップ画面に戻ります',
-        icon: 'info',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
-      window.location.href = 'http://localhost:5173/';
-    } catch (error) {
-      await Swal.fire({
-        title: '送信中にエラーが発生しました。',
-        text: '再度実行してください。それでも解決しない場合は、管理者に問い合わせてください。${error}',
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
+    if (firebaseUserId && firebaseToken) {
+      const contactData = {
+        user_id: firebaseUserId,
+        text: data.context,
+      };
+      console.log(contactData)
+      try {
+        const response = await fetch('http://localhost:8080/v1/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${firebaseToken}`,
+          },
+          body: JSON.stringify(contactData),
+        });
+        showSuccessAlert('送信成功', '問い合わせ内容の送信に成功しました')
+
+      } catch (error) {
+        console.log(error)
+        showErrorAlert(
+          'サーバー処理中に問題が発生しました',
+          `${error}`,
+        );
+      }
     }
   };
   return (
@@ -60,10 +60,11 @@ const Contact = () => {
             className="border border-blue-200 w-full h-96 rounded-md py-2 px-3 mt-1 focus:outline-none focus:ring focus:border-blue-300 placeholder-blue-400"
           ></textarea>
         </div>
-        <div className="flex justify-center">
-          <IconButton type="submit" onClick={() => {}}>
+        <div className="flex justify-center items-center">
+          <IconButton type="submit" onClick={() => { }}>
             <PaperPlane size={52} color="#120fd2" weight="thin" />
           </IconButton>
+          <p className='text-lg'>送信</p>
         </div>
       </form>
     </div>

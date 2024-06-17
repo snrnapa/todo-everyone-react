@@ -1,14 +1,15 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, TextField } from '@mui/material';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 import { auth } from '../libs/firebase';
-import swal from 'sweetalert2';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import React from 'react';
 
 // Login画面で使用するinputの型を宣言
 type LoginInputs = {
   email: string;
   password: string;
-  submit: any;
+  submit: (event: React.FormEvent<HTMLFormElement>) => void;
 };
 
 const SignIn = () => {
@@ -16,40 +17,27 @@ const SignIn = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<LoginInputs>();
 
   // submitが押下されたタイミングで行う動作
-  const onSubmit: SubmitHandler<LoginInputs> = async () => {
+  const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      await swal.fire({
-        title: 'ログインが完了しました',
-        text: 'OKボタンを押してください',
-        icon: 'success',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
-    } catch (error: any) {
-      await swal.fire({
-        title:
-          'エラーが発生しました。解決しない場合は、管理者に下記を伝えてください。',
-        text: error.toString(),
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 7000,
-      });
+      const loginUser = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      );
+      const token = await loginUser.user.getIdToken();
+      const userId = loginUser.user.uid;
+      localStorage.setItem('firebaseToken', token);
+      localStorage.setItem('firebaseUserId', userId);
 
-      return;
+      await showSuccessAlert('ログイン成功', 'ログインに成功しました。');
+    } catch (error) {
+      await showErrorAlert('ログイン失敗', `ログインに失敗しました。${error}`);
     }
-
-    window.location.reload();
   };
-
-  // watch
-  const email = watch('email');
-  const password = watch('password');
 
   return (
     <div className="p-3 space-y-5">
