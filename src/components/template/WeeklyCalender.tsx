@@ -1,13 +1,17 @@
-import { addDays, format, startOfWeek } from "date-fns"
+import { addDays, format } from "date-fns"
 import React, { useEffect, useState } from "react";
 import DispCalenderButton from "../button/DispCalenderButton";
 import { showErrorAlert } from "../../model/Utils";
+import { CheckSquare, PushPin } from 'phosphor-react';
+import { useNavigate } from 'react-router-dom';
+
+
 
 const getWeekDates = (startDate: Date): Date[] => {
     const weekDates = []
-    const startOfWeekDate = startOfWeek(startDate, { weekStartsOn: 0 })
+    const today = new Date()
     for (let i = 0; i < 7; i++) {
-        weekDates.push(addDays(startOfWeekDate, i));
+        weekDates.push(addDays(today, i));
     }
     return weekDates
 }
@@ -19,6 +23,14 @@ const getColorForToday = (index: number, date: Date) => {
         return "bg-blue-200  border-black border-2"
     } else if (dailyString == 'Sat' || dailyString == 'Sun') {
         return "bg-red-100 font-bold"
+    }
+}
+
+const getColorCompletedForCalender = (completed: boolean) => {
+    if (completed) {
+        return "bg-gray-200"
+    } else {
+        return "bg-green-200"
     }
 }
 
@@ -40,6 +52,12 @@ export const WeeklyCalender: React.FC = () => {
     const [summarys, setSummarys] = useState<Summary[]>([]);
     const token = localStorage.getItem('firebaseToken')
     const userId = localStorage.getItem('firebaseUserId')
+
+    const navigate = useNavigate();
+
+    const navigateTodoInfo = (todoId: number) => {
+        navigate(`/todo/${todoId}`);
+    };
 
     useEffect(() => {
         const getSummary = async () => {
@@ -77,14 +95,20 @@ export const WeeklyCalender: React.FC = () => {
                 <div>
                     {weekDates.map((date, index) => (
                         <div key={index} className={`p-1 border rounded shadow flex flex-col  ${getColorForToday(index, date)}`}>
-                            <div className={`flex flex-col `}>
-                                <p className="text-xl">{format(date, 'MM/dd')}</p>
-                                <p className="text-lg font-semibold">{format(date, 'EEE')}</p>
+                            <div className={`flex space-x-1`}>
+                                <div className="flex flex-col">
+                                    <p className="text-base">{format(date, 'MM/dd')}</p>
+                                    <p className="text-base font-semibold">{format(date, 'EEE')}</p>
+                                </div>
                                 <div className="flex">
                                     {summarys.filter((summary) => format(summary.deadline, 'MM/dd') === format(date, 'MM/dd')).map((s) => (
-                                        <div className="h-20 flex flex-col items-center space-y-2 justify-center p-2  mx-auto bg-white shadow-md rounded-lg ">
-                                            <p className="font-bold">{s.title}</p>
-                                            {s.completed ? <p>完了</p> : <p>じっしちゅう</p>}
+                                        <div onClick={() => {
+                                            navigateTodoInfo(s.id)
+                                        }} className={`${getColorCompletedForCalender(s.completed)}  flex  space-y-2 space-x-1 justify-center p-2   shadow-md rounded-lg`}  >
+                                            {s.completed ? <CheckSquare size={20} /> : <PushPin size={20} />}
+                                            <div className="flex-col">
+                                                <p className="text-xs font-bold">{s.title}</p>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
