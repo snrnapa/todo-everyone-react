@@ -113,7 +113,7 @@ const TodoInfo = () => {
       <div className="space-y-3 p-3 ">
         {(todoInfo.comments ?? []).map((comment) => (
           <Card className="p-2 space-y-2">
-            <p className="text-sm text-gray-500">{comment.user_id}</p>
+            {/* <p className="text-sm text-gray-500">{comment.user_id}</p> */}
             <p className="text-sm">{comment.text}</p>
           </Card>
         ))}
