@@ -42,7 +42,6 @@ const Contact = () => {
         });
         showSuccessAlert('送信成功', '問い合わせ内容の送信に成功しました')
       } catch (error) {
-        console.log(error)
         showErrorAlert(
           'サーバー処理中に問題が発生しました',
           `${error}`,

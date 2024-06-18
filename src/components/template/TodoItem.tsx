@@ -51,7 +51,6 @@ const TodoItem: React.FC<TodoItemProps> = ({
       body: JSON.stringify(todo),
     });
 
-    console.log(todo);
   };
 
   const handleDispComment = () => {
