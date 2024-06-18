@@ -76,10 +76,13 @@ export const WeeklyCalender: React.FC = () => {
                     throw new Error(`HTTP Error! status : ${response.status} `)
                 }
                 const responseData = await response.json()
-                const summariesWithDates = responseData.map((item: any) => ({
-                    ...item,
-                    deadline: new Date(item.deadline)
-                }))
+                var summariesWithDates;
+                if (responseData && responseData.length > 0) {
+                    summariesWithDates = responseData.map((item: any) => ({
+                        ...item,
+                        deadline: new Date(item.deadline)
+                    }))
+                }
                 setSummarys(summariesWithDates)
             } catch (error) {
                 showErrorAlert('summaryの取得に失敗しました', `${error}`)
@@ -94,17 +97,21 @@ export const WeeklyCalender: React.FC = () => {
             {dispCalender ?
                 <div>
                     {weekDates.map((date, index) => (
-                        <div key={index} className={`p-1 border rounded shadow flex flex-col  ${getColorForToday(index, date)}`}>
+                        <div key={index} className={`p-1 border rounded shadow flex flex-col ${getColorForToday(index, date)}`}>
                             <div className={`flex space-x-1`}>
                                 <div className="flex flex-col">
                                     <p className="text-base">{format(date, 'MM/dd')}</p>
                                     <p className="text-base font-semibold">{format(date, 'EEE')}</p>
                                 </div>
                                 <div className="flex">
-                                    {summarys.filter((summary) => format(summary.deadline, 'MM/dd') === format(date, 'MM/dd')).map((s) => (
-                                        <div onClick={() => {
-                                            navigateTodoInfo(s.id)
-                                        }} className={`${getColorCompletedForCalender(s.completed)}  flex  space-y-2 space-x-1 justify-center p-2   shadow-md rounded-lg`}  >
+                                    {(summarys || []).filter((summary) => {
+                                        return summary.deadline && format(summary.deadline, 'MM/dd') === format(date, 'MM/dd');
+                                    }).map((s) => (
+                                        <div
+                                            key={s.id} // `key` を追加
+                                            onClick={() => navigateTodoInfo(s.id)}
+                                            className={`${getColorCompletedForCalender(s.completed)} flex space-y-2 space-x-1 justify-center p-2 shadow-md rounded-lg`}
+                                        >
                                             {s.completed ? <CheckSquare size={20} /> : <PushPin size={20} />}
                                             <div className="flex-col">
                                                 <p className="text-xs font-bold">{s.title}</p>
