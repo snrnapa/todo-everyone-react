@@ -1,4 +1,3 @@
-import { IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Envelope, SignOut, LockKey, HouseLine } from 'phosphor-react';
 import { showSuccessAlert } from '../model/Utils';

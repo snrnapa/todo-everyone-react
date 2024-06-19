@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Todo } from '../../model/TodoTypes';
 import { IconButton } from '@mui/material';
-import { Pen, Bookmark, Confetti, Chat } from 'phosphor-react';
+import { Pen, Confetti, Chat } from 'phosphor-react';
 import { showErrorAlert } from '../../model/Utils';
 import TodoDeleteButton from '../button/TodoDeleteButton';
 import TodoCopyButton from '../button/TodoCopyButton';
@@ -32,7 +32,6 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
   onEdit,
 }) => {
   const [isCheered, setIsCheered] = useState(todo.is_cheered_me);
-  const [isBooked, setIsBooked] = useState(todo.is_booked_me);
   const token = localStorage.getItem('firebaseToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
 
@@ -42,11 +41,11 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
     setIsCheered(todo.is_cheered_me);
   };
 
-  const handleIsBooked = () => {
-    todo.is_booked_me = !isBooked;
-    updateAddition(todo);
-    setIsBooked(todo.is_booked_me);
-  };
+  // const handleIsBooked = () => {
+  //   todo.is_booked_me = !isBooked;
+  //   updateAddition(todo);
+  //   setIsBooked(todo.is_booked_me);
+  // };
 
   const updateAddition = (todo: Todo) => {
     if (!firebaseUserId) {

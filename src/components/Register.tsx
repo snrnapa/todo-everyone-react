@@ -2,8 +2,8 @@ import { Button, TextField } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 import { auth } from '../libs/firebase';
-import { showErrorAlert, showSuccessAlert } from '../model/Utils';
-import { createUserWithEmailAndPassword, deleteUser } from 'firebase/auth';
+import { showErrorAlert } from '../model/Utils';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 // Register（初期登録）画面で使用するinputの型を宣言
 type RegisterInputs = {
@@ -59,7 +59,6 @@ const Register = () => {
       });
 
       if (!response.ok) {
-        await deleteUser(auth.currentUser);
         throw new Error('サーバーエラーが発生しました');
       }
     } catch (error) {

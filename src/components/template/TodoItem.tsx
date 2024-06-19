@@ -17,7 +17,7 @@ interface TodoItemProps {
   onDelete: () => void;
   onCopy: () => void;
   editMode: boolean;
-  editedTodo?: Todo;
+  editedTodo?: Todo | undefined;
   myTodoFlg: boolean;
 }
 

@@ -1,5 +1,5 @@
 import { BugDroid, DotsThreeCircle, User, Wrench } from 'phosphor-react';
-import React, { useState } from 'react';
+import React from 'react';
 
 interface ContactCategoryButtonProps {
     selectedCategory: string;

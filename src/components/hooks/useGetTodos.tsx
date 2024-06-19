@@ -13,7 +13,7 @@ type Todo = {
   DeletedAt: string | null;
 };
 
-const useGetTodos = (reloadCount: number, headers: HeadersInit) => {
+const useGetTodos = (reloadCount: number, headers: HeadersInit): Todo[] => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const userId = localStorage.getItem('firebaseUserId');
 

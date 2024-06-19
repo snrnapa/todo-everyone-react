@@ -26,16 +26,12 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
   const [editedTodo, setEditedTodo] = useState<Todo>();
 
   const [activeFilter, setActiveFilter] = useState<string>('all')
-  let filterdTodos
+  let filterdTodos: Todo[] = [];
   if (activeFilter == 'all') {
     filterdTodos = todos;
-  }
-
-  if (activeFilter == 'completed') {
+  } else if (activeFilter == 'completed') {
     filterdTodos = todos.filter((todos) => todos.completed)
-  }
-
-  if (activeFilter == 'incomplete') {
+  } else if (activeFilter == 'incomplete') {
     filterdTodos = todos.filter((todos) => !todos.completed)
   }
 
@@ -99,7 +95,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
       return;
     }
 
-    const newTodo: Todo = {
+    const newTodo = {
       user_id: user_id,
       title: todo.title,
       detail: todo.detail,
@@ -137,7 +133,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
             .filter((todo) => todo.user_id === user_id)
             .map((todo) => (
               <TodoItem
-                key={todo.ID}
+                key={todo.id}
                 todo={todo}
                 onEdit={() => handleEdit(todo)}
                 onSubmit={handleSubmit}
@@ -162,7 +158,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
             .filter((todo) => todo.user_id != user_id)
             .map((todo) => (
               <TodoItem
-                key={todo.ID}
+                key={todo.id}
                 todo={todo}
                 onEdit={() => handleEdit(todo)}
                 onSubmit={handleSubmit}

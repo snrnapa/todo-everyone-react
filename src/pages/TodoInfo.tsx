@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Note, Timer, Bookmark, Heart, Confetti, Chat } from 'phosphor-react';
+import { Note, Timer, Confetti, Chat } from 'phosphor-react';
 import { useParams } from 'react-router-dom';
 import { formatDateForInput, showErrorAlert } from '../model/Utils';
 import { Card, CircularProgress, Divider } from '@mui/material';
@@ -35,7 +35,7 @@ const TodoInfo = () => {
   const params = useParams();
   const id = params.id;
   const token = localStorage.getItem('firebaseToken');
-  const [todoInfo, setTodoInfo] = useState<TodoInfo>(null);
+  const [todoInfo, setTodoInfo] = useState<TodoInfo>();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 

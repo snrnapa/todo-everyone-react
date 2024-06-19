@@ -35,7 +35,7 @@ const AuthenticatedContent = () => {
 
     // ログイン状態の変更を監視するリスナーを追加する
     // 認証状態の変更を監視するリスナー
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    const unsubscribe = auth.onAuthStateChanged(async () => {
       setIsLoading(true);  // 状態が変わった時点でロード中に設定
       await checkAuthState();  // 状態を再チェック
     });

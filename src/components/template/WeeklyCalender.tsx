@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-const getWeekDates = (startDate: Date): Date[] => {
+const getWeekDates = (): Date[] => {
     const weekDates = []
     const today = new Date()
     for (let i = 0; i < 7; i++) {
@@ -46,8 +46,7 @@ interface Summary {
 
 
 export const WeeklyCalender: React.FC = () => {
-    const today = new Date()
-    const weekDates = getWeekDates(today)
+    const weekDates = getWeekDates()
     const [dispCalender, setDispCalender] = useState<boolean>(true);
     const [summarys, setSummarys] = useState<Summary[]>([]);
     const token = localStorage.getItem('firebaseToken')

@@ -10,7 +10,7 @@ type ContactInput = {
 };
 
 const Contact = () => {
-  const { register, handleSubmit, reset } = useForm<ContactInput>();
+  const { register, handleSubmit } = useForm<ContactInput>();
   const firebaseUserId = localStorage.getItem('firebaseUserId')
   const firebaseToken = localStorage.getItem('firebaseToken')
 
@@ -32,7 +32,7 @@ const Contact = () => {
         category: selectedCategory
       };
       try {
-        const response = await fetch('http://localhost:8080/v1/contact', {
+        await fetch('http://localhost:8080/v1/contact', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
