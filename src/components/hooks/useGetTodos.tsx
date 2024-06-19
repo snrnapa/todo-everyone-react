@@ -1,17 +1,7 @@
 import { useEffect, useState } from 'react';
 import { showErrorAlert } from '../../model/Utils';
+import { Todo } from '../../model/TodoTypes';
 
-type Todo = {
-  user_id: string;
-  title: string;
-  deadline: string;
-  detail: string;
-  completed: boolean;
-  ID: number;
-  CreatedAt: string;
-  UpdatedAt: string;
-  DeletedAt: string | null;
-};
 
 const useGetTodos = (reloadCount: number, headers: HeadersInit): Todo[] => {
   const [todos, setTodos] = useState<Todo[]>([]);
