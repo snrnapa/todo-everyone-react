@@ -62,7 +62,7 @@ export const WeeklyCalender: React.FC = () => {
         const getSummary = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8080/v1/summary/${userId}`,
+                    `https://napalog.com/every-todo/v1/summary/${userId}`,
                     {
                         method: 'GET',
                         headers: {

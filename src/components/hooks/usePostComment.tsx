@@ -21,7 +21,7 @@ const usePostComment = (
         commentText: data.commentText,
       };
       try {
-        const response = await fetch('http://localhost:8080/v1/comment', {
+        const response = await fetch('https://napalog.com/every-todo/v1/comment', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

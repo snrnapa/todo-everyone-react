@@ -32,7 +32,7 @@ const Contact = () => {
         category: selectedCategory
       };
       try {
-        await fetch('http://localhost:8080/v1/contact', {
+        await fetch('https://napalog.com/every-todo/v1/contact', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

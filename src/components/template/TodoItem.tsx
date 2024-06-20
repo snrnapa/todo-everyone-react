@@ -42,7 +42,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const navigate = useNavigate();
 
   const updateCompleted = (todo: Todo) => {
-    fetch('http://localhost:8080/v1/todo', {
+    fetch('https://napalog.com/every-todo/v1/todo', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

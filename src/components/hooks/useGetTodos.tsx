@@ -11,7 +11,7 @@ const useGetTodos = (reloadCount: number, headers: HeadersInit): Todo[] => {
     const getTodos = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/v1/todos/${userId}`,
+          `https://napalog.com/every-todo/v1/todos/${userId}`,
           {
             method: 'GET',
             headers: headers,

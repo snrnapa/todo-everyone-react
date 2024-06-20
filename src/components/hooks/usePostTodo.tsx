@@ -26,7 +26,7 @@ const usePostTodo = (
         deadline: new Date(data.deadline).toISOString(),
       };
       try {
-        const response = await fetch('http://localhost:8080/v1/todo', {
+        const response = await fetch('https://napalog.com/every-todo/v1/todo', {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
