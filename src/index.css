@@ -1,14 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap');
+/* ローカルのフォントを定義 */
+@font-face {
+  font-family: 'Zen Kurenaido';
+  src: url('/fonts/ZenKurenaido-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
+/* TailwindCSSのベース、コンポーネント、ユーティリティをインポート */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ベースレイヤーでフォントを適用 */
 @layer base {
   html {
-    font-family:
-      Proxima Nova,
-      system-ui,
-      sans-serif;
+    font-family: 'Zen Kurenaido', Proxima Nova, system-ui, sans-serif;
   }
 }

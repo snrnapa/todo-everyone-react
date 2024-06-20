@@ -1,6 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Kosugi&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Darumadrop+One&display=swap');
+/* ローカルのフォントを定義 */
+@font-face {
+  font-family: 'Kosugi';
+  src: url('/fonts/Kosugi-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
+@font-face {
+  font-family: 'Darumadrop One';
+  src: url('/fonts/DarumadropOne-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* フォントを適用 */
 body {
   font-family: 'Kosugi';
 }
