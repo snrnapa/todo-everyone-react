@@ -32,7 +32,7 @@ const Contact = () => {
         category: selectedCategory
       };
       try {
-        await fetch('https://napalog.com/every-todo/v1/contact', {
+        await fetch(`${process.env.REACT_APP_API_URL}/contact`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

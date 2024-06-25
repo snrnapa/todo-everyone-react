@@ -40,7 +40,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ todoId, onCancel }) => {
       todo_id: todoId,
       text: data.commentText,
     };
-    const response = await fetch('https://napalog.com/every-todo/v1/comment', {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/comment`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

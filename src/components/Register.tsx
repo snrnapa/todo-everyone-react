@@ -49,7 +49,7 @@ const Register = () => {
       } else {
         throw new Error('ユーザー情報が取得できませんでした');
       }
-      const response = await fetch('https://napalog.com/every-todo/v1/register', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

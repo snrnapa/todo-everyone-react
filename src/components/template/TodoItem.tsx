@@ -42,7 +42,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const navigate = useNavigate();
 
   const updateCompleted = (todo: Todo) => {
-    fetch('https://napalog.com/every-todo/v1/todo', {
+    fetch(`${process.env.REACT_APP_API_URL}/todo`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   };
 
   const navigateTodoInfo = (todoId: number) => {
-    navigate(`/todo/${todoId}`);
+    navigate(`/ todo / ${todoId}`);
   };
 
   return (
@@ -89,7 +89,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
               }}
             >
               <p className="text-sm font-bold ">{todo.title}</p>
-              <div className={`flex space-x-2 rounded-lg p-1 ${deadlineColorClass}`}>
+              <div className={`flex space - x - 2 rounded - lg p - 1 ${deadlineColorClass}`}>
                 <Timer size={20} color="#120fd2" weight="thin" />
                 <p className='text-sm'>{formatDateForInput(todo.deadline)}</p>
               </div>

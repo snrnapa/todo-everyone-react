@@ -58,7 +58,7 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
       is_booked: todo.is_booked_me,
     };
 
-    fetch('https://napalog.com/every-todo/v1/addition', {
+    fetch(`${process.env.REACT_APP_API_URL}/addition`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
