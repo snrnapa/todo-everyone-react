@@ -22,7 +22,7 @@
           },
           {
             "key": "Content-Security-Policy",
-            "value": "default-src 'self'; script-src 'self' https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src 'self' https://www.napalog.com; connect-src 'self' https://www.napalog.com https://identitytoolkit.googleapis.com https://napalog.com;"
+            "value": "default-src 'self'; script-src 'self' https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src 'self' https://www.napalog.com; connect-src 'self' https://www.napalog.com https://identitytoolkit.googleapis.com https://napalog.com https://securetoken.googleapis.com;"
           },
           {
             "key": "X-Content-Type-Options",
