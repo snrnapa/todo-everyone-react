@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Todo } from '../../model/TodoTypes';
 import { IconButton } from '@mui/material';
 import { Pen, Confetti, Chat } from 'phosphor-react';
 import { showErrorAlert } from '../../model/Utils';
 import TodoDeleteButton from '../button/TodoDeleteButton';
 import TodoCopyButton from '../button/TodoCopyButton';
+import { refreshFirebaseToken } from '../../model/token';
 
 type AdditionInput = {
   todo_id: number;
@@ -32,8 +33,23 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
   onEdit,
 }) => {
   const [isCheered, setIsCheered] = useState(todo.is_cheered_me);
-  const token = localStorage.getItem('firebaseToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
+
+  const [token, setToken] = useState<string | null>(null); // トークンの状態を保持するstateを追加する
+  // ページが読み込まれた時にトークンを取得する
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const token = await refreshFirebaseToken();
+        setToken(token);
+      } catch (error) {
+        console.error('Error fetching Firebase token:', error);
+        setToken(null);
+      }
+    };
+
+    fetchToken();
+  }, []); // 一度だけ実行される
 
   const handleIsCheered = () => {
     todo.is_cheered_me = !isCheered;

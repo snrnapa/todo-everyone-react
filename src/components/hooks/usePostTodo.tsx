@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
+import { refreshFirebaseToken } from '../../model/token';
 
 interface PostInput {
   title: string;
@@ -11,12 +12,12 @@ interface PostInput {
 
 const usePostTodo = (
   userId: string | null,
-  token: string | null,
   setReloadCount: React.Dispatch<React.SetStateAction<number>>,
 ) => {
   const [errorMassage, setErrorMessage] = useState<string | null>(null);
 
   const postTodo: SubmitHandler<PostInput> = async (data, event) => {
+    const token = await refreshFirebaseToken()
     if (userId && token) {
       const todoData = {
         user_id: userId,

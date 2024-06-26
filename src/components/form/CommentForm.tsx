@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Check, XCircle } from 'phosphor-react';
 import { IconButton } from '@mui/material';
 import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
+import { refreshFirebaseToken } from '../../model/token';
 
 interface CommentInput {
   commentText: string;
@@ -29,7 +30,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ todoId, onCancel }) => {
 
 
   const postComment = async (data: any) => {
-    const token = localStorage.getItem('firebaseToken');
+    const token = await refreshFirebaseToken()
     const userId = localStorage.getItem('firebaseUserId');
     if (userId == null) {
       return;

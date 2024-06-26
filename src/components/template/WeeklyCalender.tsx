@@ -4,6 +4,7 @@ import DispCalenderButton from "../button/DispCalenderButton";
 import { showErrorAlert } from "../../model/Utils";
 import { CheckSquare, PushPin } from 'phosphor-react';
 import { useNavigate } from 'react-router-dom';
+import { refreshFirebaseToken } from "../../model/token";
 
 
 
@@ -49,7 +50,6 @@ export const WeeklyCalender: React.FC = () => {
     const weekDates = getWeekDates()
     const [dispCalender, setDispCalender] = useState<boolean>(true);
     const [summarys, setSummarys] = useState<Summary[]>([]);
-    const token = localStorage.getItem('firebaseToken')
     const userId = localStorage.getItem('firebaseUserId')
 
     const navigate = useNavigate();
@@ -61,6 +61,8 @@ export const WeeklyCalender: React.FC = () => {
     useEffect(() => {
         const getSummary = async () => {
             try {
+                const token = await refreshFirebaseToken()
+
                 const response = await fetch(
                     `https://napalog.com/every-todo/v1/summary/${userId}`,
                     {

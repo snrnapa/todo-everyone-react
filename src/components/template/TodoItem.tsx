@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from '@mui/material';
 import { Timer } from 'phosphor-react';
 import { Todo } from '../../model/TodoTypes';
@@ -8,6 +8,7 @@ import CommentForm from '../form/CommentForm';
 import { useNavigate } from 'react-router-dom';
 import CompletedCheck from '../button/CompletedCheck';
 import TodoItemTemplate from './TodoItemTemplate';
+import { refreshFirebaseToken } from '../../model/token';
 
 interface TodoItemProps {
   todo: Todo;
@@ -35,9 +36,23 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const [isComment, setIsComment] = useState(false);
 
   const [isCompleted, setIsCompleted] = useState(todo.completed);
-  const token = localStorage.getItem('firebaseToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
   const deadlineColorClass = getColorForDeadline(todo.deadline)
+  const [token, setToken] = useState<string | null>(null); // トークンの状態を保持するstateを追加する
+  // ページが読み込まれた時にトークンを取得する
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const token = await refreshFirebaseToken();
+        setToken(token);
+      } catch (error) {
+        console.error('Error fetching Firebase token:', error);
+        setToken(null);
+      }
+    };
+
+    fetchToken();
+  }, []); // 一度だけ実行される
 
   const navigate = useNavigate();
 

@@ -8,11 +8,11 @@ import { WeeklyCalender } from './template/WeeklyCalender';
 
 const Todo = () => {
   const [postFlg, setPostFlg] = useState<boolean>(false);
-  const token = localStorage.getItem('firebaseToken');
   const [reloadCount, setReloadCount] = useState(0);
   const userId = localStorage.getItem('firebaseUserId');
 
-  const { postTodo } = usePostTodo(userId, token, setReloadCount);
+
+  const { postTodo } = usePostTodo(userId, setReloadCount);
 
   if (userId == null) {
     return <div>Loading Now......</div>;

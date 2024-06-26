@@ -3,6 +3,7 @@ import { Note, Timer, Confetti, Chat } from 'phosphor-react';
 import { useParams } from 'react-router-dom';
 import { formatDateForInput, showErrorAlert } from '../model/Utils';
 import { Card, CircularProgress, Divider } from '@mui/material';
+import { refreshFirebaseToken } from '../model/token';
 
 // Commentの型定義
 interface Comment {
@@ -34,7 +35,21 @@ interface TodoInfo {
 const TodoInfo = () => {
   const params = useParams();
   const id = params.id;
-  const token = localStorage.getItem('firebaseToken');
+  const [token, setToken] = useState<string | null>(null); // トークンの状態を保持するstateを追加する
+  // ページが読み込まれた時にトークンを取得する
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const token = await refreshFirebaseToken();
+        setToken(token);
+      } catch (error) {
+        console.error('Error fetching Firebase token:', error);
+        setToken(null);
+      }
+    };
+
+    fetchToken();
+  }, []); // 一度だけ実行される
   const [todoInfo, setTodoInfo] = useState<TodoInfo>();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { SubmitHandler } from 'react-hook-form';
 import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
@@ -7,6 +7,7 @@ import useGetTodos from '../hooks/useGetTodos';
 import TodoItem from './TodoItem';
 import { Todo } from '../../model/TodoTypes';
 import FilterButtons from '../button/FilterButtons';
+import { refreshFirebaseToken } from '../../model/token';
 
 interface TodoListProps {
   reloadCount: number;
@@ -16,7 +17,21 @@ interface TodoListProps {
 const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
 
   const user_id = localStorage.getItem('firebaseUserId');
-  const token = localStorage.getItem('firebaseToken');
+  const [token, setToken] = useState<string | null>(null); // トークンの状態を保持するstateを追加する
+  // ページが読み込まれた時にトークンを取得する
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const token = await refreshFirebaseToken();
+        setToken(token);
+      } catch (error) {
+        console.error('Error fetching Firebase token:', error);
+        setToken(null);
+      }
+    };
+
+    fetchToken();
+  }, []); // 一度だけ実行される
   const headers = {
     Authorization: `Bearer ${token}`,
   };

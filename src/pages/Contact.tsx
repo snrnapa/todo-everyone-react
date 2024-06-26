@@ -3,7 +3,8 @@ import { NotePencil, PaperPlane } from 'phosphor-react';
 import { IconButton } from '@mui/material';
 import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 import ContactCategoryButton from '../components/button/ContactCategoryButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { refreshFirebaseToken } from '../model/token';
 
 type ContactInput = {
   context: string;
@@ -12,7 +13,22 @@ type ContactInput = {
 const Contact = () => {
   const { register, handleSubmit } = useForm<ContactInput>();
   const firebaseUserId = localStorage.getItem('firebaseUserId')
-  const firebaseToken = localStorage.getItem('firebaseToken')
+  const [token, setToken] = useState<string | null>(null); // トークンの状態を保持するstateを追加する
+  // ページが読み込まれた時にトークンを取得する
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const token = await refreshFirebaseToken();
+        setToken(token);
+      } catch (error) {
+        console.error('Error fetching Firebase token:', error);
+        setToken(null);
+      }
+    };
+
+    fetchToken();
+  }, []); // 一度だけ実行される
+
 
   const [selectedCategory, setSelectedCategory] = useState<string>('feature-request')
   const [context, setContext] = useState<string>('')
@@ -25,7 +41,7 @@ const Contact = () => {
   }
 
   const onSubmit: SubmitHandler<ContactInput> = async (data) => {
-    if (firebaseUserId && firebaseToken) {
+    if (firebaseUserId && token) {
       const contactData = {
         user_id: firebaseUserId,
         text: data.context,
@@ -36,7 +52,7 @@ const Contact = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${firebaseToken}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(contactData),
         });

@@ -1,5 +1,6 @@
 import { Timestamp } from 'firebase/firestore';
 import Swal from 'sweetalert2';
+import { refreshFirebaseToken } from './token';
 
 // firebaseのタイムスタンプを文字列の日付に変換する関数
 export const convertTimestampToString = (timestamp: Timestamp): string => {
@@ -52,8 +53,8 @@ export const parseDatetoYYYYMMDD = (dateString: string) => {
   return formattedDate;
 };
 
-export const initTokenHeader = () => {
-  const token = localStorage.getItem('firebaseToken');
+export const initTokenHeader = async () => {
+  const token = await refreshFirebaseToken();
   const headers = {
     Authorization: `Bearer ${token}`,
   };
