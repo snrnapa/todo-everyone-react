@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { Note, Timer, Confetti, Chat } from 'phosphor-react';
 import { useParams } from 'react-router-dom';
 import { formatDateForInput, showErrorAlert } from '../model/Utils';
-import { Card, CircularProgress, Divider } from '@mui/material';
+import { Card, CircularProgress, Divider, IconButton } from '@mui/material';
 import { refreshFirebaseToken } from '../model/token';
 import { API_URL } from '../config';
+import useUpdateAddition from '../components/hooks/useUpdateAddition';
 
 // Commentの型定義
 interface Comment {
@@ -37,8 +38,20 @@ const TodoInfo = () => {
   const params = useParams();
   const id = params.id;
 
+
   const [todoInfo, setTodoInfo] = useState<TodoInfo>();
+  const [isCheered, setIsCheered] = useState(todoInfo?.is_cheered_me)
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const handleIsCheered = () => {
+    if (todoInfo) {
+      todoInfo.is_cheered_me = !isCheered;
+      const userId = localStorage.getItem('firebaseUserId')
+      const { updateAddition } = useUpdateAddition(todoInfo.id, userId, todoInfo.is_cheered_me, todoInfo.is_booked_me)
+      updateAddition();
+      setIsCheered(todoInfo.is_cheered_me);
+    }
+  };
 
   useEffect(() => {
     const getTodoInfo = async () => {
@@ -94,9 +107,15 @@ const TodoInfo = () => {
         </div>
 
         <div className="flex space-x-4">
-          <div className="flex space-x-1">
-            <Confetti size={25} />
-            <p className="text-gray-400 text-sm">{todoInfo.cheered_count}</p>
+          <div className="flex items-center">
+            <IconButton onClick={handleIsCheered}>
+              <Confetti
+                size={20}
+                color={isCheered ? '#DC143C' : '#A9A9A9'}
+                weight={isCheered ? 'fill' : 'thin'}
+              />
+            </IconButton>
+            <p className="text-xs text-slate-700">{todoInfo.cheered_count}</p>
           </div>
 
           {/* <div className="flex space-x-1">
