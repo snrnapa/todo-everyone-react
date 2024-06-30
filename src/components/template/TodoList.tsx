@@ -8,6 +8,7 @@ import TodoItem from './TodoItem';
 import { Todo } from '../../model/TodoTypes';
 import FilterButtons from '../button/FilterButtons';
 import { refreshFirebaseToken } from '../../model/token';
+import { API_URL } from '../../config';
 
 interface TodoListProps {
   reloadCount: number;
@@ -61,7 +62,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
   };
 
   const handleDelete = async (todo: Todo) => {
-    fetch(`${process.env.REACT_APP_API_URL}/todo`, {
+    fetch(`${API_URL}/todo`, {
       method: 'DELETE',
       headers: headers,
       body: JSON.stringify(todo),
@@ -88,7 +89,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
       deadline: new Date(data.deadline).toISOString(),
     };
 
-    fetch(`${process.env.REACT_APP_API_URL} / todo`, {
+    fetch(`${API_URL} / todo`, {
       method: 'PATCH',
       headers: headers,
       body: JSON.stringify(todoData),
@@ -116,7 +117,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
       detail: todo.detail,
       deadline: todo.deadline,
     };
-    fetch(`${process.env.REACT_APP_API_URL} / todo`, {
+    fetch(`${API_URL}/todo`, {
       method: 'POST',
       headers: headers,
       body: JSON.stringify(newTodo),

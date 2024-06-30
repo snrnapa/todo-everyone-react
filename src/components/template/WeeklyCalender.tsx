@@ -5,6 +5,7 @@ import { showErrorAlert } from "../../model/Utils";
 import { CheckSquare, PushPin } from 'phosphor-react';
 import { useNavigate } from 'react-router-dom';
 import { refreshFirebaseToken } from "../../model/token";
+import { API_URL } from "../../config";
 
 
 
@@ -64,7 +65,7 @@ export const WeeklyCalender: React.FC = () => {
                 const token = await refreshFirebaseToken()
 
                 const response = await fetch(
-                    `https://napalog.com/every-todo/v1/summary/${userId}`,
+                    `${API_URL}/summary/${userId}`,
                     {
                         method: 'GET',
                         headers: {

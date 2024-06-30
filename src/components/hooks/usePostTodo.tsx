@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { API_URL } from '../../config';
 import { SubmitHandler } from 'react-hook-form';
-import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
+import { showErrorAlert } from '../../model/Utils';
 import { refreshFirebaseToken } from '../../model/token';
 
 interface PostInput {
@@ -12,11 +12,9 @@ interface PostInput {
 
 const usePostTodo = (
   userId: string | null,
-  setReloadCount: React.Dispatch<React.SetStateAction<number>>,
 ) => {
-  const [errorMassage, setErrorMessage] = useState<string | null>(null);
 
-  const postTodo: SubmitHandler<PostInput> = async (data, event) => {
+  const postTodo: SubmitHandler<PostInput> = async (data) => {
     const token = await refreshFirebaseToken()
     if (userId && token) {
       const todoData = {
@@ -27,31 +25,24 @@ const usePostTodo = (
         deadline: new Date(data.deadline).toISOString(),
       };
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/todo`, {
+        console.log(`${API_URL}/todo`)
+        await fetch(`${API_URL}/todo`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(todoData),
         });
-        const responseData = await response.json();
-        if (responseData.error) {
-          setErrorMessage(responseData.error);
-        } else {
-          showSuccessAlert('登録完了', 'Todoを登録しました');
-          event?.target.reset();
-          setErrorMessage(null);
-          setReloadCount((prev) => prev + 1);
-        }
-      } catch {
+        // const responseData = await response.json();
+      } catch (error) {
         showErrorAlert(
           'サーバー処理中に問題が発生しました',
-          errorMassage || '',
+          `詳細：${error}`,
         );
       }
     }
   };
-  return { postTodo, errorMassage };
+  return { postTodo };
 };
 
 export default usePostTodo;

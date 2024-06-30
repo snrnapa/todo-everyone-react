@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { formatDateForInput, showErrorAlert } from '../model/Utils';
 import { Card, CircularProgress, Divider } from '@mui/material';
 import { refreshFirebaseToken } from '../model/token';
+import { API_URL } from '../config';
 
 // Commentの型定義
 interface Comment {
@@ -35,29 +36,19 @@ interface TodoInfo {
 const TodoInfo = () => {
   const params = useParams();
   const id = params.id;
-  const [token, setToken] = useState<string | null>(null); // トークンの状態を保持するstateを追加する
-  // ページが読み込まれた時にトークンを取得する
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        const token = await refreshFirebaseToken();
-        setToken(token);
-      } catch (error) {
-        console.error('Error fetching Firebase token:', error);
-        setToken(null);
-      }
-    };
 
-    fetchToken();
-  }, []); // 一度だけ実行される
   const [todoInfo, setTodoInfo] = useState<TodoInfo>();
-
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const getTodoInfo = async () => {
+      const token = await refreshFirebaseToken();
+      // API_URL の確認
+      console.log(`API_URL: "${API_URL}"`);
+      // id の確認
+      console.log(`ID: "${id}"`);
       try {
-        const response = await fetch(`https://napalog.com/every-todo/v1/todo/${id}`, {
+        const response = await fetch(`${API_URL}/todo/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

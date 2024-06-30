@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
+import { API_URL } from '../../config';
 
 interface CommentInput {
   commentText: string;
@@ -21,7 +22,7 @@ const usePostComment = (
         commentText: data.commentText,
       };
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/comment`, {
+        const response = await fetch(`${API_URL}/comment`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -4,6 +4,7 @@ import { Check, XCircle } from 'phosphor-react';
 import { IconButton } from '@mui/material';
 import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
 import { refreshFirebaseToken } from '../../model/token';
+import { API_URL } from '../../config';
 
 interface CommentInput {
   commentText: string;
@@ -41,7 +42,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ todoId, onCancel }) => {
       todo_id: todoId,
       text: data.commentText,
     };
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/comment`, {
+    const response = await fetch(`${API_URL}/comment`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

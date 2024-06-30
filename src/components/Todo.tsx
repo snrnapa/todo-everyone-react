@@ -12,7 +12,7 @@ const Todo = () => {
   const userId = localStorage.getItem('firebaseUserId');
 
 
-  const { postTodo } = usePostTodo(userId, setReloadCount);
+  const { postTodo } = usePostTodo(userId);
 
   if (userId == null) {
     return <div>Loading Now......</div>;

@@ -6,6 +6,7 @@ import { showErrorAlert } from '../../model/Utils';
 import TodoDeleteButton from '../button/TodoDeleteButton';
 import TodoCopyButton from '../button/TodoCopyButton';
 import { refreshFirebaseToken } from '../../model/token';
+import { API_URL } from '../../config';
 
 type AdditionInput = {
   todo_id: number;
@@ -74,7 +75,7 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
       is_booked: todo.is_booked_me,
     };
 
-    fetch(`${process.env.REACT_APP_API_URL}/addition`, {
+    fetch(`${API_URL}/addition`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

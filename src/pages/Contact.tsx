@@ -5,6 +5,7 @@ import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 import ContactCategoryButton from '../components/button/ContactCategoryButton';
 import { useEffect, useState } from 'react';
 import { refreshFirebaseToken } from '../model/token';
+import { API_URL } from '../config';
 
 type ContactInput = {
   context: string;
@@ -48,7 +49,7 @@ const Contact = () => {
         category: selectedCategory
       };
       try {
-        await fetch(`${process.env.REACT_APP_API_URL}/contact`, {
+        await fetch(`${API_URL}/contact`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

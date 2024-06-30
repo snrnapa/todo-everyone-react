@@ -4,6 +4,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { auth } from '../libs/firebase';
 import { showErrorAlert } from '../model/Utils';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { API_URL } from '../config';
 
 // Register（初期登録）画面で使用するinputの型を宣言
 type RegisterInputs = {
@@ -49,7 +50,7 @@ const Register = () => {
       } else {
         throw new Error('ユーザー情報が取得できませんでした');
       }
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/register`, {
+      const response = await fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

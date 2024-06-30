@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { showErrorAlert } from '../../model/Utils';
 import { Todo } from '../../model/TodoTypes';
 import { refreshFirebaseToken } from '../../model/token';
+import { API_URL } from '../../config';
 
 const useGetTodos = (reloadCount: number, headers: HeadersInit): Todo[] => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -17,7 +18,7 @@ const useGetTodos = (reloadCount: number, headers: HeadersInit): Todo[] => {
         };
 
         const response = await fetch(
-          `https://napalog.com/every-todo/v1/todos/${userId}`,
+          `${API_URL}/todos/${userId}`,
           {
             method: 'GET',
             headers: authHeaders,
