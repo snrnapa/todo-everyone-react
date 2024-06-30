@@ -6,6 +6,7 @@ import { Card, CircularProgress, Divider, IconButton } from '@mui/material';
 import { refreshFirebaseToken } from '../model/token';
 import { API_URL } from '../config';
 import useUpdateAddition from '../components/hooks/useUpdateAddition';
+import CommentForm from '../components/form/CommentForm';
 
 // Commentの型定義
 interface Comment {
@@ -42,7 +43,8 @@ const TodoInfo = () => {
   const [todoInfo, setTodoInfo] = useState<TodoInfo>();
   const [isCheered, setIsCheered] = useState(todoInfo?.is_cheered_me)
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  const [dispComment, setDispComment] = useState<boolean>(false)
+  const [reloadCount] = useState(0)
   const handleIsCheered = () => {
     if (todoInfo) {
       todoInfo.is_cheered_me = !isCheered;
@@ -52,6 +54,10 @@ const TodoInfo = () => {
       setIsCheered(todoInfo.is_cheered_me);
     }
   };
+
+  const handleDispComment = () => {
+    setDispComment(!dispComment)
+  }
 
   useEffect(() => {
     const getTodoInfo = async () => {
@@ -74,7 +80,7 @@ const TodoInfo = () => {
       }
     };
     getTodoInfo();
-  }, []);
+  }, [reloadCount]);
 
   if (isLoading) {
     return (
@@ -123,11 +129,17 @@ const TodoInfo = () => {
             <p className="text-gray-400 text-sm">{todoInfo.booked_count}</p>
           </div> */}
 
-          <div className="flex space-x-1">
-            <Chat size={25} />
-            <p className="text-gray-400 text-sm">{todoInfo.comment_count}</p>
+          <div className="flex items-center">
+            <IconButton onClick={handleDispComment}>
+              <Chat size={20} color="#120fd2" weight="thin" />
+            </IconButton>
+            <p className="text-xs text-slate-700">{todoInfo.comment_count}</p>
           </div>
         </div>
+        {dispComment ? <CommentForm todoId={todoInfo.id} onCancel={() => {
+          handleDispComment()
+        }} /> : <div></div>}
+
       </div>
 
       <Divider />
