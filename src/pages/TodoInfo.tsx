@@ -43,10 +43,6 @@ const TodoInfo = () => {
   useEffect(() => {
     const getTodoInfo = async () => {
       const token = await refreshFirebaseToken();
-      // API_URL の確認
-      console.log(`API_URL: "${API_URL}"`);
-      // id の確認
-      console.log(`ID: "${id}"`);
       try {
         const response = await fetch(`${API_URL}/todo/${id}`, {
           headers: {

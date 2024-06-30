@@ -25,7 +25,6 @@ const usePostTodo = (
         deadline: new Date(data.deadline).toISOString(),
       };
       try {
-        console.log(`${API_URL}/todo`)
         await fetch(`${API_URL}/todo`, {
           method: 'POST',
           headers: {

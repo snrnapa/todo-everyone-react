@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import CompletedCheck from '../button/CompletedCheck';
 import TodoItemTemplate from './TodoItemTemplate';
 import { refreshFirebaseToken } from '../../model/token';
+import { API_URL } from '../../config';
 
 interface TodoItemProps {
   todo: Todo;
@@ -57,7 +58,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const navigate = useNavigate();
 
   const updateCompleted = (todo: Todo) => {
-    fetch(`${process.env.REACT_APP_API_URL}/todo`, {
+    fetch(`${API_URL}/todo`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -81,7 +82,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   };
 
   const navigateTodoInfo = (todoId: number) => {
-    navigate(`/ todo / ${todoId}`);
+    navigate(`/todo/${todoId}`);
   };
 
   return (
