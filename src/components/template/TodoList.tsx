@@ -89,7 +89,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
       deadline: new Date(data.deadline).toISOString(),
     };
 
-    fetch(`${API_URL} / todo`, {
+    fetch(`${API_URL}/todo`, {
       method: 'PATCH',
       headers: headers,
       body: JSON.stringify(todoData),
