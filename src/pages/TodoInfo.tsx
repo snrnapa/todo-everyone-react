@@ -41,12 +41,18 @@ const TodoInfo = () => {
 
 
   const [todoInfo, setTodoInfo] = useState<TodoInfo>();
-  const [isCheered, setIsCheered] = useState(todoInfo?.is_cheered_me)
+  const [isCheered, setIsCheered] = useState<boolean>(false)
+  const [cheeredCount, setCheeredCount] = useState(0)
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [dispComment, setDispComment] = useState<boolean>(false)
-  const [reloadCount] = useState(0)
   const handleIsCheered = () => {
     if (todoInfo) {
+      if (isCheered) {
+        setCheeredCount(cheeredCount - 1)
+      } else {
+        setCheeredCount(cheeredCount + 1)
+
+      }
       todoInfo.is_cheered_me = !isCheered;
       const userId = localStorage.getItem('firebaseUserId')
       const { updateAddition } = useUpdateAddition(todoInfo.id, userId, todoInfo.is_cheered_me, todoInfo.is_booked_me)
@@ -62,8 +68,9 @@ const TodoInfo = () => {
   useEffect(() => {
     const getTodoInfo = async () => {
       const token = await refreshFirebaseToken();
+      const userId = localStorage.getItem('firebaseUserId')
       try {
-        const response = await fetch(`${API_URL}/todo/${id}`, {
+        const response = await fetch(`${API_URL}/todo/${id}?userId=${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -74,13 +81,16 @@ const TodoInfo = () => {
         }
         const responseData: TodoInfo = await response.json();
         setTodoInfo(responseData);
+        console.log(`${API_URL}/todo/${id}`)
+        setIsCheered(responseData.is_cheered_me);
+        setCheeredCount(responseData.cheered_count);
         setIsLoading(false);
       } catch (error) {
         showErrorAlert('todoの詳細取得に失敗しました', `${error}`);
       }
     };
     getTodoInfo();
-  }, [reloadCount]);
+  }, []);
 
   if (isLoading) {
     return (
@@ -121,7 +131,7 @@ const TodoInfo = () => {
                 weight={isCheered ? 'fill' : 'thin'}
               />
             </IconButton>
-            <p className="text-xs text-slate-700">{todoInfo.cheered_count}</p>
+            <p className="text-xs text-slate-700">{cheeredCount}</p>
           </div>
 
           {/* <div className="flex space-x-1">
