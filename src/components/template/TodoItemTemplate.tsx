@@ -26,8 +26,14 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
   onEdit,
 }) => {
   const [isCheered, setIsCheered] = useState(todo.is_cheered_me);
+  const [cheeredCount, setCheeredCount] = useState(todo.cheered_count)
 
   const handleIsCheered = () => {
+    if (isCheered) {
+      setCheeredCount(cheeredCount - 1)
+    } else {
+      setCheeredCount(cheeredCount + 1)
+    }
     todo.is_cheered_me = !isCheered;
     const userId = localStorage.getItem('firebaseUserId')
     const { updateAddition } = useUpdateAddition(todo.id, userId, todo.is_cheered_me, todo.is_booked_me)
@@ -60,7 +66,7 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
                 weight={isCheered ? 'fill' : 'thin'}
               />
             </IconButton>
-            <p className="text-xs text-slate-700">{todo.cheered_count}</p>
+            <p className="text-xs text-slate-700">{cheeredCount}</p>
           </div>
 
           {/* <div className="flex items-center">
@@ -103,7 +109,7 @@ const TodoItemTemplate: React.FC<TodoItemTemplateProps> = ({
                 weight={isCheered ? 'fill' : 'thin'}
               />
             </IconButton>
-            <p className="text-xs text-slate-700">{todo.cheered_count}</p>
+            <p className="text-xs text-slate-700">{cheeredCount}</p>
           </div>
 
           {/* <div className="flex items-center">
