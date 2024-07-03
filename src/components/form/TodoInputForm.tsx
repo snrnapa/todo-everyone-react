@@ -1,25 +1,22 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button, TextField } from '@mui/material';
 import { formatTodayForInput } from '../../model/Utils';
+import usePostTodo from '../hooks/usePostTodo';
+import { PostInput } from '../../model/TodoTypes';
 
-interface FormValue {
-  title: string;
-  detail: string;
-  deadline: string;
-  completed: boolean;
-}
-interface TodoInputFormProps {
-  onSubmit: SubmitHandler<FormValue>;
-}
 
-const TodoInputForm: React.FC<TodoInputFormProps> = ({ onSubmit }) => {
+const TodoInputForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValue>();
-
+  } = useForm<PostInput>();
   const today = formatTodayForInput;
+  const { postTodo } = usePostTodo()
+
+  const onSubmit: SubmitHandler<PostInput> = async (data) => {
+    await postTodo(data)
+  }
 
   return (
     <form

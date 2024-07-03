@@ -15,7 +15,8 @@ export type Todo = {
 export type PostInput = {
   title: string;
   detail: string;
-  deadline: Date;
+  deadline: string;
+  completed: boolean;
 };
 
 export type CommentInput = {

@@ -3,16 +3,12 @@ import { IconButton } from '@mui/material';
 import { useState } from 'react';
 import TodoInputForm from './form/TodoInputForm';
 import TodoList from './template/TodoList';
-import usePostTodo from './hooks/usePostTodo';
 import { WeeklyCalender } from './template/WeeklyCalender';
 
 const Todo = () => {
   const [postFlg, setPostFlg] = useState<boolean>(false);
   const [reloadCount, setReloadCount] = useState(0);
   const userId = localStorage.getItem('firebaseUserId');
-
-
-  const { postTodo } = usePostTodo(userId);
 
   if (userId == null) {
     return <div>Loading Now......</div>;
@@ -48,7 +44,7 @@ const Todo = () => {
 
         {postFlg ? (
           <div className="space-y-2 ">
-            <TodoInputForm onSubmit={postTodo} />
+            <TodoInputForm />
           </div>
         ) : (
           <div></div>
