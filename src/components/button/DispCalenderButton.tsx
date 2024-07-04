@@ -1,34 +1,25 @@
-import { IconButton } from '@mui/material'
-import { CalendarBlank } from 'phosphor-react'
-import React from 'react'
-
+import { CalendarBlank } from 'phosphor-react';
+import React from 'react';
 
 interface DispCalenderButtonProps {
-  dispCalender: boolean
-  onDisp: (isDisp: boolean) => void
+  dispCalender: boolean;
+  onDisp: (isDisp: boolean) => void;
 }
 
-const stringClass = 'text-base text-black '
-const layoutClass = 'flex space-x-2'
+// スタイルクラスの定義
 
-const DispCalenderButton: React.FC<DispCalenderButtonProps> = ({ dispCalender: dispCalender, onDisp: onDisp }) => {
+const DispCalenderButton: React.FC<DispCalenderButtonProps> = ({ dispCalender, onDisp }) => {
+  return (
+    <div
+      className='flex justify-center w-56 items-center space-x-2 bg-personaBlue text-white text-bold rounded-md px-4 py-2 transition duration-300 ease-in-out hover:bg-blue-700 hover:scale-105 focus:outline-none'
+      onClick={() => { onDisp(!dispCalender); }}
+    >
+      <CalendarBlank size={24} />
+      <p className='text-base text-blue text-bold'>
+        {dispCalender ? 'カレンダーの非表示' : 'カレンダーの表示'}
+      </p>
+    </div>
+  );
+};
 
-  if (dispCalender) {
-    return (
-      <IconButton className={`${layoutClass}`} onClick={() => { onDisp(!dispCalender) }}>
-        <CalendarBlank size={32} />
-        <p className={`${stringClass}`}>カレンダーの非表示</p>
-      </IconButton>
-    )
-  } else {
-    return (
-      <IconButton className={`${layoutClass}`} onClick={() => { onDisp(!dispCalender) }}>
-        <CalendarBlank size={32} />
-        <p className={`${stringClass}`}>カレンダーの表示</p>
-      </IconButton >
-    )
-  }
-
-}
-
-export default DispCalenderButton
+export default DispCalenderButton;
