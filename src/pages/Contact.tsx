@@ -6,6 +6,7 @@ import ContactCategoryButton from '../components/button/ContactCategoryButton';
 import { useEffect, useState } from 'react';
 import { refreshFirebaseToken } from '../model/token';
 import { API_URL } from '../config';
+import { ButtonStyle } from '../components/styles/ButtonStyles';
 
 type ContactInput = {
   context: string;
@@ -98,12 +99,10 @@ const Contact = () => {
             </p>
           </div>
         </div>
-        <div className="flex justify-center items-center">
-          <IconButton type="submit" onClick={() => { }}>
-            <PaperPlane size={52} color="#120fd2" weight="thin" />
-          </IconButton>
-          <p className='text-lg'>送信</p>
-        </div>
+        <button type="submit" onClick={() => { }} className={`${ButtonStyle.base} ${ButtonStyle.primary}`}>
+          <PaperPlane size={52} color="#120fd2" weight="thin" />
+          <p className={`${ButtonStyle.text}`}>送信</p>
+        </button>
       </form>
     </div>
   );
