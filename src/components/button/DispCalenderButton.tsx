@@ -1,5 +1,7 @@
 import { CalendarBlank } from 'phosphor-react';
 import React from 'react';
+import { ButtonStyle } from '../styles/ButtonStyles';
+import { Button } from '@mui/material';
 
 interface DispCalenderButtonProps {
   dispCalender: boolean;
@@ -11,11 +13,11 @@ interface DispCalenderButtonProps {
 const DispCalenderButton: React.FC<DispCalenderButtonProps> = ({ dispCalender, onDisp }) => {
   return (
     <div
-      className='flex justify-center w-56 items-center space-x-2 bg-personaBlue text-white text-bold rounded-md px-4 py-2 transition duration-300 ease-in-out hover:bg-blue-700 hover:scale-105 focus:outline-none'
+      className={`${ButtonStyle.base} ${ButtonStyle.primary}`}
       onClick={() => { onDisp(!dispCalender); }}
     >
       <CalendarBlank size={24} />
-      <p className='text-base text-blue text-bold'>
+      <p className={`${ButtonStyle.text}`}>
         {dispCalender ? 'カレンダーの非表示' : 'カレンダーの表示'}
       </p>
     </div>

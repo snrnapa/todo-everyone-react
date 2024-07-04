@@ -4,6 +4,7 @@ import { useState } from 'react';
 import TodoInputForm from './form/TodoInputForm';
 import TodoList from './template/TodoList';
 import { WeeklyCalender } from './template/WeeklyCalender';
+import { ButtonStyle } from './styles/ButtonStyles';
 
 const Todo = () => {
   const [postFlg, setPostFlg] = useState<boolean>(false);
@@ -18,29 +19,29 @@ const Todo = () => {
     <>
       <div className="p-1 space-y-2 w-full justify-center">
         <WeeklyCalender />
-        {!postFlg ? (
-          <div className="flex items-center justify-start">
-            <IconButton
+        <div className="flex items-center justify-start">
+          {!postFlg ? (
+            <div
               onClick={() => {
                 setPostFlg(!postFlg);
               }}
+              className={`${ButtonStyle.base} ${ButtonStyle.primary}`}
             >
               <NotePencil size={32} color="#120fd2" weight="thin" />
-            </IconButton>
-            <p className='text-base text-black'>やることを書く</p>
-          </div>
-        ) : (
-          <div className="flex items-center justify-center">
-            <IconButton
+              <p className={`${ButtonStyle.text}`}>やることを書く</p>
+            </div>
+          ) : (
+            <div
               onClick={() => {
                 setPostFlg(!postFlg);
               }}
+              className={`${ButtonStyle.base} ${ButtonStyle.primary}`}
             >
               <ArrowsInLineVertical size={32} color="#120fd2" weight="thin" />
-            </IconButton>
-            <p>とじる</p>
-          </div>
-        )}
+              <p className={`${ButtonStyle.text}`}>とじる</p>
+            </div>
+          )}
+        </div>
 
         {postFlg ? (
           <div className="space-y-2 ">
