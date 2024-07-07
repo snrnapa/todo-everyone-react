@@ -5,10 +5,12 @@ import TodoInputForm from './form/TodoInputForm';
 import TodoList from './template/TodoList';
 import { WeeklyCalender } from './template/WeeklyCalender';
 import { ButtonStyle } from './styles/ButtonStyles';
+import { Todo } from '../model/TodoTypes';
 
-const Todo = () => {
+const TodoPage = () => {
+  const [todos, setTodos] = useState<Todo[]>([]);
+
   const [postFlg, setPostFlg] = useState<boolean>(false);
-  const [reloadCount, setReloadCount] = useState(0);
   const userId = localStorage.getItem('firebaseUserId');
 
   if (userId == null) {
@@ -50,10 +52,10 @@ const Todo = () => {
         ) : (
           <div></div>
         )}
-        <TodoList reloadCount={reloadCount} setReloadCount={setReloadCount} />
+        <TodoList todos={todos} setTodos={setTodos} />
       </div>
     </>
   );
 };
 
-export default Todo;
+export default TodoPage;

@@ -7,29 +7,28 @@ import useGetTodos from '../hooks/useGetTodos';
 import TodoItem from './TodoItem';
 import { Todo } from '../../model/TodoTypes';
 import FilterButtons from '../button/FilterButtons';
-import { refreshFirebaseToken } from '../../model/token';
 import { API_URL } from '../../config';
 
 interface TodoListProps {
-  reloadCount: number;
-  setReloadCount: React.Dispatch<React.SetStateAction<number>>;
+  todos: Todo[];
+  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
 }
 
-const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
+const TodoList: React.FC<TodoListProps> = ({  todos, setTodos}) => {
 
   const user_id = localStorage.getItem('firebaseUserId');
-  const [token, setToken] = useState<string | null>(null); // トークンの状態を保持するstateを追加する
   // ページが読み込まれた時にトークンを取得する
   useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        const token = await refreshFirebaseToken();
-        setToken(token);
-      } catch (error) {
-        console.error('Error fetching Firebase token:', error);
-        setToken(null);
-      }
+    // カスタムフックを使用してtodosを取得し、stateを更新する
+    const fetchTodos = async () => {
+      const fetchedTodos = await useGetTodos(setTodos={setTodos}); // useGetTodosは非同期関数でtodosを取得する
+      setTodos(fetchedTodos);
     };
+
+    if (token) { // tokenが取得できている場合にのみtodosをフェッチする
+      fetchTodos();
+    }
+
 
     fetchToken();
   }, []); // 一度だけ実行される
@@ -37,7 +36,7 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
     Authorization: `Bearer ${token}`,
   };
 
-  const todos = useGetTodos(reloadCount, headers);
+
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editedTodo, setEditedTodo] = useState<Todo>();
 
