@@ -32,7 +32,7 @@ const TodoPage = () => {
     fetchToken()
   }, [])
 
-  const { todos, fetchTodos, postTodo, deleteTodo, updateTodo } = useTodos([], headers)
+  const { todos, fetchTodos, postTodo, deleteTodo, updateTodo, copyTodo } = useTodos([], headers)
   useEffect(() => {
     if (initialized) {
       fetchTodos()
@@ -78,7 +78,7 @@ const TodoPage = () => {
         ) : (
           <div></div>
         )}
-        <TodoList todos={todos} deleteTodo={deleteTodo} updateTodo={updateTodo} />
+        <TodoList todos={todos} deleteTodo={deleteTodo} updateTodo={updateTodo} copyTodo={copyTodo} />
       </div>
     </>
   );

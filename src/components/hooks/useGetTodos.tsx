@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
 import { PostInput, Todo } from '../../model/TodoTypes';
-import { refreshFirebaseToken } from '../../model/token';
 import { API_URL } from '../../config';
 import { SubmitHandler } from 'react-hook-form';
 
@@ -111,6 +110,31 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
     }
   }, [headers])
 
+
+  const copyTodo = useCallback(async (todo: Todo) => {
+
+    try {
+      const response = await fetch(`${API_URL}/todo`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(todo),
+      })
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      }
+      showSuccessAlert('コピー完了', 'Todoをコピーが完了しました');
+      setTodos((prevTodos) => [...prevTodos, todo])
+
+    } catch (error) {
+      showErrorAlert(
+        'todoのコピー失敗',
+        `todoのコピー中にエラーが発生しました${error}`,
+      );
+    }
+
+  }, [headers]);
+
   const deleteTodo = useCallback(async (todo: Todo) => {
 
     try {
@@ -139,7 +163,7 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
   }, [headers])
 
 
-  return { todos, fetchTodos, postTodo, deleteTodo, updateTodo };
+  return { todos, fetchTodos, postTodo, deleteTodo, updateTodo, copyTodo };
 };
 
 export default useTodos;

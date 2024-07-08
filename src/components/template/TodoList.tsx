@@ -6,18 +6,16 @@ import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
 import TodoItem from './TodoItem';
 import { Todo } from '../../model/TodoTypes';
 import FilterButtons from '../button/FilterButtons';
-import { API_URL } from '../../config';
-import useTodos from '../hooks/useGetTodos';
-import { refreshFirebaseToken } from '../../model/token';
 
 interface TodoListProps {
   todos: Todo[]
   deleteTodo: any
   updateTodo: any
+  copyTodo: any
 }
 
 
-const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTodo, updateTodo: updateTodo
+const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTodo, updateTodo: updateTodo, copyTodo: copyTodo
 }) => {
 
   const user_id = localStorage.getItem('firebaseUserId')
@@ -65,13 +63,8 @@ const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTod
 
   const onCopy = async (todo: Todo) => {
     if (user_id == null) {
-      showErrorAlert('todoコピー失敗', 'todoのコピー中に失敗しました');
+      showErrorAlert('エラー', 'ユーザーIDが取得できず、失敗しました');
       return;
-    }
-
-    const token = await refreshFirebaseToken()
-    const headers = {
-      Authorization: `Bearer ${token}`,
     }
     const newTodo = {
       user_id: user_id,
@@ -79,23 +72,7 @@ const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTod
       detail: todo.detail,
       deadline: todo.deadline,
     };
-    fetch(`${API_URL}/todo`, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify(newTodo),
-    })
-      .then((response) => response.json())
-      .then((responseData) => {
-        if (responseData.error) {
-          showErrorAlert(
-            'todoのコピー失敗',
-            `todoのコピー中にエラーが発生しました${responseData.error}`,
-          );
-          return;
-        } else {
-          showSuccessAlert('登録完了', 'Todoを登録しました');
-        }
-      });
+    copyTodo(newTodo)
   };
 
   return (
