@@ -12,10 +12,11 @@ import { refreshFirebaseToken } from '../../model/token';
 
 interface TodoListProps {
   todos: Todo[]
+  deleteTodo: any
 }
 
 
-const TodoList: React.FC<TodoListProps> = ({ todos: todos }) => {
+const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTodo }) => {
 
   const user_id = localStorage.getItem('firebaseUserId')
 
@@ -43,24 +44,7 @@ const TodoList: React.FC<TodoListProps> = ({ todos: todos }) => {
   };
 
   const handleDelete = async (todo: Todo) => {
-    const token = await refreshFirebaseToken()
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    }
-    fetch(`${API_URL}/todo`, {
-      method: 'DELETE',
-      headers: headers,
-      body: JSON.stringify(todo),
-    }).then((response) => {
-      if (!response.ok) {
-        showErrorAlert(
-          '削除中にエラーが発生',
-          'todoの削除中にエラーが発生しました。',
-        );
-      } else {
-        showSuccessAlert('削除完了', 'todoの削除が完了しました。');
-      }
-    });
+    deleteTodo(todo)
   };
 
   const handleSubmit: SubmitHandler<Todo> = async (data) => {

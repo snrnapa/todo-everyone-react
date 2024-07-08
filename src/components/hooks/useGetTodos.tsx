@@ -75,8 +75,34 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
     }
   }, [headers])
 
+  const deleteTodo = useCallback(async (todo: Todo) => {
 
-  return { todos, fetchTodos, postTodo };
+    try {
+      const response = await fetch(`${API_URL}/todo`, {
+        method: 'DELETE',
+        headers: headers,
+        body: JSON.stringify(todo),
+      })
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      }
+      showSuccessAlert(
+        '削除完了',
+        `todoの削除が完了しました`,
+      );
+      setTodos((prevTodos) => prevTodos.filter((t) => t.id !== todo.id));
+    } catch (error) {
+      showErrorAlert(
+        'サーバー処理中に問題が発生しました',
+        `詳細：${error}`,
+      );
+    }
+
+  }, [headers])
+
+
+  return { todos, fetchTodos, postTodo, deleteTodo };
 };
 
 export default useTodos;
