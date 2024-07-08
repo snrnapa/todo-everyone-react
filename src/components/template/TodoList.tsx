@@ -8,33 +8,25 @@ import TodoItem from './TodoItem';
 import { Todo } from '../../model/TodoTypes';
 import FilterButtons from '../button/FilterButtons';
 import { API_URL } from '../../config';
+import useTodos from '../hooks/useGetTodos';
+import { refreshFirebaseToken } from '../../model/token';
 
-interface TodoListProps {
-  todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
-}
 
-const TodoList: React.FC<TodoListProps> = ({  todos, setTodos}) => {
 
-  const user_id = localStorage.getItem('firebaseUserId');
+const TodoList = () => {
+
+  const headers = {
+    Authorization: `Bearer ${refreshFirebaseToken}`,
+  };
+
+  const user_id = localStorage.getItem('firebaseUserId')
+
+  const { todos, fetchTodos } = useTodos([], headers)
   // ページが読み込まれた時にトークンを取得する
   useEffect(() => {
-    // カスタムフックを使用してtodosを取得し、stateを更新する
-    const fetchTodos = async () => {
-      const fetchedTodos = await useGetTodos(setTodos={setTodos}); // useGetTodosは非同期関数でtodosを取得する
-      setTodos(fetchedTodos);
-    };
+    fetchTodos()
+  }, [fetchTodos]); // 一度だけ実行される
 
-    if (token) { // tokenが取得できている場合にのみtodosをフェッチする
-      fetchTodos();
-    }
-
-
-    fetchToken();
-  }, []); // 一度だけ実行される
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
 
 
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -73,7 +65,6 @@ const TodoList: React.FC<TodoListProps> = ({  todos, setTodos}) => {
         );
       } else {
         showSuccessAlert('削除完了', 'todoの削除が完了しました。');
-        setReloadCount(reloadCount + 1);
       }
     });
   };
@@ -97,7 +88,6 @@ const TodoList: React.FC<TodoListProps> = ({  todos, setTodos}) => {
         showSuccessAlert('更新完了', 'todoの更新が完了しました');
         setEditedTodo(undefined);
         setEditMode(false);
-        setReloadCount(reloadCount + 1);
       } else {
         showErrorAlert('更新失敗', 'todoの更新中にエラーが発生しました');
       }
@@ -131,7 +121,6 @@ const TodoList: React.FC<TodoListProps> = ({  todos, setTodos}) => {
           return;
         } else {
           showSuccessAlert('登録完了', 'Todoを登録しました');
-          setReloadCount((prev) => prev + 1);
         }
       });
   };

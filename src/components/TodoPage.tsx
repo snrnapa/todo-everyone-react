@@ -8,7 +8,6 @@ import { ButtonStyle } from './styles/ButtonStyles';
 import { Todo } from '../model/TodoTypes';
 
 const TodoPage = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
 
   const [postFlg, setPostFlg] = useState<boolean>(false);
   const userId = localStorage.getItem('firebaseUserId');
@@ -53,7 +52,7 @@ const TodoPage = () => {
           <div></div>
         )}
         <TodoList todos={todos} setTodos={setTodos} />
-      </div>
+      </div >
     </>
   );
 };
