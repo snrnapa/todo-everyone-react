@@ -7,7 +7,7 @@ import { WeeklyCalender } from './template/WeeklyCalender';
 import { ButtonStyle } from './styles/ButtonStyles';
 import { Todo } from '../model/TodoTypes';
 import { refreshFirebaseToken } from '../model/token';
-import useTodos from './hooks/useGetTodos';
+import useTodos from './hooks/useTodos';
 
 const TodoPage = () => {
 
