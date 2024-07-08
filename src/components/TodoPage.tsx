@@ -1,16 +1,43 @@
 import { NotePencil, ArrowsInLineVertical } from 'phosphor-react';
 import { IconButton } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TodoInputForm from './form/TodoInputForm';
 import TodoList from './template/TodoList';
 import { WeeklyCalender } from './template/WeeklyCalender';
 import { ButtonStyle } from './styles/ButtonStyles';
 import { Todo } from '../model/TodoTypes';
+import { refreshFirebaseToken } from '../model/token';
+import useTodos from './hooks/useGetTodos';
 
 const TodoPage = () => {
 
   const [postFlg, setPostFlg] = useState<boolean>(false);
   const userId = localStorage.getItem('firebaseUserId');
+
+  const [headers, setHeaders] = useState<{ Authorization: string }>({ Authorization: '' });
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const token = await refreshFirebaseToken();
+        setHeaders({
+          Authorization: `Bearer ${token}`,
+        });
+        setInitialized(true);
+      } catch (error) {
+        console.error('Failed to refresh token:', error);
+      }
+    }
+    fetchToken()
+  }, [])
+
+  const { todos, fetchTodos, postTodo } = useTodos([], headers)
+  useEffect(() => {
+    if (initialized) {
+      fetchTodos()
+    }
+  }, [initialized, fetchTodos]);
 
   if (userId == null) {
     return <div>Loading Now......</div>;
@@ -46,13 +73,13 @@ const TodoPage = () => {
 
         {postFlg ? (
           <div className="space-y-2 ">
-            <TodoInputForm />
+            <TodoInputForm postTodo={postTodo} />
           </div>
         ) : (
           <div></div>
         )}
-        <TodoList todos={todos} setTodos={setTodos} />
-      </div >
+        <TodoList todos={todos} />
+      </div>
     </>
   );
 };

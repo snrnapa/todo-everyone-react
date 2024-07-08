@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
 
-import useGetTodos from '../hooks/useGetTodos';
 import TodoItem from './TodoItem';
 import { Todo } from '../../model/TodoTypes';
 import FilterButtons from '../button/FilterButtons';
@@ -11,23 +10,14 @@ import { API_URL } from '../../config';
 import useTodos from '../hooks/useGetTodos';
 import { refreshFirebaseToken } from '../../model/token';
 
+interface TodoListProps {
+  todos: Todo[]
+}
 
 
-const TodoList = () => {
-
-  const headers = {
-    Authorization: `Bearer ${refreshFirebaseToken}`,
-  };
+const TodoList: React.FC<TodoListProps> = ({ todos: todos }) => {
 
   const user_id = localStorage.getItem('firebaseUserId')
-
-  const { todos, fetchTodos } = useTodos([], headers)
-  // ページが読み込まれた時にトークンを取得する
-  useEffect(() => {
-    fetchTodos()
-  }, [fetchTodos]); // 一度だけ実行される
-
-
 
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editedTodo, setEditedTodo] = useState<Todo>();
@@ -53,6 +43,10 @@ const TodoList = () => {
   };
 
   const handleDelete = async (todo: Todo) => {
+    const token = await refreshFirebaseToken()
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    }
     fetch(`${API_URL}/todo`, {
       method: 'DELETE',
       headers: headers,
@@ -71,6 +65,10 @@ const TodoList = () => {
 
   const handleSubmit: SubmitHandler<Todo> = async (data) => {
     if (!editedTodo) return;
+    const token = await refreshFirebaseToken()
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    }
 
     const todoData: Todo = {
       ...editedTodo,
@@ -100,6 +98,10 @@ const TodoList = () => {
       return;
     }
 
+    const token = await refreshFirebaseToken()
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    }
     const newTodo = {
       user_id: user_id,
       title: todo.title,
