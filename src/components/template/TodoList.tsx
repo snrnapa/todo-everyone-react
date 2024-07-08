@@ -13,10 +13,12 @@ import { refreshFirebaseToken } from '../../model/token';
 interface TodoListProps {
   todos: Todo[]
   deleteTodo: any
+  updateTodo: any
 }
 
 
-const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTodo }) => {
+const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTodo, updateTodo: updateTodo
+}) => {
 
   const user_id = localStorage.getItem('firebaseUserId')
 
@@ -49,10 +51,6 @@ const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTod
 
   const handleSubmit: SubmitHandler<Todo> = async (data) => {
     if (!editedTodo) return;
-    const token = await refreshFirebaseToken()
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    }
 
     const todoData: Todo = {
       ...editedTodo,
@@ -61,19 +59,8 @@ const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTod
       deadline: new Date(data.deadline).toISOString(),
     };
 
-    fetch(`${API_URL}/todo`, {
-      method: 'PATCH',
-      headers: headers,
-      body: JSON.stringify(todoData),
-    }).then((response) => {
-      if (response.ok) {
-        showSuccessAlert('更新完了', 'todoの更新が完了しました');
-        setEditedTodo(undefined);
-        setEditMode(false);
-      } else {
-        showErrorAlert('更新失敗', 'todoの更新中にエラーが発生しました');
-      }
-    });
+    updateTodo(todoData, setEditedTodo, setEditMode)
+
   };
 
   const onCopy = async (todo: Todo) => {

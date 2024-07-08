@@ -75,6 +75,42 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
     }
   }, [headers])
 
+  const updateTodo = useCallback(async (todo: Todo, setEditedTodo: any, setEditMode: any) => {
+    const response = await fetch(`${API_URL}/todo`, {
+      method: 'PATCH',
+      headers: headers,
+      body: JSON.stringify(todo),
+    })
+
+    try {
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      }
+      showSuccessAlert(
+        '完了',
+        `Todoの登録が完了しました。`,
+      );
+      setEditedTodo(undefined);
+      setEditMode(false);
+      // // 【要対応】更新された Todo の情報を取得
+      // const updatedTodo = await response.json();
+
+      // // 更新された Todo を反映してリストを更新
+      // setTodos((prevTodos) => {
+      //   // 更新対象の Todo を見つけて、新しい updatedTodo で置き換える
+      //   return prevTodos.map((t) =>
+      //     t.id === updatedTodo.id ? updatedTodo : t
+      //   );
+      // });
+    } catch (error) {
+      showErrorAlert(
+        'サーバー処理中に問題が発生しました',
+        `詳細：${error}`,
+      );
+    }
+  }, [headers])
+
   const deleteTodo = useCallback(async (todo: Todo) => {
 
     try {
@@ -92,6 +128,7 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
         `todoの削除が完了しました`,
       );
       setTodos((prevTodos) => prevTodos.filter((t) => t.id !== todo.id));
+
     } catch (error) {
       showErrorAlert(
         'サーバー処理中に問題が発生しました',
@@ -102,7 +139,7 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
   }, [headers])
 
 
-  return { todos, fetchTodos, postTodo, deleteTodo };
+  return { todos, fetchTodos, postTodo, deleteTodo, updateTodo };
 };
 
 export default useTodos;
