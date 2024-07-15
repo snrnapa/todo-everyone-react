@@ -71,6 +71,15 @@ const TodoPage = () => {
             <p className={`${ButtonStyle.text}`}>とじる</p>
           </div>
         )}
+
+        {postFlg ? (
+          <div className="space-y-2 ">
+            <TodoInputForm postTodo={postTodo} />
+          </div>
+        ) : (
+          <div></div>
+        )}
+        <TodoList todos={todos} deleteTodo={deleteTodo} updateTodo={updateTodo} copyTodo={copyTodo} fetchSummaries={fetchSummaries} headers={headers} />
       </div>
 
       {postFlg ? (

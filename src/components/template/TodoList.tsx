@@ -12,10 +12,12 @@ interface TodoListProps {
   deleteTodo: any
   updateTodo: any
   copyTodo: any
+  fetchSummaries: any
+  headers: any
 }
 
 
-const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTodo, updateTodo: updateTodo, copyTodo: copyTodo
+const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTodo, updateTodo: updateTodo, copyTodo: copyTodo, fetchSummaries: fetchSummaries, headers: headers
 }) => {
 
   const user_id = localStorage.getItem('firebaseUserId')
@@ -72,7 +74,8 @@ const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTod
       detail: todo.detail,
       deadline: todo.deadline,
     };
-    copyTodo(newTodo)
+    await copyTodo(newTodo)
+    await fetchSummaries(headers)
   };
 
   return (
