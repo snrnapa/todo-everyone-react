@@ -46,7 +46,8 @@ const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTod
   };
 
   const handleDelete = async (todo: Todo) => {
-    deleteTodo(todo)
+    await deleteTodo(todo)
+    await fetchSummaries()
   };
 
   const handleSubmit: SubmitHandler<Todo> = async (data) => {

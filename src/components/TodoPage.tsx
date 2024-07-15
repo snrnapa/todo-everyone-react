@@ -74,7 +74,7 @@ const TodoPage = () => {
 
         {postFlg ? (
           <div className="space-y-2 ">
-            <TodoInputForm postTodo={postTodo} />
+            <TodoInputForm postTodo={postTodo} fetchSummaries={fetchSummaries()} />
           </div>
         ) : (
           <div></div>

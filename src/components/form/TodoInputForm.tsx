@@ -7,9 +7,10 @@ import React from 'react';
 
 interface TodoInputFormProps {
   postTodo: any
+  fetchSummaries: any
 }
 
-const TodoInputForm: React.FC<TodoInputFormProps> = ({ postTodo }) => {
+const TodoInputForm: React.FC<TodoInputFormProps> = ({ postTodo, fetchSummaries }) => {
   const {
     register,
     handleSubmit,
@@ -20,6 +21,7 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ postTodo }) => {
 
   const onSubmit: SubmitHandler<PostInput> = async (data) => {
     await postTodo(data)
+    await fetchSummaries()
   }
 
   return (
