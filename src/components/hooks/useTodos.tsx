@@ -54,6 +54,7 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
         headers: headers,
         body: JSON.stringify(todoData),
       });
+      console.log(JSON.stringify(todoData))
 
       if (!response.ok) {
         const errorText = await response.text()
@@ -63,9 +64,10 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
         '完了',
         `Todoの登録が完了しました。`,
       );
-      // 【要対応】新しい Todo を取得してリストに追加
-      // const createdTodo = await response.json();
-      // setTodos((prevTodos) => [...prevTodos, createdTodo]);
+      console.log(`${API_URL}/todo`)
+      const responseData = await response.json();
+      console.log(responseData)
+      setTodos(responseData);
     } catch (error) {
       showErrorAlert(
         'サーバー処理中に問題が発生しました',

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { SubmitHandler } from 'react-hook-form';
-import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
+import { showErrorAlert } from '../../model/Utils';
 
 import TodoItem from './TodoItem';
 import { Todo } from '../../model/TodoTypes';
