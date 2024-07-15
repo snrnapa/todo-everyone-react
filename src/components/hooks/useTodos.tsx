@@ -4,8 +4,6 @@ import { PostInput, Todo } from '../../model/TodoTypes';
 import { API_URL } from '../../config';
 import { SubmitHandler } from 'react-hook-form';
 
-
-
 const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
 
   const [todos, setTodos] = useState<Todo[]>(initialTodos)
@@ -94,16 +92,7 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
       );
       setEditedTodo(undefined);
       setEditMode(false);
-      // // 【要対応】更新された Todo の情報を取得
-      // const updatedTodo = await response.json();
 
-      // // 更新された Todo を反映してリストを更新
-      // setTodos((prevTodos) => {
-      //   // 更新対象の Todo を見つけて、新しい updatedTodo で置き換える
-      //   return prevTodos.map((t) =>
-      //     t.id === updatedTodo.id ? updatedTodo : t
-      //   );
-      // });
     } catch (error) {
       showErrorAlert(
         'サーバー処理中に問題が発生しました',

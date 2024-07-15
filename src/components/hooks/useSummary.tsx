@@ -10,12 +10,8 @@ interface Summary {
   completed: boolean;
 }
 
-
-
 const useSummaries = (initialSummarys: Summary[], headers: Record<string, string>) => {
-
   const [summaries, setSummaries] = useState<Summary[]>(initialSummarys)
-
   const fetchSummaries = useCallback(async () => {
     try {
       const userId = localStorage.getItem('firebaseUserId');
@@ -30,7 +26,7 @@ const useSummaries = (initialSummarys: Summary[], headers: Record<string, string
         },
       );
       if (!response.ok) {
-        throw new Error(`HTTP Error! status : ${response.status}`);
+        throw new Error(`HTTP Error! status dededede: ${response.status}`);
       }
       const responseData = await response.json();
       var summariesWithDates;
@@ -45,10 +41,7 @@ const useSummaries = (initialSummarys: Summary[], headers: Record<string, string
       showErrorAlert('summaryの取得に失敗しました', `${error}`);
     }
   }, [headers])
-
-
-
-  return { summaries, fetchSummaries };
+  return { summaries, setSummaries, fetchSummaries };
 };
 
 export default useSummaries;

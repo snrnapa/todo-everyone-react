@@ -8,6 +8,7 @@ import { ButtonStyle } from './styles/ButtonStyles';
 import { Todo } from '../model/TodoTypes';
 import { refreshFirebaseToken } from '../model/token';
 import useTodos from './hooks/useTodos';
+import useSummaries from './hooks/useSummary';
 
 const TodoPage = () => {
 
@@ -33,6 +34,7 @@ const TodoPage = () => {
   }, [])
 
   const { todos, fetchTodos, postTodo, deleteTodo, updateTodo, copyTodo } = useTodos([], headers)
+  const { summaries, setSummaries, fetchSummaries } = useSummaries([], headers)
   useEffect(() => {
     if (initialized) {
       fetchTodos()
@@ -46,10 +48,10 @@ const TodoPage = () => {
   return (
     <>
       <div className="p-1 space-y-2 w-full justify-center">
-        <WeeklyCalender />
-        <div className="flex items-center justify-start">
-          {!postFlg ? (
-            <div
+        <WeeklyCalender summaries={summaries} setSummaries={setSummaries} fetchSummaries={fetchSummaries} />
+        {!postFlg ? (
+          <div className="flex items-center justify-start">
+            <IconButton
               onClick={() => {
                 setPostFlg(!postFlg);
               }}
@@ -57,29 +59,29 @@ const TodoPage = () => {
             >
               <NotePencil size={32} color="#120fd2" weight="thin" />
               <p className={`${ButtonStyle.text}`}>やることを書く</p>
-            </div>
-          ) : (
-            <div
-              onClick={() => {
-                setPostFlg(!postFlg);
-              }}
-              className={`${ButtonStyle.base} ${ButtonStyle.primary}`}
-            >
-              <ArrowsInLineVertical size={32} color="#120fd2" weight="thin" />
-              <p className={`${ButtonStyle.text}`}>とじる</p>
-            </div>
-          )}
-        </div>
-
-        {postFlg ? (
-          <div className="space-y-2 ">
-            <TodoInputForm postTodo={postTodo} />
           </div>
         ) : (
-          <div></div>
+          <div
+            onClick={() => {
+              setPostFlg(!postFlg);
+            }}
+            className={`${ButtonStyle.base} ${ButtonStyle.primary}`}
+          >
+            <ArrowsInLineVertical size={32} color="#120fd2" weight="thin" />
+            <p className={`${ButtonStyle.text}`}>とじる</p>
+          </div>
         )}
-        <TodoList todos={todos} deleteTodo={deleteTodo} updateTodo={updateTodo} copyTodo={copyTodo} />
       </div>
+
+      {postFlg ? (
+        <div className="space-y-2 ">
+          <TodoInputForm postTodo={postTodo} />
+        </div>
+      ) : (
+        <div></div>
+      )}
+      <TodoList todos={todos} deleteTodo={deleteTodo} updateTodo={updateTodo} copyTodo={copyTodo} />
+    </div >
     </>
   );
 };

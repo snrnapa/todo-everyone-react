@@ -4,9 +4,6 @@ import DispCalenderButton from "../button/DispCalenderButton";
 import { CheckSquare, PushPin } from 'phosphor-react';
 import { useNavigate } from 'react-router-dom';
 import { refreshFirebaseToken } from "../../model/token";
-import useSummaries from "../hooks/useSummary";
-
-
 
 const getWeekDates = (): Date[] => {
     const weekDates = []
@@ -34,7 +31,13 @@ const getColorCompletedForCalender = (completed: boolean) => {
     }
 }
 
-export const WeeklyCalender: React.FC = () => {
+interface WeeklyCalenderProps {
+    summaries: any;
+    setSummaries: any;
+    fetchSummaries: any;
+}
+
+export const WeeklyCalender: React.FC<WeeklyCalenderProps> = ({ summaries, fetchSummaries }) => {
     const weekDates = getWeekDates()
     const [dispCalender, setDispCalender] = useState<boolean>(true);
     const userId = localStorage.getItem('firebaseUserId')
@@ -62,18 +65,15 @@ export const WeeklyCalender: React.FC = () => {
         fetchToken()
     }, [])
 
-    const { summaries, fetchSummaries } = useSummaries([], headers)
-
     useEffect(() => {
         if (initialized) {
-            fetchSummaries()
+            fetchSummaries(headers)
         }
     }, [initialized, fetchSummaries])
 
     if (userId == null) {
         return <div>Loading Now......</div>;
     }
-
 
     return (
         <div className="">
@@ -88,9 +88,9 @@ export const WeeklyCalender: React.FC = () => {
                                     <p className="text-base font-semibold">{format(date, 'EEE')}</p>
                                 </div>
                                 <div className="flex">
-                                    {(summaries || []).filter((summary) => {
+                                    {(summaries || []).filter((summary: any) => {
                                         return summary.deadline && format(summary.deadline, 'MM/dd') === format(date, 'MM/dd');
-                                    }).map((s) => (
+                                    }).map((s: any) => (
                                         <div
                                             key={s.id} // `key` を追加
                                             onClick={() => navigateTodoInfo(s.id)}
