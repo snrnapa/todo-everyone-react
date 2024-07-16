@@ -76,10 +76,10 @@ export const WeeklyCalender: React.FC<WeeklyCalenderProps> = ({ summaries, fetch
     }
 
     return (
-        <div className="flex flex-col justify-center items-center space-y-5">
+        <div className="flex flex-col justify-center items-center space-y-5 w-full">
             <DispCalenderButton dispCalender={dispCalender} onDisp={setDispCalender} />
             {dispCalender ?
-                <div>
+                <div className="w-full">
                     {weekDates.map((date, index) => (
                         <div key={index} className={`p-1 border rounded shadow flex flex-col ${getColorForToday(index, date)}`}>
                             <div className={`flex space-x-1`}>
