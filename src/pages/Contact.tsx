@@ -1,6 +1,5 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { NotePencil, PaperPlane } from 'phosphor-react';
-import { IconButton } from '@mui/material';
 import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 import ContactCategoryButton from '../components/button/ContactCategoryButton';
 import { useEffect, useState } from 'react';

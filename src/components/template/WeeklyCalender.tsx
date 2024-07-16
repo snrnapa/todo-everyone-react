@@ -76,7 +76,7 @@ export const WeeklyCalender: React.FC<WeeklyCalenderProps> = ({ summaries, fetch
     }
 
     return (
-        <div className="">
+        <div className="flex flex-col justify-center items-center space-y-5">
             <DispCalenderButton dispCalender={dispCalender} onDisp={setDispCalender} />
             {dispCalender ?
                 <div>
