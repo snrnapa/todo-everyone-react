@@ -24,14 +24,16 @@ const TodoCopyButton: React.FC<TodoCopyButtonProps> = ({ onCopy }) => {
       <div className="bg-green-200 rounded-lg flex flex-col">
         <p className="text-xs p-2 font-bold ">自分の予定にコピーしますか？</p>
         <div className="flex justify-center">
-          <IconButton onClick={onCopy}>
+          <IconButton onClick={onCopyConfirm}>
             <Check size={20} color="#120fd2" weight="thin" />
           </IconButton>
-          <IconButton onClick={onCopyConfirm}>
+          <IconButton onClick={() => {
+            setDispConfimButton(false)
+          }}>
             <X size={20} color="#120fd2" weight="thin" />
           </IconButton>
         </div>
-      </div>
+      </div >
     );
   }
 

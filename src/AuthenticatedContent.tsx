@@ -1,6 +1,6 @@
 import SignIn from './components/SignIn';
 import { useEffect, useState } from 'react';
-import Todo from './components/Todo';
+import Todo from './components/TodoPage';
 import Register from './components/Register';
 import { Button, CircularProgress } from '@mui/material';
 import { auth } from './libs/firebase';

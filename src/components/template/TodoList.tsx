@@ -1,43 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { SubmitHandler } from 'react-hook-form';
-import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
+import { showErrorAlert } from '../../model/Utils';
 
-import useGetTodos from '../hooks/useGetTodos';
 import TodoItem from './TodoItem';
 import { Todo } from '../../model/TodoTypes';
 import FilterButtons from '../button/FilterButtons';
-import { refreshFirebaseToken } from '../../model/token';
-import { API_URL } from '../../config';
 
 interface TodoListProps {
-  reloadCount: number;
-  setReloadCount: React.Dispatch<React.SetStateAction<number>>;
+  todos: Todo[]
+  deleteTodo: any
+  updateTodo: any
+  copyTodo: any
+  fetchSummaries: any
+  headers: any
 }
 
-const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
 
-  const user_id = localStorage.getItem('firebaseUserId');
-  const [token, setToken] = useState<string | null>(null); // トークンの状態を保持するstateを追加する
-  // ページが読み込まれた時にトークンを取得する
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        const token = await refreshFirebaseToken();
-        setToken(token);
-      } catch (error) {
-        console.error('Error fetching Firebase token:', error);
-        setToken(null);
-      }
-    };
+const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTodo, updateTodo: updateTodo, copyTodo: copyTodo, fetchSummaries: fetchSummaries, headers: headers
+}) => {
 
-    fetchToken();
-  }, []); // 一度だけ実行される
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+  const user_id = localStorage.getItem('firebaseUserId')
 
-  const todos = useGetTodos(reloadCount, headers);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editedTodo, setEditedTodo] = useState<Todo>();
 
@@ -62,21 +46,8 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
   };
 
   const handleDelete = async (todo: Todo) => {
-    fetch(`${API_URL}/todo`, {
-      method: 'DELETE',
-      headers: headers,
-      body: JSON.stringify(todo),
-    }).then((response) => {
-      if (!response.ok) {
-        showErrorAlert(
-          '削除中にエラーが発生',
-          'todoの削除中にエラーが発生しました。',
-        );
-      } else {
-        showSuccessAlert('削除完了', 'todoの削除が完了しました。');
-        setReloadCount(reloadCount + 1);
-      }
-    });
+    await deleteTodo(todo)
+    await fetchSummaries()
   };
 
   const handleSubmit: SubmitHandler<Todo> = async (data) => {
@@ -89,52 +60,23 @@ const TodoList: React.FC<TodoListProps> = ({ reloadCount, setReloadCount }) => {
       deadline: new Date(data.deadline).toISOString(),
     };
 
-    fetch(`${API_URL}/todo`, {
-      method: 'PATCH',
-      headers: headers,
-      body: JSON.stringify(todoData),
-    }).then((response) => {
-      if (response.ok) {
-        showSuccessAlert('更新完了', 'todoの更新が完了しました');
-        setEditedTodo(undefined);
-        setEditMode(false);
-        setReloadCount(reloadCount + 1);
-      } else {
-        showErrorAlert('更新失敗', 'todoの更新中にエラーが発生しました');
-      }
-    });
+    updateTodo(todoData, setEditedTodo, setEditMode)
+
   };
 
   const onCopy = async (todo: Todo) => {
     if (user_id == null) {
-      showErrorAlert('todoコピー失敗', 'todoのコピー中に失敗しました');
+      showErrorAlert('エラー', 'ユーザーIDが取得できず、失敗しました');
       return;
     }
-
     const newTodo = {
       user_id: user_id,
       title: todo.title,
       detail: todo.detail,
       deadline: todo.deadline,
     };
-    fetch(`${API_URL}/todo`, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify(newTodo),
-    })
-      .then((response) => response.json())
-      .then((responseData) => {
-        if (responseData.error) {
-          showErrorAlert(
-            'todoのコピー失敗',
-            `todoのコピー中にエラーが発生しました${responseData.error}`,
-          );
-          return;
-        } else {
-          showSuccessAlert('登録完了', 'Todoを登録しました');
-          setReloadCount((prev) => prev + 1);
-        }
-      });
+    await copyTodo(newTodo)
+    await fetchSummaries(headers)
   };
 
   return (

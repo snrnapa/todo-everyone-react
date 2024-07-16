@@ -1,13 +1,9 @@
 import { addDays, format } from "date-fns"
 import React, { useEffect, useState } from "react";
 import DispCalenderButton from "../button/DispCalenderButton";
-import { showErrorAlert } from "../../model/Utils";
 import { CheckSquare, PushPin } from 'phosphor-react';
 import { useNavigate } from 'react-router-dom';
 import { refreshFirebaseToken } from "../../model/token";
-import { API_URL } from "../../config";
-
-
 
 const getWeekDates = (): Date[] => {
     const weekDates = []
@@ -17,7 +13,6 @@ const getWeekDates = (): Date[] => {
     }
     return weekDates
 }
-
 
 const getColorForToday = (index: number, date: Date) => {
     const dailyString = format(date, 'EEE')
@@ -36,22 +31,18 @@ const getColorCompletedForCalender = (completed: boolean) => {
     }
 }
 
-interface Summary {
-    id: number;
-    user_id: string;
-    title: string;
-    deadline: Date;
-    completed: boolean;
+interface WeeklyCalenderProps {
+    summaries: any;
+    setSummaries: any;
+    fetchSummaries: any;
 }
 
-
-
-
-export const WeeklyCalender: React.FC = () => {
+export const WeeklyCalender: React.FC<WeeklyCalenderProps> = ({ summaries, fetchSummaries }) => {
     const weekDates = getWeekDates()
     const [dispCalender, setDispCalender] = useState<boolean>(true);
-    const [summarys, setSummarys] = useState<Summary[]>([]);
     const userId = localStorage.getItem('firebaseUserId')
+    const [headers, setHeaders] = useState<{ Authorization: string }>({ Authorization: '' });
+    const [initialized, setInitialized] = useState(false)
 
     const navigate = useNavigate();
 
@@ -60,38 +51,29 @@ export const WeeklyCalender: React.FC = () => {
     };
 
     useEffect(() => {
-        const getSummary = async () => {
+        const fetchToken = async () => {
             try {
                 const token = await refreshFirebaseToken()
-
-                const response = await fetch(
-                    `${API_URL}/summary/${userId}`,
-                    {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${token}`,
-                        },
-                    },
-                );
-                if (!response.ok) {
-                    throw new Error(`HTTP Error! status : ${response.status} `)
-                }
-                const responseData = await response.json()
-                var summariesWithDates;
-                if (responseData && responseData.length > 0) {
-                    summariesWithDates = responseData.map((item: any) => ({
-                        ...item,
-                        deadline: new Date(item.deadline)
-                    }))
-                }
-                setSummarys(summariesWithDates)
+                setHeaders({
+                    Authorization: `Bearer ${token}`,
+                });
+                setInitialized(true);
             } catch (error) {
-                showErrorAlert('summaryの取得に失敗しました', `${error}`)
+                console.error('Failed to refresh token:', error);
             }
         }
-        getSummary();
+        fetchToken()
     }, [])
+
+    useEffect(() => {
+        if (initialized) {
+            fetchSummaries(headers)
+        }
+    }, [initialized, fetchSummaries])
+
+    if (userId == null) {
+        return <div>Loading Now......</div>;
+    }
 
     return (
         <div className="">
@@ -106,9 +88,9 @@ export const WeeklyCalender: React.FC = () => {
                                     <p className="text-base font-semibold">{format(date, 'EEE')}</p>
                                 </div>
                                 <div className="flex">
-                                    {(summarys || []).filter((summary) => {
+                                    {(summaries || []).filter((summary: any) => {
                                         return summary.deadline && format(summary.deadline, 'MM/dd') === format(date, 'MM/dd');
-                                    }).map((s) => (
+                                    }).map((s: any) => (
                                         <div
                                             key={s.id} // `key` を追加
                                             onClick={() => navigateTodoInfo(s.id)}
