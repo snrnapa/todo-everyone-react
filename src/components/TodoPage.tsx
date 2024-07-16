@@ -5,7 +5,6 @@ import TodoInputForm from './form/TodoInputForm';
 import TodoList from './template/TodoList';
 import { WeeklyCalender } from './template/WeeklyCalender';
 import { ButtonStyle } from './styles/ButtonStyles';
-import { Todo } from '../model/TodoTypes';
 import { refreshFirebaseToken } from '../model/token';
 import useTodos from './hooks/useTodos';
 import useSummaries from './hooks/useSummary';
@@ -51,6 +50,7 @@ const TodoPage = () => {
         <WeeklyCalender summaries={summaries} setSummaries={setSummaries} fetchSummaries={fetchSummaries} />
         {!postFlg ? (
           <div className="flex items-center justify-start">
+
             <IconButton
               onClick={() => {
                 setPostFlg(!postFlg);
@@ -59,6 +59,7 @@ const TodoPage = () => {
             >
               <NotePencil size={32} color="#120fd2" weight="thin" />
               <p className={`${ButtonStyle.text}`}>やることを書く</p>
+            </IconButton>
           </div>
         ) : (
           <div
@@ -81,16 +82,6 @@ const TodoPage = () => {
         )}
         <TodoList todos={todos} deleteTodo={deleteTodo} updateTodo={updateTodo} copyTodo={copyTodo} fetchSummaries={fetchSummaries} headers={headers} />
       </div>
-
-      {postFlg ? (
-        <div className="space-y-2 ">
-          <TodoInputForm postTodo={postTodo} />
-        </div>
-      ) : (
-        <div></div>
-      )}
-      <TodoList todos={todos} deleteTodo={deleteTodo} updateTodo={updateTodo} copyTodo={copyTodo} />
-    </div >
     </>
   );
 };
