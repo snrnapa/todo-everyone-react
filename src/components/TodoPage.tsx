@@ -1,5 +1,4 @@
-import { NotePencil, ArrowsInLineVertical } from 'phosphor-react';
-import { IconButton } from '@mui/material';
+import { ArrowsInLineVertical } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import TodoInputForm from './form/TodoInputForm';
 import TodoList from './template/TodoList';
@@ -46,21 +45,19 @@ const TodoPage = () => {
 
   return (
     <>
-      <div className="p-1 space-y-2 w-full justify-center">
+      <div className="p-1 space-y-5 w-full flex flex-col items-center ">
         <WeeklyCalender summaries={summaries} setSummaries={setSummaries} fetchSummaries={fetchSummaries} />
         {!postFlg ? (
-          <div className="flex items-center justify-start">
-
-            <IconButton
-              onClick={() => {
-                setPostFlg(!postFlg);
-              }}
-              className={`${ButtonStyle.base} ${ButtonStyle.primary}`}
-            >
-              <NotePencil size={32} color="#120fd2" weight="thin" />
-              <p className={`${ButtonStyle.text}`}>やることを書く</p>
-            </IconButton>
+          <div
+            onClick={() => {
+              setPostFlg(!postFlg);
+            }}
+            className={`${ButtonStyle.base} ${ButtonStyle.primary} `}
+          >
+            <ArrowsInLineVertical size={32} color="#120fd2" weight="thin" />
+            <p className={`${ButtonStyle.text}`}>やることを書く</p>
           </div>
+
         ) : (
           <div
             onClick={() => {
@@ -80,8 +77,8 @@ const TodoPage = () => {
         ) : (
           <div></div>
         )}
-        <TodoList todos={todos} deleteTodo={deleteTodo} updateTodo={updateTodo} copyTodo={copyTodo} fetchSummaries={fetchSummaries} headers={headers} />
       </div>
+      <TodoList todos={todos} deleteTodo={deleteTodo} updateTodo={updateTodo} copyTodo={copyTodo} fetchSummaries={fetchSummaries} headers={headers} />
     </>
   );
 };
