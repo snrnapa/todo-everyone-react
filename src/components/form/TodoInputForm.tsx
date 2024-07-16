@@ -1,8 +1,9 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Button, TextField } from '@mui/material';
+import { IconButton, TextField } from '@mui/material';
 import { formatTodayForInput } from '../../model/Utils';
 import { PostInput } from '../../model/TodoTypes';
 import React from 'react';
+import { CloudCheck } from 'phosphor-react';
 
 
 interface TodoInputFormProps {
@@ -24,12 +25,14 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ postTodo, fetchSummaries 
     await fetchSummaries()
   }
 
+  const TextFieldStyle = "bg-white rounded-sm "
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col space-x-4 items-center"
     >
-      <div className="flex flex-col space-y-2 m-2 p-3 bg-gray-200 border border-gray-300 rounded-xl shadow-2xl sm:w-5/12">
+      <div className="w-96 flex flex-col space-y-2 m-2 p-3 bg-personaBlue  border-white rounded-xl shadow-2xl sm:w-5/12">
         {/* 題名 */}
         <TextField
           type="text"
@@ -43,7 +46,7 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ postTodo, fetchSummaries 
           id="title"
           label="Todo"
           variant="filled"
-          className="bg-cyan-100"
+          className={`${TextFieldStyle}`}
           InputProps={{ className: 'focus:ring-blue-500' }}
         />
         {errors.title?.message && (
@@ -62,7 +65,7 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ postTodo, fetchSummaries 
           id="detail"
           label="detail"
           variant="filled"
-          className="bg-cyan-100"
+          className={`${TextFieldStyle}`}
           InputProps={{ className: 'focus:ring-blue-500' }}
           multiline
         />
@@ -77,13 +80,15 @@ const TodoInputForm: React.FC<TodoInputFormProps> = ({ postTodo, fetchSummaries 
           id="deadline"
           variant="filled"
           defaultValue={today}
-          className="bg-cyan-100"
+          className={`${TextFieldStyle}`}
           InputProps={{ className: 'focus:ring-blue-500' }}
         />
         {errors.deadline?.message && (
           <p className="text-red-800 text-sm">{errors.deadline?.message}</p>
         )}
-        <Button type="submit">追加</Button>
+        <IconButton className='' type='submit'>
+          <CloudCheck size={40} color="#ffffff" />
+        </IconButton>
       </div>
     </form>
   );
