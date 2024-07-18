@@ -37,13 +37,10 @@ interface WeeklyCalenderProps {
     headers: any;
 }
 
-export const WeeklyCalender: React.FC<WeeklyCalenderProps> = ({ summaries, fetchSummaries }) => {
+export const WeeklyCalender: React.FC<WeeklyCalenderProps> = ({ summaries, fetchSummaries, headers }) => {
     const weekDates = getWeekDates()
     const [dispCalender, setDispCalender] = useState<boolean>(true);
     const userId = localStorage.getItem('firebaseUserId')
-    const [headers, setHeaders] = useState<{ Authorization: string }>({ Authorization: '' });
-    const [initialized, setInitialized] = useState(false)
-
     const navigate = useNavigate();
 
     const navigateTodoInfo = (todoId: number) => {
