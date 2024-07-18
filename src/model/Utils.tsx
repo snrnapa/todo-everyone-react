@@ -1,6 +1,5 @@
 import { Timestamp } from 'firebase/firestore';
 import Swal from 'sweetalert2';
-import { refreshFirebaseToken } from './token';
 
 // firebaseのタイムスタンプを文字列の日付に変換する関数
 export const convertTimestampToString = (timestamp: Timestamp): string => {

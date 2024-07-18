@@ -15,10 +15,7 @@ export async function refreshFirebaseToken(): Promise<string | null> {
         return idToken;
     } catch (error) {
         console.error('Error refreshing Firebase token:', error);
-        // `auth/quota-exceeded` エラーの場合の特別なハンドリング
-        if (error.code === 'auth/quota-exceeded') {
-            console.warn('Quota exceeded. Consider reducing the refresh frequency or upgrading your Firebase plan.');
-        }
+
         return null;
     }
 }
