@@ -53,15 +53,6 @@ export const parseDatetoYYYYMMDD = (dateString: string) => {
   return formattedDate;
 };
 
-export const initTokenHeader = async () => {
-  const token = await refreshFirebaseToken();
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-  return headers;
-};
-
-
 
 export const getColorForDeadline = (deadline: string) => {
   const today: Date = new Date()

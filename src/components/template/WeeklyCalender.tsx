@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import DispCalenderButton from "../button/DispCalenderButton";
 import { CheckSquare, PushPin } from 'phosphor-react';
 import { useNavigate } from 'react-router-dom';
-import { refreshFirebaseToken } from "../../model/token";
 
 const getWeekDates = (): Date[] => {
     const weekDates = []
