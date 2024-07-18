@@ -75,7 +75,7 @@ export const getColorForDeadline = (deadline: string) => {
   } else if (diffrenceInDays <= 0) {
     return "bg-yellow-200 font-bold"
   } else if (diffrenceInDays <= 1) {
-    return "text-gray-200"
+    return ""
   }
 
 }
