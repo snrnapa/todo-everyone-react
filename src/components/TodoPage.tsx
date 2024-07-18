@@ -16,28 +16,34 @@ const TodoPage = () => {
   const [headers, setHeaders] = useState<{ Authorization: string }>({ Authorization: '' });
   const [initialized, setInitialized] = useState(false);
 
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        const token = await refreshFirebaseToken();
-        setHeaders({
-          Authorization: `Bearer ${token}`,
-        });
-        setInitialized(true);
-      } catch (error) {
-        console.error('Failed to refresh token:', error);
-      }
+
+  const fetchToken = async () => {
+    try {
+      const token = await refreshFirebaseToken();
+      setHeaders({
+        Authorization: `Bearer ${token}`,
+      });
+      setInitialized(true);
+    } catch (error) {
+      console.error('Failed to refresh token:', error);
     }
-    fetchToken()
-  }, [])
+  }
+
+  useEffect(() => {
+    fetchToken();
+
+    const interval = setInterval(fetchToken, 15 * 60 * 1000); // 15分ごとにトークンをリフレッシュ
+    return () => clearInterval(interval); // クリーンアップ
+  }, []);
 
   const { todos, fetchTodos, postTodo, deleteTodo, updateTodo, copyTodo } = useTodos([], headers)
   const { summaries, setSummaries, fetchSummaries } = useSummaries([], headers)
   useEffect(() => {
     if (initialized) {
       fetchTodos()
+      fetchSummaries()
     }
-  }, [initialized, fetchTodos]);
+  }, [initialized, fetchTodos, fetchSummaries]);
 
   if (userId == null) {
     return <div>Loading Now......</div>;
@@ -46,7 +52,7 @@ const TodoPage = () => {
   return (
     <>
       <div className="p-1 space-y-5 w-full flex flex-col items-center ">
-        <WeeklyCalender summaries={summaries} setSummaries={setSummaries} fetchSummaries={fetchSummaries} />
+        <WeeklyCalender summaries={summaries} setSummaries={setSummaries} fetchSummaries={fetchSummaries} headers={headers} />
         {!postFlg ? (
           <div
             onClick={() => {
