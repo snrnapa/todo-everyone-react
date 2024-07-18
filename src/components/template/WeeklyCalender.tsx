@@ -35,6 +35,7 @@ interface WeeklyCalenderProps {
     summaries: any;
     setSummaries: any;
     fetchSummaries: any;
+    headers: any;
 }
 
 export const WeeklyCalender: React.FC<WeeklyCalenderProps> = ({ summaries, fetchSummaries }) => {
@@ -51,25 +52,10 @@ export const WeeklyCalender: React.FC<WeeklyCalenderProps> = ({ summaries, fetch
     };
 
     useEffect(() => {
-        const fetchToken = async () => {
-            try {
-                const token = await refreshFirebaseToken()
-                setHeaders({
-                    Authorization: `Bearer ${token}`,
-                });
-                setInitialized(true);
-            } catch (error) {
-                console.error('Failed to refresh token:', error);
-            }
+        if (headers.Authorization) {
+            fetchSummaries();
         }
-        fetchToken()
-    }, [])
-
-    useEffect(() => {
-        if (initialized) {
-            fetchSummaries(headers)
-        }
-    }, [initialized, fetchSummaries])
+    }, [headers, fetchSummaries]);
 
     if (userId == null) {
         return <div>Loading Now......</div>;
