@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-
 import { SubmitHandler } from 'react-hook-form';
-import { showErrorAlert } from '../../model/Utils';
-
 import TodoItem from './TodoItem';
 import { Todo } from '../../model/TodoTypes';
 import FilterButtons from '../button/FilterButtons';
+import { toast } from 'react-toastify';
 
 interface TodoListProps {
   todos: Todo[]
@@ -66,7 +64,7 @@ const TodoList: React.FC<TodoListProps> = ({ todos: todos, deleteTodo: deleteTod
 
   const onCopy = async (todo: Todo) => {
     if (user_id == null) {
-      showErrorAlert('エラー', 'ユーザーIDが取得できず、失敗しました');
+      toast.error('ユーザーIDが取得できず、失敗しました');
       return;
     }
     const newTodo = {

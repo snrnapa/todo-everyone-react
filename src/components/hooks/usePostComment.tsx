@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
-import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
 import { API_URL } from '../../config';
+import { toast } from 'react-toastify';
 
 interface CommentInput {
   commentText: string;
@@ -34,15 +34,12 @@ const usePostComment = (
         if (responseData.error) {
           setErrorMessage(responseData.error);
         } else {
-          showSuccessAlert('登録完了', 'コメントを登録しました');
+          toast.success('コメントを登録しました');
           event?.target.reset();
           setErrorMessage(null);
         }
       } catch {
-        showErrorAlert(
-          'サーバー処理中に問題が発生しました',
-          errorMessage || '',
-        );
+        toast.error('コメントの登録中にエラーが発生しました');
       }
     }
   };

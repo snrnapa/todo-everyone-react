@@ -1,5 +1,5 @@
+import { toast } from 'react-toastify';
 import { API_URL } from '../../config';
-import { showErrorAlert } from '../../model/Utils';
 import { refreshFirebaseToken } from '../../model/token';
 
 const useUpdateAddition = (
@@ -27,10 +27,8 @@ const useUpdateAddition = (
           body: JSON.stringify(additionInfo),
         });
       } catch (error) {
-        showErrorAlert(
-          'サーバー処理中に問題が発生しました',
-          `詳細：${error}`,
-        );
+        toast.error('エラーが発生しました');
+
       }
     }
   };

@@ -1,11 +1,11 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { NotePencil, PaperPlane } from 'phosphor-react';
-import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 import ContactCategoryButton from '../components/button/ContactCategoryButton';
 import { useEffect, useState } from 'react';
 import { refreshFirebaseToken } from '../model/token';
 import { API_URL } from '../config';
 import { ButtonStyle } from '../components/styles/ButtonStyles';
+import { toast } from 'react-toastify';
 
 type ContactInput = {
   context: string;
@@ -57,12 +57,9 @@ const Contact = () => {
           },
           body: JSON.stringify(contactData),
         });
-        showSuccessAlert('送信成功', '問い合わせ内容の送信に成功しました')
+        toast.success('問い合わせ内容の送信に成功しました');
       } catch (error) {
-        showErrorAlert(
-          'サーバー処理中に問題が発生しました',
-          `${error}`,
-        );
+        toast.error('問い合わせ内容の送信に失敗しました');
       }
     }
   };

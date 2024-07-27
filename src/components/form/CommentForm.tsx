@@ -2,9 +2,9 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Check, XCircle } from 'phosphor-react';
 import { IconButton } from '@mui/material';
-import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
 import { refreshFirebaseToken } from '../../model/token';
 import { API_URL } from '../../config';
+import { toast } from 'react-toastify';
 
 interface CommentInput {
   commentText: string;
@@ -53,12 +53,9 @@ const CommentForm: React.FC<CommentFormProps> = ({ todoId, onCancel }) => {
 
     const responseData = await response.json();
     if (responseData.error) {
-      showErrorAlert(
-        'コメント失敗',
-        `コメントの投稿中にエラーが発生しました：${responseData.error}`,
-      );
+      toast.error(`コメントの投稿中にエラーが発生しました：${responseData.error}`);
     } else {
-      showSuccessAlert('登録完了', 'コメントを投稿しました');
+      toast.success('コメントを投稿しました');
       reset();
       onCancel();
     }

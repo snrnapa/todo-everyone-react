@@ -1,9 +1,9 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, TextField } from '@mui/material';
-import { showErrorAlert, showSuccessAlert } from '../model/Utils';
 import { auth } from '../libs/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import React from 'react';
+import { toast } from 'react-toastify';
 
 // Login画面で使用するinputの型を宣言
 type LoginInputs = {
@@ -32,10 +32,10 @@ const SignIn = () => {
       const userId = loginUser.user.uid;
       localStorage.setItem('firebaseToken', token);
       localStorage.setItem('firebaseUserId', userId);
+      toast.success('ログインに成功しました');
 
-      await showSuccessAlert('ログイン成功', 'ログインに成功しました。');
     } catch (error) {
-      await showErrorAlert('ログイン失敗', `ログインに失敗しました。${error}`);
+      toast.error('ログインに失敗しました');
     }
   };
 
