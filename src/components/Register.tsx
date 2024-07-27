@@ -2,7 +2,7 @@ import { Button, TextField } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 import { auth } from '../libs/firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { API_URL } from '../config';
 import { toast } from 'react-toastify';
 
@@ -36,6 +36,14 @@ const Register = () => {
         data.email,
         data.password,
       );
+      const user = userCredential.user;
+      // メールアドレスの確認メールを送信
+      try {
+        await sendEmailVerification(user);
+        console.log('確認メールが送信されました');
+      } catch (verificationError) {
+        console.error('確認メールの送信に失敗しました:', verificationError);
+      }
 
       var idToken;
       var userId;

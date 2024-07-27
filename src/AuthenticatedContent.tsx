@@ -5,6 +5,7 @@ import Register from './components/Register';
 import { Button, CircularProgress } from '@mui/material';
 import { auth } from './libs/firebase';
 import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
 
 const AuthenticatedContent = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,19 +15,27 @@ const AuthenticatedContent = () => {
   useEffect(() => {
     // ユーザーのログイン状態を確認する
     const checkAuthState = async () => {
+      localStorage.removeItem('firebaseToken');
+      localStorage.removeItem('firebaseUserId');
       try {
         const user = auth.currentUser;
         if (user) {
-          setIsAuthenticated(true); // ユーザーがログインしている場合、isAuthenticatedをtrueに設定する
-          const idToken = await user.getIdToken();
-          const userId = user.uid;
-          localStorage.setItem('firebaseToken', idToken);
-          localStorage.setItem('firebaseUserId', userId);
         } else {
           setIsAuthenticated(false)
+          return;
         }
+        // メール認証が完了しているかを確認する
+        if (!user.emailVerified) {
+          throw new Error('メール認証が完了していません')
+        }
+        const idToken = await user.getIdToken();
+        const userId = user.uid;
+        localStorage.setItem('firebaseToken', idToken);
+        localStorage.setItem('firebaseUserId', userId);
+        setIsAuthenticated(true);
       } catch (error) {
-        console.error('Error checking auth state:', error)
+        toast.error(`${error.message}`);
+
       } finally {
         setIsLoading(false)
       }
@@ -44,7 +53,6 @@ const AuthenticatedContent = () => {
     return () => unsubscribe();
   }, []);
 
-
   if (isLoading) {
     return (
       <div className='flex justify-center items-center h-screen'>
@@ -52,7 +60,9 @@ const AuthenticatedContent = () => {
         <p>自動ログイン中・・・</p>
       </div>
     )
-  } else {
+  }
+
+  if (!isLoading && isAuthenticated) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 50 }}
@@ -61,27 +71,32 @@ const AuthenticatedContent = () => {
         transition={{ duration: 0.5 }}
         className="h-screen flex flex-col"
       >
-        <div >
-          {isAuthenticated ? (
-            <Todo />
-          ) : (
-            <div>
-              <SignIn />
-              <Button
-                onClick={() => {
-                  setIsDispRegister(!isDispRegister);
-                }}
-              >
-                初めての方はこちら
-              </Button>
-
-              {isDispRegister ? <Register /> : <div></div>}
-            </div>
-          )}
-        </div>
+        <Todo />
       </motion.div>
-    );
+    )
   }
-};
+
+  if (!isLoading && !isAuthenticated) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -50 }}
+        transition={{ duration: 0.5 }}
+        className="h-screen flex flex-col"
+      >
+        <SignIn />
+        <Button
+          onClick={() => {
+            setIsDispRegister(!isDispRegister);
+          }}
+        >
+          初めての方はこちら
+        </Button>
+        {isDispRegister ? <Register /> : <div></div>}
+      </motion.div>
+    )
+  }
+}
 
 export default AuthenticatedContent;
