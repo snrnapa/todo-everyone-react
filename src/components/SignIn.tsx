@@ -28,14 +28,23 @@ const SignIn = () => {
         data.email,
         data.password,
       );
-      const token = await loginUser.user.getIdToken();
-      const userId = loginUser.user.uid;
+      const user = loginUser.user;
+      if (!user.emailVerified) {
+
+        throw new Error('メール認証が完了していません');
+      }
+      const token = await user.getIdToken();
+      const userId = user.uid;
       localStorage.setItem('firebaseToken', token);
       localStorage.setItem('firebaseUserId', userId);
       toast.success('ログインに成功しました');
-
     } catch (error) {
-      toast.error('ログインに失敗しました');
+      await auth.signOut();
+      localStorage.removeItem('firebaseToken');
+      localStorage.removeItem('firebaseUserId');
+      toast.error(`${error.message}`);
+      // await new Promise((resolve) => setTimeout(resolve, 3000));
+      // window.location.reload();
     }
   };
 
