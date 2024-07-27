@@ -4,6 +4,7 @@ import Todo from './components/TodoPage';
 import Register from './components/Register';
 import { Button, CircularProgress } from '@mui/material';
 import { auth } from './libs/firebase';
+import { motion } from 'framer-motion';
 
 const AuthenticatedContent = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -53,24 +54,32 @@ const AuthenticatedContent = () => {
     )
   } else {
     return (
-      <div className="h-screen">
-        {isAuthenticated ? (
-          <Todo />
-        ) : (
-          <div>
-            <SignIn />
-            <Button
-              onClick={() => {
-                setIsDispRegister(!isDispRegister);
-              }}
-            >
-              初めての方はこちら
-            </Button>
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -50 }}
+        transition={{ duration: 0.5 }}
+        className="h-screen flex flex-col"
+      >
+        <div >
+          {isAuthenticated ? (
+            <Todo />
+          ) : (
+            <div>
+              <SignIn />
+              <Button
+                onClick={() => {
+                  setIsDispRegister(!isDispRegister);
+                }}
+              >
+                初めての方はこちら
+              </Button>
 
-            {isDispRegister ? <Register /> : <div></div>}
-          </div>
-        )}
-      </div>
+              {isDispRegister ? <Register /> : <div></div>}
+            </div>
+          )}
+        </div>
+      </motion.div>
     );
   }
 };
