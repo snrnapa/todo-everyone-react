@@ -42,9 +42,9 @@ const SignIn = () => {
       await auth.signOut();
       localStorage.removeItem('firebaseToken');
       localStorage.removeItem('firebaseUserId');
-      toast.error(`${error.message}`);
-      // await new Promise((resolve) => setTimeout(resolve, 3000));
-      // window.location.reload();
+      if (error instanceof Error) {
+        toast.error(`${error.message}`);
+      }
     }
   };
 

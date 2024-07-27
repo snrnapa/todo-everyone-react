@@ -34,8 +34,9 @@ const AuthenticatedContent = () => {
         localStorage.setItem('firebaseUserId', userId);
         setIsAuthenticated(true);
       } catch (error) {
-        toast.error(`${error.message}`);
-
+        if (error instanceof Error) {
+          toast.error(`${error.message}`);
+        }
       } finally {
         setIsLoading(false)
       }
