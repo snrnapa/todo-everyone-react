@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Note, Timer, Confetti, Chat } from 'phosphor-react';
 import { useParams } from 'react-router-dom';
-import { formatDateForInput, showErrorAlert } from '../model/Utils';
+import { formatDateForInput } from '../model/Utils';
 import { Card, CircularProgress, Divider, IconButton } from '@mui/material';
 import { refreshFirebaseToken } from '../model/token';
 import { API_URL } from '../config';
 import useUpdateAddition from '../components/hooks/useUpdateAddition';
 import CommentForm from '../components/form/CommentForm';
+import { toast } from 'react-toastify';
 
 // Commentの型定義
 interface Comment {
@@ -86,7 +87,7 @@ const TodoInfo = () => {
         setCheeredCount(responseData.cheered_count);
         setIsLoading(false);
       } catch (error) {
-        showErrorAlert('todoの詳細取得に失敗しました', `${error}`);
+        toast.error('todoの取得に失敗しました');
       }
     };
     getTodoInfo();

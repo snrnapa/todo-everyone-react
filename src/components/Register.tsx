@@ -2,9 +2,9 @@ import { Button, TextField } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 import { auth } from '../libs/firebase';
-import { showErrorAlert } from '../model/Utils';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { API_URL } from '../config';
+import { toast } from 'react-toastify';
 
 // Register（初期登録）画面で使用するinputの型を宣言
 type RegisterInputs = {
@@ -25,10 +25,7 @@ const Register = () => {
   // submitが押下されたタイミングで行う動作
   const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
     if (data.password != data.retypePassword) {
-      await showErrorAlert(
-        '入力したパスワードが異なります',
-        '再度確認して再入力してください',
-      );
+      toast.error('入力したパスワードが異なります');
       return;
     }
 
@@ -63,7 +60,7 @@ const Register = () => {
         throw new Error('サーバーエラーが発生しました');
       }
     } catch (error) {
-      showErrorAlert('登録失敗', `登録に失敗しました : ${error}`);
+      toast.error('登録に失敗しました');
     }
   };
 

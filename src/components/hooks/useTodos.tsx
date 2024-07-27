@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
-import { showErrorAlert, showSuccessAlert } from '../../model/Utils';
 import { PostInput, Todo } from '../../model/TodoTypes';
 import { API_URL } from '../../config';
 import { SubmitHandler } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
 
@@ -27,7 +27,7 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
       const responseData = await response.json();
       setTodos(responseData);
     } catch (error) {
-      showErrorAlert('todoの取得に失敗しました', `${error}`);
+      toast.error('todoの取得に失敗しました');
       console.log(error)
     }
   }, [headers])
@@ -58,19 +58,14 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
         const errorText = await response.text()
         throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
       }
-      showSuccessAlert(
-        '完了',
-        `Todoの登録が完了しました。`,
-      );
+      toast.success('Todoの登録が完了しました');
+
       console.log(`${API_URL}/todo`)
       const responseData = await response.json();
       console.log(responseData)
       setTodos(responseData);
     } catch (error) {
-      showErrorAlert(
-        'サーバー処理中に問題が発生しました',
-        `詳細：${error}`,
-      );
+      toast.error('Todoの登録に失敗しました');
     }
   }, [headers])
 
@@ -86,18 +81,12 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
         const errorText = await response.text()
         throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
       }
-      showSuccessAlert(
-        '完了',
-        `Todoの登録が完了しました。`,
-      );
+      toast.success('Todoの更新が完了しました');
       setEditedTodo(undefined);
       setEditMode(false);
 
     } catch (error) {
-      showErrorAlert(
-        'サーバー処理中に問題が発生しました',
-        `詳細：${error}`,
-      );
+      toast.error('Todoの更新に失敗しました');
     }
   }, [headers])
 
@@ -114,14 +103,11 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
         const errorText = await response.text()
         throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
       }
-      showSuccessAlert('コピー完了', 'Todoをコピーが完了しました');
+      toast.success('Todoのコピーが完了しました');
       setTodos((prevTodos) => [...prevTodos, todo])
 
     } catch (error) {
-      showErrorAlert(
-        'todoのコピー失敗',
-        `todoのコピー中にエラーが発生しました${error}`,
-      );
+      toast.error('Todoのコピーに失敗しました');
     }
 
   }, [headers]);
@@ -138,17 +124,11 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
         const errorText = await response.text()
         throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
       }
-      showSuccessAlert(
-        '削除完了',
-        `todoの削除が完了しました`,
-      );
+      toast.success('Todoの削除が完了しました');
       setTodos((prevTodos) => prevTodos.filter((t) => t.id !== todo.id));
 
     } catch (error) {
-      showErrorAlert(
-        'サーバー処理中に問題が発生しました',
-        `詳細：${error}`,
-      );
+      toast.error('Todoの削除に失敗しました');
     }
 
   }, [headers])

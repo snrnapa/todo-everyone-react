@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom';
 import { Envelope, SignOut, LockKey, HouseLine } from 'phosphor-react';
-import { showSuccessAlert } from '../model/Utils';
 import { auth } from '../libs/firebase';
 import React, { useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 const Header = () => {
   const logout = async () => {
     await auth.signOut();
     localStorage.removeItem('firebaseToken');
     localStorage.removeItem('firebaseUserId');
-    await showSuccessAlert('ログアウトしました', '');
+    toast.success('ログアウトしました');
     window.location.reload();
   };
 

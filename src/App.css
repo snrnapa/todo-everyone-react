@@ -21,3 +21,29 @@ body {
 .font-Darumadrop {
   font-family: 'Darumadrop One', sans-serif;
 }
+
+
+/* カスタムトーストのスタイル */
+.custom-toast {
+  background-color: #333;
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: large;
+}
+
+.custom-toast-body {
+  font-size: 14px;
+}
+
+.custom-toast .Toastify__toast--success {
+  background-color: #28a745;
+}
+
+.custom-toast .Toastify__toast--error {
+  background-color: #dc3545;
+}
+
+.custom-toast .Toastify__toast--info {
+  background-color: #17a2b8;
+}

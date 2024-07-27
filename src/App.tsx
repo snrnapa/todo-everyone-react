@@ -6,11 +6,29 @@ import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
 import TodoInfo from './pages/TodoInfo';
 import { motion } from 'framer-motion';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 const App = () => {
   return (
     <div className="h-screen">
       <BrowserRouter>
+        <ToastContainer
+          theme="colored"
+          position="bottom-right"
+          autoClose={2000}
+          hideProgressBar={true}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          toastClassName="custom-toast"
+          bodyClassName="custom-toast-body"
+        />
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}

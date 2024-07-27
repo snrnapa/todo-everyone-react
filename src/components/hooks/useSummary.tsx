@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import { showErrorAlert } from '../../model/Utils';
 import { API_URL } from '../../config';
+import { toast } from 'react-toastify';
 
 interface Summary {
   id: number;
@@ -38,7 +38,7 @@ const useSummaries = (initialSummarys: Summary[], headers: Record<string, string
       }
       setSummaries(summariesWithDates)
     } catch (error) {
-      showErrorAlert('summaryの取得に失敗しました', `${error}`);
+      toast.error('summaryの取得に失敗しました');
     }
   }, [headers])
   return { summaries, setSummaries, fetchSummaries };
