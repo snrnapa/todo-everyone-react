@@ -36,6 +36,7 @@ const SignIn = () => {
       localStorage.setItem('firebaseToken', token);
       localStorage.setItem('firebaseUserId', userId);
       toast.success('ログインに成功しました');
+      window.location.reload();
     } catch (error) {
       await auth.signOut();
       localStorage.removeItem('firebaseToken');

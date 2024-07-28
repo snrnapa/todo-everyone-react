@@ -19,6 +19,7 @@ const Register = () => {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<RegisterInputs>();
 
@@ -46,10 +47,10 @@ const Register = () => {
       const user = userCredential.user;
       try {
         await sendEmailVerification(user);
-        toast.success('確認メールが送信されました.メールより、認証を行ってください。');
       } catch (verificationError) {
         toast.error('確認メールの送信に失敗しました.管理者にお問い合わせください。');
       }
+      toast.success('確認メールが送信されました.メールより、認証を行ってください。');
 
       const idToken = await user.getIdToken();
       const userId = user.uid;
@@ -66,6 +67,7 @@ const Register = () => {
       if (!response.ok) {
         throw new Error('サーバーエラーが発生しました');
       }
+      reset();
     } catch (error) {
       toast.error(`登録に失敗しました;${error}`);
     }
