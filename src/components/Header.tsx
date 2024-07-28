@@ -24,19 +24,19 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 w-full h-16 bg-personaBlue shadow-lg flex items-center justify-center px-4">
-      <div className="font-Darumadrop text-xl flex items-center space-x-9 text-gray-200">
+      <div className="font-Darumadrop text-xl flex items-center space-x-5 text-gray-200">
         <Link to="/" >
           <div className='flex items-center'>
-            <div className="mr-2 text-personaTextWhite">きょう、なにしますか??</div>
+            <div className="mr-2 text-personaTextWhite text-base">きょう、なにしますか??</div>
             <HouseLine size={32} className="text-gray-300" />
           </div>
-          <div className=" text-black flex ">
+          <div className=" text-black flex text-lg ">
             <div>{currentDateTime.toLocaleDateString()}</div>
             :
             <div>{currentDateTime.toLocaleTimeString()}</div>
           </div>
         </Link>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3">
           <div className="flex flex-col items-center">
             <Link to="/contact">
               <Envelope size={26} weight="light" className="text-personaTextWhite" />

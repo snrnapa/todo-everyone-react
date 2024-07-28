@@ -9,8 +9,6 @@ import { motion } from 'framer-motion';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-
 const App = () => {
   return (
     <div className="h-screen">
@@ -34,10 +32,9 @@ const App = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
           transition={{ duration: 0.5 }}
-          className="h-screen flex flex-col"
+          className="h-screen flex flex-col pt-16"
         >
           <Header />
-          <div className="h-20"></div>
           <Routes>
             <Route path={`/`} element={<AuthenticatedContent />} />
             <Route path={`/contact`} element={<Contact />} />
