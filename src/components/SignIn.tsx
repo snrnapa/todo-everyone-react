@@ -13,7 +13,6 @@ type LoginInputs = {
 };
 
 const SignIn = () => {
-  // React-form-hookの初期化
   const {
     register,
     handleSubmit,
@@ -30,8 +29,7 @@ const SignIn = () => {
       );
       const user = loginUser.user;
       if (!user.emailVerified) {
-
-        throw new Error('メール認証が完了していません');
+        throw new Error('メール認証が完了していません。メールボックスより、todo-everyone チームからのメールをご確認ください。');
       }
       const token = await user.getIdToken();
       const userId = user.uid;
