@@ -82,7 +82,6 @@ const TodoInfo = () => {
         }
         const responseData: TodoInfo = await response.json();
         setTodoInfo(responseData);
-        console.log(`${API_URL}/todo/${id}`)
         setIsCheered(responseData.is_cheered_me);
         setCheeredCount(responseData.cheered_count);
         setIsLoading(false);

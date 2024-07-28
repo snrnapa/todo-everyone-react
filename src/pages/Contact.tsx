@@ -22,7 +22,7 @@ const Contact = () => {
         const token = await refreshFirebaseToken();
         setToken(token);
       } catch (error) {
-        console.error('Error fetching Firebase token:', error);
+        toast.error('Firebaseトークンの取得に失敗しました。再度ログインしてください');
         setToken(null);
       }
     };

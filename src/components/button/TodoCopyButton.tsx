@@ -1,6 +1,7 @@
 import { Copy, X, Check } from 'phosphor-react';
 import React, { useState } from 'react';
 import { IconButton } from '@mui/material';
+import { toast } from 'react-toastify';
 
 interface TodoCopyButtonProps {
   onCopy: () => void;
@@ -13,7 +14,7 @@ const TodoCopyButton: React.FC<TodoCopyButtonProps> = ({ onCopy }) => {
     try {
       await onCopy();
     } catch (error) {
-      console.error('Error copying:', error);
+      toast.error('予定のコピーに失敗しました');
     }
 
     setDispConfimButton(false);

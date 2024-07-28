@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import axios from 'axios';
 import { Button } from '@mui/material';
+import { toast } from 'react-toastify';
 
 interface PlaceInfo {
   name: string;
@@ -43,7 +44,7 @@ const PlaceByGoogle = () => {
       );
       setPlaceInfo(response.data.candidates[0]);
     } catch (error) {
-      console.error('Error fetching place information:', error);
+      toast.error('場所情報の取得に失敗しました');
     }
   };
 

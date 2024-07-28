@@ -7,6 +7,7 @@ import { ButtonStyle } from './styles/ButtonStyles';
 import { refreshFirebaseToken } from '../model/token';
 import useTodos from './hooks/useTodos';
 import useSummaries from './hooks/useSummary';
+import { toast } from 'react-toastify';
 
 const TodoPage = () => {
 
@@ -25,7 +26,7 @@ const TodoPage = () => {
       });
       setInitialized(true);
     } catch (error) {
-      console.error('Failed to refresh token:', error);
+      toast.error(`Firebaseトークンの取得に失敗しました。再度ログインしてください${error}`);
     }
   }
 

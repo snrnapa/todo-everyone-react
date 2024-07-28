@@ -27,7 +27,6 @@ const Register = () => {
   const agreePublic = watch('agreePublic', false);
 
   const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
-    console.log(agree, agreePublic);
     if (!agree || !agreePublic) {
       toast.error('規約に同意いただく必要があります');
       return;

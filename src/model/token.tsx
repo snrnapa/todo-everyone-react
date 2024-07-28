@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { auth } from "../libs/firebase";
 
 
@@ -14,8 +15,7 @@ export async function refreshFirebaseToken(): Promise<string | null> {
         // 新しいトークンを返す
         return idToken;
     } catch (error) {
-        console.error('Error refreshing Firebase token:', error);
-
+        toast.error('トークンの更新に失敗しました');
         return null;
     }
 }

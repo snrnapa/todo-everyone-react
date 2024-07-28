@@ -27,8 +27,8 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
       const responseData = await response.json();
       setTodos(responseData);
     } catch (error) {
-      toast.error('todoの取得に失敗しました');
-      console.log(error)
+      toast.error(`todoの取得に失敗しました${error}`);
+
     }
   }, [headers])
 
@@ -52,7 +52,6 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
         headers: headers,
         body: JSON.stringify(todoData),
       });
-      console.log(JSON.stringify(todoData))
 
       if (!response.ok) {
         const errorText = await response.text()
@@ -60,9 +59,7 @@ const useTodos = (initialTodos: Todo[], headers: Record<string, string>) => {
       }
       toast.success('Todoの登録が完了しました');
 
-      console.log(`${API_URL}/todo`)
       const responseData = await response.json();
-      console.log(responseData)
       setTodos(responseData);
     } catch (error) {
       toast.error('Todoの登録に失敗しました');

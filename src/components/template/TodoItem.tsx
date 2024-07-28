@@ -10,6 +10,7 @@ import CompletedCheck from '../button/CompletedCheck';
 import TodoItemTemplate from './TodoItemTemplate';
 import { refreshFirebaseToken } from '../../model/token';
 import { API_URL } from '../../config';
+import { toast } from 'react-toastify';
 
 interface TodoItemProps {
   todo: Todo;
@@ -47,7 +48,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
         const token = await refreshFirebaseToken();
         setToken(token);
       } catch (error) {
-        console.error('Error fetching Firebase token:', error);
+        toast.error('Firebaseトークンの取得に失敗しました。再度ログインしてください');
         setToken(null);
       }
     };
