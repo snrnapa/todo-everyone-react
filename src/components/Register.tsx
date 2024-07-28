@@ -1,43 +1,48 @@
-import { Button, TextField } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, TextField } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
-
 import { auth } from '../libs/firebase';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { API_URL } from '../config';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
-// Register（初期登録）画面で使用するinputの型を宣言
 type RegisterInputs = {
   email: string;
   password: string;
   retypePassword: string;
-  submit: any;
+  agree: boolean;
+  agreePublic: boolean;
 };
 
 const Register = () => {
   const {
     register,
     handleSubmit,
-    // watch,
+    watch,
     formState: { errors },
   } = useForm<RegisterInputs>();
 
-  // submitが押下されたタイミングで行う動作
+  const agree = watch('agree', false);
+  const agreePublic = watch('agreePublic', false);
+
   const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
-    if (data.password != data.retypePassword) {
+    if (!agree || !agreePublic) {
+      toast.error('規約に同意いただく必要があります');
+      return;
+    }
+
+    if (data.password !== data.retypePassword) {
       toast.error('入力したパスワードが異なります');
       return;
     }
 
     try {
-      // メール認証により、firebase authenticationに登録するとともに、その情報をuserCredential変数に保持
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         data.email,
         data.password,
       );
       const user = userCredential.user;
-      // メールアドレスの確認メールを送信
       try {
         await sendEmailVerification(user);
         console.log('確認メールが送信されました');
@@ -45,16 +50,11 @@ const Register = () => {
         console.error('確認メールの送信に失敗しました:', verificationError);
       }
 
-      var idToken;
-      var userId;
-      if (userCredential.user != null) {
-        idToken = await userCredential.user.getIdToken();
-        userId = userCredential.user.uid;
-        localStorage.setItem('firebaseToken', idToken);
-        localStorage.setItem('firebaseUserId', userId);
-      } else {
-        throw new Error('ユーザー情報が取得できませんでした');
-      }
+      const idToken = await user.getIdToken();
+      const userId = user.uid;
+      localStorage.setItem('firebaseToken', idToken);
+      localStorage.setItem('firebaseUserId', userId);
+
       const response = await fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: {
@@ -73,7 +73,7 @@ const Register = () => {
   };
 
   return (
-    <div className="p-3 space-y-5">
+    <div className="p-3 space-y-5 bg-sky-50">
       <p className="text-3xl zenKurenaido">初期登録</p>
       <div>
         <form
@@ -122,7 +122,31 @@ const Register = () => {
           {errors.retypePassword?.message && (
             <p className="text-red-800">{errors.retypePassword?.message}</p>
           )}
-          <Button type="submit" variant="contained" disableElevation>
+          <div className='flex flex-col space-y-2'>
+          <FormControlLabel
+            control={<Checkbox {...register('agree', { required: '同意が必要です' })} />}
+            label={
+              <Link to="/privacy" className="text-blue-500 text-sm">
+                利用規約に同意する
+              </Link>
+            }
+          />
+          <FormControlLabel
+            control={<Checkbox {...register('agreePublic', { required: '同意が必要です' })} />}
+            label={
+              <p className='text-sm'>
+                本アプリは匿名性のTodo公開形式のアプリで、Todoは他のユーザーによって閲覧される可能性があります。
+                アプリが公開されることに同意します。公開されることにより生じるトラブルについて、本アプリは一切の責任を負いません。
+              </p>
+            }
+          />
+          </div>
+          <Button
+            type="submit"
+            variant="contained"
+            disableElevation
+            disabled={!agree || !agreePublic}
+          >
             登録
           </Button>
         </form>
