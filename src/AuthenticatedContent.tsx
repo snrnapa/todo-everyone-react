@@ -26,7 +26,8 @@ const AuthenticatedContent = () => {
         }
         // メール認証が完了しているかを確認する
         if (!user.emailVerified) {
-          throw new Error('メール認証が完了していません')
+          toast.warn('メール認証が完了していませんので、自動ログインはOFFとなっております。');
+          return;
         }
         const idToken = await user.getIdToken();
         const userId = user.uid;

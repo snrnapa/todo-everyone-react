@@ -26,6 +26,7 @@ const Register = () => {
   const agreePublic = watch('agreePublic', false);
 
   const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
+    console.log(agree, agreePublic);
     if (!agree || !agreePublic) {
       toast.error('規約に同意いただく必要があります');
       return;
@@ -45,15 +46,13 @@ const Register = () => {
       const user = userCredential.user;
       try {
         await sendEmailVerification(user);
-        console.log('確認メールが送信されました');
+        toast.success('確認メールが送信されました.メールより、認証を行ってください。');
       } catch (verificationError) {
-        console.error('確認メールの送信に失敗しました:', verificationError);
+        toast.error('確認メールの送信に失敗しました.管理者にお問い合わせください。');
       }
 
       const idToken = await user.getIdToken();
       const userId = user.uid;
-      localStorage.setItem('firebaseToken', idToken);
-      localStorage.setItem('firebaseUserId', userId);
 
       const response = await fetch(`${API_URL}/register`, {
         method: 'POST',
@@ -68,7 +67,7 @@ const Register = () => {
         throw new Error('サーバーエラーが発生しました');
       }
     } catch (error) {
-      toast.error('登録に失敗しました');
+      toast.error(`登録に失敗しました;${error}`);
     }
   };
 
@@ -123,23 +122,29 @@ const Register = () => {
             <p className="text-red-800">{errors.retypePassword?.message}</p>
           )}
           <div className='flex flex-col space-y-2'>
-          <FormControlLabel
-            control={<Checkbox {...register('agree', { required: '同意が必要です' })} />}
-            label={
-              <Link to="/privacy" className="text-blue-500 text-sm">
-                利用規約に同意する
-              </Link>
-            }
-          />
-          <FormControlLabel
-            control={<Checkbox {...register('agreePublic', { required: '同意が必要です' })} />}
-            label={
-              <p className='text-sm'>
-                本アプリは匿名性のTodo公開形式のアプリで、Todoは他のユーザーによって閲覧される可能性があります。
-                アプリが公開されることに同意します。公開されることにより生じるトラブルについて、本アプリは一切の責任を負いません。
-              </p>
-            }
-          />
+            <FormControlLabel
+              control={<Checkbox {...register('agree', { required: '同意が必要です' })} />}
+              label={
+                <Link to="/privacy" className="text-blue-500 text-sm">
+                  利用規約に同意します。
+                </Link>
+              }
+            />
+            {errors.agree?.message && (
+              <p className="text-red-800">{errors.agree?.message}</p>
+            )}
+            <FormControlLabel
+              control={<Checkbox {...register('agreePublic', { required: '同意が必要です' })} />}
+              label={
+                <p className='text-sm'>
+                  本アプリは匿名性のTodo公開形式のアプリで、Todoは他のユーザーによって閲覧される可能性があります。
+                  アプリが公開されることに同意します。公開されることにより生じるトラブルについて、本アプリは一切の責任を負いません。
+                </p>
+              }
+            />
+            {errors.agreePublic?.message && (
+              <p className="text-red-800">{errors.agreePublic?.message}</p>
+            )}
           </div>
           <Button
             type="submit"
